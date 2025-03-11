@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>The Nuremberg Hearing Miniseries</title>
   <style>
-    /* Ensure the page fills the iframe without scrolling */
+    /* Ensure full viewport height and no outer scrolling */
     html, body {
       height: 100%;
       margin: 0;
@@ -21,13 +21,13 @@
       --dark-color: #111827;
       --border-color: #e5e7eb;
     }
-    /* Main container divided into header, nav, content, and footer */
+    /* Main container with fixed sections */
     .container {
       display: flex;
       flex-direction: column;
       height: 100vh;
     }
-    /* Compact Header */
+    /* Compact header */
     header {
       flex: 0 0 50px;
       background: var(--primary-color);
@@ -38,31 +38,37 @@
       font-size: 1.5rem;
       padding: 0.2rem;
     }
-    /* Navigation Tabs */
+    /* Two-row navigation for 12 weeks */
     .nav {
-      flex: 0 0 40px;
+      flex: 0 0 60px;
       background: var(--secondary-color);
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
-      flex-wrap: wrap;
-      padding: 0.2rem;
+      padding: 2px;
     }
-    .nav button {
+    .nav-row {
+      display: flex;
+      width: 100%;
+      justify-content: center;
+    }
+    .nav-row button {
       background: var(--accent-color);
       border: none;
       color: #fff;
-      padding: 4px 6px;
+      padding: 2px 4px;
       margin: 2px;
       border-radius: 4px;
       cursor: pointer;
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       transition: background 0.3s ease;
+      white-space: nowrap;
     }
-    .nav button.active {
+    .nav-row button.active {
       background: var(--secondary-color);
     }
-    /* Content area – displays one week at a time */
+    /* Content area (remaining space) */
     .content {
       flex: 1;
       position: relative;
@@ -70,7 +76,7 @@
       padding: 4px;
       overflow: hidden;
     }
-    /* Each week container */
+    /* Each week container fills the content area */
     .week {
       position: absolute;
       top: 0;
@@ -78,20 +84,20 @@
       right: 0;
       bottom: 0;
       padding: 4px;
-      display: none;
       box-sizing: border-box;
+      display: none;
     }
     .week.active {
       display: block;
     }
-    /* Episode cards (5 per week, fixed height so all 5 fit) */
+    /* Episode cards: 5 per week (fixed height) */
     .episode-card {
       background: #fff;
       border: 1px solid var(--border-color);
       border-radius: 4px;
       padding: 6px 8px;
       margin-bottom: 4px;
-      height: calc((100% - 16px) / 5); /* Five cards with small gaps */
+      height: calc((100% - 20px) / 5); /* 5 cards with minimal gaps */
       display: flex;
       align-items: center;
       cursor: pointer;
@@ -122,7 +128,7 @@
       text-decoration: underline;
       font-weight: bold;
     }
-    /* Modal – full screen pop-out without scrolling */
+    /* Modal: full-screen pop-out (no scrolling) */
     .modal {
       position: fixed;
       top: 0;
@@ -138,23 +144,21 @@
     }
     .modal-content {
       background: #fff;
-      width: 90vw;
-      height: 90vh;
-      border-radius: 4px;
-      padding: 8px;
+      width: 95vw;
+      height: 95vh;
+      border-radius: 8px;
+      padding: 16px;
       box-sizing: border-box;
-      overflow: hidden; /* No scrolling */
-      font-size: 0.65rem;
-      line-height: 1.1;
+      overflow: hidden; /* No internal scrolling */
+      font-size: 0.85rem;
+      line-height: 1.3;
     }
     .modal-content h2 {
       margin-top: 0;
-      font-size: 1.1rem;
+      font-size: 1.3rem;
     }
-    .modal-content p, 
-    .modal-content h3,
-    .modal-content ul {
-      margin: 4px 0;
+    .modal-content p, .modal-content h3, .modal-content ul {
+      margin: 8px 0;
     }
     .modal-content ul {
       padding-left: 16px;
@@ -164,12 +168,21 @@
       content: "• ";
       color: var(--secondary-color);
     }
+    /* Hashtag style for modal */
+    .hashtags span {
+      background: var(--secondary-color);
+      color: #fff;
+      padding: 2px 4px;
+      border-radius: 4px;
+      margin-right: 4px;
+      font-size: 0.75rem;
+    }
     .close-modal {
       position: absolute;
       top: 10px;
       right: 15px;
       cursor: pointer;
-      font-size: 1rem;
+      font-size: 1.2rem;
     }
   </style>
 </head>
@@ -179,24 +192,28 @@
     <header>
       The Nuremberg Hearing
     </header>
-    <!-- Navigation Tabs -->
+    <!-- Navigation (Two rows for 12 weeks) -->
     <div class="nav">
-      <button id="btn-week1" onclick="showWeek('week1')" class="active">Week 1</button>
-      <button id="btn-week2" onclick="showWeek('week2')">Week 2</button>
-      <button id="btn-week3" onclick="showWeek('week3')">Week 3</button>
-      <button id="btn-week4" onclick="showWeek('week4')">Week 4</button>
-      <button id="btn-week5" onclick="showWeek('week5')">Week 5</button>
-      <button id="btn-week6" onclick="showWeek('week6')">Week 6</button>
-      <button id="btn-week7" onclick="showWeek('week7')">Week 7</button>
-      <button id="btn-week8" onclick="showWeek('week8')">Week 8</button>
-      <button id="btn-week9" onclick="showWeek('week9')">Week 9</button>
-      <button id="btn-week10" onclick="showWeek('week10')">Week 10</button>
-      <button id="btn-week11" onclick="showWeek('week11')">Week 11</button>
-      <button id="btn-week12" onclick="showWeek('week12')">Week 12</button>
+      <div class="nav-row">
+        <button id="btn-week1" onclick="showWeek('week1')" class="active">Week 1</button>
+        <button id="btn-week2" onclick="showWeek('week2')">Week 2</button>
+        <button id="btn-week3" onclick="showWeek('week3')">Week 3</button>
+        <button id="btn-week4" onclick="showWeek('week4')">Week 4</button>
+        <button id="btn-week5" onclick="showWeek('week5')">Week 5</button>
+        <button id="btn-week6" onclick="showWeek('week6')">Week 6</button>
+      </div>
+      <div class="nav-row">
+        <button id="btn-week7" onclick="showWeek('week7')">Week 7</button>
+        <button id="btn-week8" onclick="showWeek('week8')">Week 8</button>
+        <button id="btn-week9" onclick="showWeek('week9')">Week 9</button>
+        <button id="btn-week10" onclick="showWeek('week10')">Week 10</button>
+        <button id="btn-week11" onclick="showWeek('week11')">Week 11</button>
+        <button id="btn-week12" onclick="showWeek('week12')">Week 12</button>
+      </div>
     </div>
     <!-- Content Area -->
     <div class="content">
-      <!-- Week 1 -->
+      <!-- Week 1 (5 Episodes) -->
       <div id="week1" class="week active">
         <div class="episode-card" onclick="openModal('week1-monday')">
           <strong>MONDAY:</strong><span> The 10-Day Loophole That Could Destroy the WHO</span>
@@ -214,7 +231,7 @@
           <strong>FRIDAY:</strong><span> SueTheWHO.org: Your Weapon Against Medical Tyranny</span>
         </div>
       </div>
-      <!-- Week 2 -->
+      <!-- Week 2 (Placeholders) -->
       <div id="week2" class="week">
         <div class="episode-card" onclick="openModal('week2-monday')">
           <strong>MONDAY:</strong><span> Week 2 Monday: Episode Title</span>
@@ -232,7 +249,7 @@
           <strong>FRIDAY:</strong><span> Week 2 Friday: Episode Title</span>
         </div>
       </div>
-      <!-- Week 3 -->
+      <!-- Week 3 (Placeholders) -->
       <div id="week3" class="week">
         <div class="episode-card" onclick="openModal('week3-monday')">
           <strong>MONDAY:</strong><span> Week 3 Monday: Episode Title</span>
@@ -419,7 +436,7 @@
     </div>
   </div>
   
-  <!-- Full-Screen Modal (No Scrolling) -->
+  <!-- Modal (Full-Screen, No Scrolling) -->
   <div id="modal" class="modal" onclick="if(event.target===this) closeModal()">
     <div class="modal-content">
       <span class="close-modal" onclick="closeModal()">×</span>
@@ -428,20 +445,19 @@
   </div>
   
   <script>
-    // Switch active week tab
+    // Function to switch the active week and update the nav active state
     function showWeek(weekId) {
       document.querySelectorAll('.week').forEach(function(week) {
         week.classList.remove('active');
       });
       document.getElementById(weekId).classList.add('active');
-      
       document.querySelectorAll('.nav button').forEach(function(btn) {
         btn.classList.remove('active');
       });
       document.getElementById('btn-' + weekId).classList.add('active');
     }
     
-    // Modal data for Week 1 episodes (detailed)
+    // Modal data for Week 1 episodes (detailed) – extend with your full content
     const modalData = {
       "week1-monday": {
         title: "The 10-Day Loophole That Could Destroy the WHO",
@@ -450,7 +466,7 @@
         content: [
           "In-depth analysis of the Administrative Silence Doctrine",
           "Examination of Costa Rican Constitutional Articles 27 & 50",
-          "Insights into the 10-day window mechanism",
+          "Insights into the 10-day mechanism",
           "Strategic legal framework for global accountability"
         ],
         hashtags: ["#WHOTakedown", "#MedicalFreedom", "#CostaRicaRises"]
@@ -458,7 +474,7 @@
       "week1-tuesday": {
         title: "Whispers to Roars: How One Nation Can Bring Down a Global Regime",
         date: "Tuesday, Mar 18, 2025",
-        description: "An exploration of grassroots legal strategies that transform whispers of dissent into a global movement challenging established power structures.",
+        description: "An exploration of grassroots legal strategies that transform whispers into a global movement challenging established power structures.",
         content: [
           "Analysis of key international legal instruments",
           "Examination of health regulation loopholes",
@@ -474,8 +490,8 @@
         content: [
           "Review of judicial precedents on administrative silence",
           "Discussion on constitutional safeguards",
-          "Impact analysis on public health governance",
-          "Case studies of successful legal challenges"
+          "Impact on public health governance",
+          "Case study analysis"
         ],
         hashtags: ["#AdminSilence", "#LegalWeapon", "#CaseStudy"]
       },
@@ -497,30 +513,33 @@
         description: "Showcasing a digital legal resource platform designed to empower citizens to challenge medical tyranny and hold global institutions accountable.",
         content: [
           "Overview of the digital legal toolkit",
-          "Step-by-step guide to initiating legal action",
-          "Analysis of regulatory overreach in global health",
+          "Step-by-step guide to legal action",
+          "Analysis of regulatory overreach",
           "Call for citizen engagement and accountability"
         ],
         hashtags: ["#SueTheWHO", "#LegalAction", "#GlobalJustice"]
       }
     };
     
-    // Auto-generate modalData for Weeks 2-12 with placeholder text
+    // Auto-generate placeholder modal data for Weeks 2–12 (if not defined)
     const days = ["monday", "tuesday", "wednesday", "thursday", "friday"];
     for (let w = 2; w <= 12; w++) {
       days.forEach(day => {
-        modalData[`week${w}-${day}`] = {
-          title: `Week ${w} ${day.charAt(0).toUpperCase() + day.slice(1)}: Episode Title`,
-          date: `${day.charAt(0).toUpperCase() + day.slice(1)}, Date for Week ${w}`,
-          description: `This is the description for Week ${w} ${day}.`,
-          content: [
-            `Detail 1 for Week ${w} ${day}`,
-            `Detail 2 for Week ${w} ${day}`,
-            `Detail 3 for Week ${w} ${day}`,
-            `Detail 4 for Week ${w} ${day}`
-          ],
-          hashtags: [`#Week${w}`, `#${day}`, `#Episode`]
-        };
+        const key = `week${w}-${day}`;
+        if (!modalData[key]) {
+          modalData[key] = {
+            title: `Week ${w} ${day.charAt(0).toUpperCase() + day.slice(1)}: Episode Title`,
+            date: `${day.charAt(0).toUpperCase() + day.slice(1)}, Date for Week ${w}`,
+            description: `Description for Week ${w} ${day}.`,
+            content: [
+              `Detail 1 for Week ${w} ${day}`,
+              `Detail 2 for Week ${w} ${day}`,
+              `Detail 3 for Week ${w} ${day}`,
+              `Detail 4 for Week ${w} ${day}`
+            ],
+            hashtags: [`#Week${w}`, `#${day}`, "#Episode"]
+          };
+        }
       });
     }
     
@@ -548,7 +567,7 @@
   </script>
   
   <!--
-    To embed this page in Kajabi, use:
+    To embed on Kajabi, use:
     <iframe src="https://yourgithubusername.github.io/yourrepository/index.html" frameborder="0" style="width:100%; height:100vh;"></iframe>
   -->
 </body>

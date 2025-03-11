@@ -171,10 +171,9 @@
     
     <!-- Week Navigation -->
     <div class="nav">
-      <!-- Buttons for 12 Weeks -->
       <script>
         for (let i = 1; i <= 12; i++) {
-          document.write(`<button onclick="showWeek(${i})">${i <= 6 ? 'Week ' + i : 'Week ' + i}</button>`);
+          document.write(`<button onclick="showWeek(${i})">${'Week ' + i}</button>`);
         }
       </script>
     </div>

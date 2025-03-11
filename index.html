@@ -1,839 +1,657 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The Nuremberg Hearing Miniseries</title>
-<style>
-:root {
---primary-color: #1a2f4b;
---secondary-color: #a93f55;
---accent-color: #d15a7c;
---light-color: #f3f4f6;
---dark-color: #111827;
---border-color: #e5e7eb;
-}
-* {
-box-sizing: border-box;
-margin: 0;
-padding: 0;
-font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-body {
-background-color: #f9fafb;
-color: var(--dark-color);
-line-height: 1.6;
-}
-.container {
-max-width: 1200px;
-margin: 0 auto;
-padding: 2rem;
-}
-header {
-text-align: center;
-margin-bottom: 2rem;
-padding: 2rem;
-background-color: var(--primary-color);
-color: white;
-border-radius: 8px;
-box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-h1 {
-font-size: 2.5rem;
-margin-bottom: 0.5rem;
-text-transform: uppercase;
-letter-spacing: 1px;
-}
-h2 {
-font-size: 1.8rem;
-margin-bottom: 1rem;
-color: var(--secondary-color);
-}
-.tagline {
-font-size: 1.2rem;
-font-style: italic;
-margin-bottom: 1rem;
-}
-.start-date {
-display: inline-block;
-background-color: var(--secondary-color);
-color: white;
-padding: 0.5rem 1rem;
-border-radius: 4px;
-font-weight: bold;
-margin-top: 1rem;
-}
-/* Week Navigation Styles */
-.week-nav {
-display: flex;
-flex-direction: column;
-align-items: center;
-margin-bottom: 1.5rem;
-}
-.week-nav-row {
-display: flex;
-justify-content: center;
-gap: 1rem;
-margin-bottom: 0.5rem;
-}
-.week-nav-link {
-background-color: var(--secondary-color);
-color: white;
-padding: 0.5rem 1rem;
-border-radius: 4px;
-text-decoration: none;
-font-weight: bold;
-transition: background-color 0.3s ease;
-}
-.week-nav-link:hover {
-background-color: var(--accent-color);
-}
-/* Series Table */
-.series-table {
-width: 100%;
-border-collapse: collapse;
-margin-bottom: 2rem;
-background-color: white;
-border-radius: 8px;
-overflow: hidden;
-box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-.series-table th {
-background-color: var(--primary-color);
-color: white;
-text-align: left;
-padding: 1rem;
-}
-.series-table tr:nth-child(even) {
-background-color: #f2f2f2;
-}
-.series-table td {
-padding: 1rem;
-border-bottom: 1px solid var(--border-color);
-}
-.week-header {
-background-color: #e5e7eb;
-font-weight: bold;
-}
-.week-title {
-font-size: 1.2rem;
-color: var(--primary-color);
-margin-bottom: 0.5rem;
-font-weight: bold;
-}
-.week-theme {
-font-style: italic;
-color: var(--secondary-color);
-margin-bottom: 0.5rem;
-}
-.dates {
-color: #6b7280;
-font-size: 0.9rem;
-}
-.special-note {
-background-color: var(--secondary-color);
-color: white;
-padding: 0.5rem;
-margin-top: 0.5rem;
-border-radius: 4px;
-font-size: 0.9rem;
-font-weight: bold;
-}
-.episode-button {
-display: block;
-width: 100%;
-text-align: left;
-padding: 0.75rem 1rem;
-margin: 0.25rem 0;
-background-color: #f3f4f6;
-border: 1px solid var(--border-color);
-border-radius: 4px;
-cursor: pointer;
-transition: all 0.3s ease;
-color: var(--primary-color);
-font-weight: bold;
-position: relative;
-padding-left: 2.5rem;
-font-size: 0.9rem;
-}
-.episode-button:hover {
-background-color: #e5e7eb;
-border-color: var(--secondary-color);
-}
-.episode-button::before {
-content: attr(data-emoji);
-position: absolute;
-left: 0.75rem;
-top: 50%;
-transform: translateY(-50%);
-}
-/* Modal Styles */
-.modal {
-display: none;
-position: fixed;
-top: 0;
-left: 0;
-width: 100%;
-height: 100%;
-background-color: rgba(0, 0, 0, 0.7);
-z-index: 1000;
-overflow: auto;
-padding: 2rem;
-}
-.modal-content {
-background-color: white;
-max-width: 800px;
-margin: 2rem auto;
-padding: 2rem;
-border-radius: 8px;
-box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-position: relative;
-animation: modalfade 0.3s ease-in-out;
-}
-@keyframes modalfade {
-from { opacity: 0; transform: translateY(-30px); }
-to { opacity: 1; transform: translateY(0); }
-}
-.close-button {
-position: absolute;
-top: 1rem;
-right: 1rem;
-font-size: 1.5rem;
-cursor: pointer;
-color: var(--dark-color);
-transition: color 0.3s ease;
-}
-.close-button:hover {
-color: var(--secondary-color);
-}
-.modal-title {
-color: var(--primary-color);
-margin-bottom: 1rem;
-padding-bottom: 0.5rem;
-border-bottom: 2px solid var(--secondary-color);
-}
-.modal-date {
-color: var(--secondary-color);
-font-weight: bold;
-margin-bottom: 1rem;
-}
-.modal-description {
-margin-bottom: 1rem;
-line-height: 1.7;
-}
-.content-list {
-list-style-type: none;
-margin-bottom: 1.5rem;
-}
-.content-list li {
-margin-bottom: 0.5rem;
-padding-left: 1.5rem;
-position: relative;
-}
-.content-list li::before {
-content: "•";
-position: absolute;
-left: 0;
-color: var(--secondary-color);
-font-weight: bold;
-}
-.hashtags {
-margin-top: 1rem;
-display: flex;
-flex-wrap: wrap;
-gap: 0.5rem;
-}
-.hashtag {
-background-color: var(--light-color);
-color: var(--primary-color);
-padding: 0.25rem 0.75rem;
-border-radius: 16px;
-font-size: 0.9rem;
-font-weight: bold;
-}
-.community-action {
-margin-top: 1.5rem;
-text-align: center;
-}
-.community-button {
-display: inline-block;
-background-color: var(--secondary-color);
-color: white;
-padding: 0.75rem 1.5rem;
-border-radius: 4px;
-text-decoration: none;
-font-weight: bold;
-transition: background-color 0.3s ease;
-width: 100%;
-text-align: center;
-box-sizing: border-box;
-}
-.community-button:hover {
-background-color: var(--accent-color);
-text-decoration: none;
-color: white;
-}
-.call-to-action {
-margin-top: 1.5rem;
-text-align: center;
-}
-.action-button {
-display: inline-block;
-background-color: var(--secondary-color);
-color: white;
-padding: 0.75rem 1.5rem;
-border-radius: 4px;
-text-decoration: none;
-font-weight: bold;
-transition: background-color 0.3s ease;
-}
-.action-button:hover {
-background-color: var(--accent-color);
-}
-.footer {
-text-align: center;
-margin-top: 3rem;
-padding: 1.5rem;
-background-color: var(--primary-color);
-color: white;
-border-radius: 8px;
-}
-.footer p {
-margin-bottom: 0.5rem;
-}
-.website-link {
-color: white;
-font-weight: bold;
-text-decoration: underline;
-}
-@media (max-width: 768px) {
-.container {
-padding: 1rem;
-}
-h1 {
-font-size: 2rem;
-}
-h2 {
-font-size: 1.6rem;
-}
-}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Nuremberg Hearing Miniseries</title>
+  <style>
+    :root {
+      --primary-color: #1a2f4b;
+      --secondary-color: #a93f55;
+      --accent-color: #d15a7c;
+      --light-color: #f3f4f6;
+      --dark-color: #111827;
+      --border-color: #e5e7eb;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    body {
+      background-color: #f9fafb;
+      color: var(--dark-color);
+      line-height: 1.6;
+      /* Prevent page scrolling so the iframe stays stationary */
+      overflow: hidden;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1rem;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 1rem;
+      padding: 1rem;
+      background-color: var(--primary-color);
+      color: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    h2 {
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+      color: var(--secondary-color);
+    }
+    .tagline {
+      font-size: 1.2rem;
+      font-style: italic;
+      margin-bottom: 1rem;
+    }
+    .start-date {
+      display: inline-block;
+      background-color: var(--secondary-color);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      font-weight: bold;
+      margin-top: 1rem;
+    }
+    /* Week Navigation */
+    .week-nav {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 1rem 0;
+    }
+    .week-nav-row {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .week-nav-link {
+      background-color: var(--secondary-color);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: background-color 0.3s ease;
+      cursor: pointer;
+    }
+    .week-nav-link:hover {
+      background-color: var(--accent-color);
+    }
+    /* Week Container (each tab) */
+    .week-container {
+      display: none;
+      padding: 1rem;
+    }
+    .week-container.active {
+      display: block;
+    }
+    .week-header {
+      background-color: #e5e7eb;
+      padding: 0.5rem;
+      border-radius: 4px;
+      margin-bottom: 0.5rem;
+    }
+    .week-title {
+      font-size: 1.2rem;
+      color: var(--primary-color);
+      font-weight: bold;
+      margin-bottom: 0.25rem;
+    }
+    .week-theme {
+      font-style: italic;
+      color: var(--secondary-color);
+      margin-bottom: 0.25rem;
+    }
+    .dates {
+      color: #6b7280;
+      font-size: 0.9rem;
+    }
+    .special-note {
+      background-color: var(--secondary-color);
+      color: white;
+      padding: 0.25rem 0.5rem;
+      margin-top: 0.5rem;
+      border-radius: 4px;
+      font-size: 0.9rem;
+      font-weight: bold;
+    }
+    .episodes {
+      margin-top: 0.5rem;
+    }
+    .episode-button {
+      display: block;
+      width: 100%;
+      text-align: left;
+      padding: 0.75rem 1rem;
+      margin: 0.25rem 0;
+      background-color: #f3f4f6;
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      color: var(--primary-color);
+      font-weight: bold;
+      position: relative;
+      padding-left: 2.5rem;
+      font-size: 0.9rem;
+    }
+    .episode-button:hover {
+      background-color: #e5e7eb;
+      border-color: var(--secondary-color);
+    }
+    .episode-button::before {
+      content: attr(data-emoji);
+      position: absolute;
+      left: 0.75rem;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    /* Call-to-action and footer */
+    .call-to-action {
+      margin-top: 1rem;
+      text-align: center;
+    }
+    .action-button {
+      display: inline-block;
+      background-color: var(--secondary-color);
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border-radius: 4px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: background-color 0.3s ease;
+      margin: 0.5rem;
+    }
+    .action-button:hover {
+      background-color: var(--accent-color);
+    }
+    .footer {
+      text-align: center;
+      margin-top: 1rem;
+      padding: 1rem;
+      background-color: var(--primary-color);
+      color: white;
+      border-radius: 8px;
+    }
+    .footer p {
+      margin-bottom: 0.5rem;
+    }
+    .website-link {
+      color: white;
+      font-weight: bold;
+      text-decoration: underline;
+    }
+    /* Modal Styles (unchanged) */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      z-index: 1000;
+      padding: 2rem;
+    }
+    .modal-content {
+      background-color: white;
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      position: relative;
+      animation: modalfade 0.3s ease-in-out;
+    }
+    @keyframes modalfade {
+      from { opacity: 0; transform: translateY(-30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .close-button {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--dark-color);
+      transition: color 0.3s ease;
+    }
+    .close-button:hover {
+      color: var(--secondary-color);
+    }
+    .modal-title {
+      color: var(--primary-color);
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--secondary-color);
+    }
+    .modal-date {
+      color: var(--secondary-color);
+      font-weight: bold;
+      margin-bottom: 1rem;
+    }
+    .modal-description {
+      margin-bottom: 1rem;
+      line-height: 1.7;
+    }
+    .content-list {
+      list-style-type: none;
+      margin-bottom: 1.5rem;
+    }
+    .content-list li {
+      margin-bottom: 0.5rem;
+      padding-left: 1.5rem;
+      position: relative;
+    }
+    .content-list li::before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: var(--secondary-color);
+      font-weight: bold;
+    }
+    .hashtags {
+      margin-top: 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .hashtag {
+      background-color: var(--light-color);
+      color: var(--primary-color);
+      padding: 0.25rem 0.75rem;
+      border-radius: 16px;
+      font-size: 0.9rem;
+      font-weight: bold;
+    }
+    .community-action {
+      margin-top: 1.5rem;
+      text-align: center;
+    }
+    .community-button {
+      display: inline-block;
+      background-color: var(--secondary-color);
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border-radius: 4px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: background-color 0.3s ease;
+      width: 100%;
+      text-align: center;
+    }
+    .community-button:hover {
+      background-color: var(--accent-color);
+      text-decoration: none;
+      color: white;
+    }
+    @media (max-width: 768px) {
+      .container {
+        padding: 1rem;
+      }
+      h1 {
+        font-size: 2rem;
+      }
+      h2 {
+        font-size: 1.6rem;
+      }
+    }
+  </style>
 </head>
 <body>
-<div class="container">
-<header>
-<h1>The Nuremberg Hearing Miniseries</h1>
-<p class="tagline">"The Greatest Medical Crime in History: How We Take Back Our
-Freedom"</p>
-<div class="start-date">Starting March 17, 2025</div>
-</header>
-<!-- Week Navigation -->
-<div class="week-nav">
-<div class="week-nav-row">
-<a href="#week1" class="week-nav-link">Week 1</a>
-<a href="#week2" class="week-nav-link">Week 2</a>
-<a href="#week3" class="week-nav-link">Week 3</a>
-<a href="#week4" class="week-nav-link">Week 4</a>
-<a href="#week5" class="week-nav-link">Week 5</a>
-<a href="#week6" class="week-nav-link">Week 6</a>
-</div>
-<div class="week-nav-row">
-<a href="#week7" class="week-nav-link">Week 7</a>
-<a href="#week8" class="week-nav-link">Week 8</a>
-<a href="#week9" class="week-nav-link">Week 9</a>
-<a href="#week10" class="week-nav-link">Week 10</a>
-<a href="#week11" class="week-nav-link">Week 11</a>
-<a href="#week12" class="week-nav-link">Week 12</a>
-</div>
-</div>
-<div class="series-overview">
-<p>Join us for a meticulously structured 12-week legal campaign that strategically
-targets vulnerable points within the global health governance architecture. Each week
-constitutes a cohesive episode in our miniseries, with compelling daily content that builds
-upon
-structures.</p>
-</div>
-preceding legal actions to create a comprehensive challenge to pandemic governance
-<table class="series-table">
-<thead>
-<tr>
-<th>Week</th>
-<th>Theme</th>
-<th>Episodes</th>
-</tr>
-</thead>
-<tbody>
-<!-- WEEK 1 -->
-<tr id="week1" class="week-header">
-<td colspan="3">
-<div class="week-title">WEEK 1: BREAKING THE SILENCE - COSTA RICA'S
-CONSTITUTIONAL REBELLION</div>
-<div class="week-theme">"UNMASKING THE 10-DAY LOOPHOLE THAT COULD
-DESTROY THE WHO"</div>
-<div class="dates">March 17-21, 2025</div>
-</td>
-</tr>
-<tr>
-<td></td>
-<td></td>
-<td>
-<button class="episode-button" data-emoji="🔥 " onclick="openModal('week1-
-monday')">MONDAY: The 10-Day Loophole That Could Destroy the WHO</button>
-<button class="episode-button" data-emoji="🚨 " onclick="openModal('week1-
-tuesday')">TUESDAY: Whispers to Roars: How One Nation Can Bring Down a Global Regime</
-button>
-<button class="episode-button" data-emoji="🌍 " onclick="openModal('week1-
-wednesday')">WEDNESDAY: Administrative Silence: The Legal Weapon They Never Saw
-Coming</button>
-<button class="episode-button" data-emoji="🔍 " onclick="openModal('week1-
-thursday')">THURSDAY: Diplomatic Dominoes: Building the Global Accountability Network</
-button>
-<button class="episode-button" data-emoji="💥 " onclick="openModal('week1-
-friday')">FRIDAY: SueTheWHO.org: Your Weapon Against Medical Tyranny</button>
-</td>
-</tr>
-<!-- WEEK 2 -->
-<tr id="week2" class="week-header">
-<td colspan="3">
-<div class="week-title">WEEK 2: EXPOSING THE ADMINISTRATIVE DEATH
-MACHINE</div>
-<div class="week-theme">"ADMINISTRATIVE TYRANNY: THE SECRET GOVERNMENT
-PANEL THAT SOLD YOUR HEALTH"</div>
-<div class="dates">March 24-28, 2025</div>
-</td>
-</tr>
-<tr>
-<td></td>
-<td></td>
-<td>
-<button class="episode-button" data-emoji="🔥 " onclick="openModal('week2-
-monday')">MONDAY: EXPOSED: The Secret Government Panel That Sold Your Health</
-button>
-<button class="episode-button" data-emoji="🚨 " onclick="openModal('week2-
-tuesday')">TUESDAY: The APA Weapon: Your Legal Nuclear Option Against Corrupt
-Agencies</button>
-<button class="episode-button" data-emoji="🌪 " onclick="openModal('week2-
-wednesday')">WEDNESDAY: PREP Act Immunity: The License to Kill Hidden in Plain Sight</
-button>
-<button class="episode-button" data-emoji="🔍 " onclick="openModal('week2-
-thursday')">THURSDAY: Congressional Whistleblowers: The Last Line of Defense</button>
-<button class="episode-button" data-emoji="💥 " onclick="openModal('week2-
-friday')">FRIDAY: Rebuilding Scientific Integrity: How We Reclaim Public Health</button>
-</td>
-</tr>
-<!-- WEEK 3 -->
-<tr id="week3" class="week-header">
-<td colspan="3">
-<div class="week-title">WEEK 3: INSTITUTIONAL COMMUNICATION NETWORKS</
-div>
-<div class="week-theme">"WHO, WEF AND GATES FOUNDATION: THE HIDDEN
-COMMUNICATIONS THEY DON'T WANT YOU TO SEE"</div>
-<div class="dates">March 31-April 4, 2025</div>
-</td>
-</tr>
-<tr>
-<td></td>
-<td></td>
-<td>
-<button class="episode-button" data-emoji="🔥 " onclick="openModal('week3-
-monday')">MONDAY: Institutional Communication Networks: Mapping the Invisible
-Infrastructure</button>
-<button class="episode-button" data-emoji="🚨 " onclick="openModal('week3-
-tuesday')">TUESDAY: Transnational Information Sovereignty: Breaking Their Code of Silence</
-button>
-<button class="episode-button" data-emoji="💰 " onclick="openModal('week3-
-wednesday')">WEDNESDAY: Financial Trajectory Analysis: Following the Pandemic Money
-Trail</button>
-<button class="episode-button" data-emoji="🔎 " onclick="openModal('week3-
-thursday')">THURSDAY: Diplomatic Communication Intervention: Cracking Open the Private
-Channels</button>
-<button class="episode-button" data-emoji="🌐 " onclick="openModal('week3-
-friday')">FRIDAY: Constructing the Global Transparency Architecture</button>
-</td>
-</tr>
-<!-- WEEK 4 -->
-<tr id="week4" class="week-header">
-<td colspan="3">
-<div class="week-title">WEEK 4: MINIMAL RISK CLASSIFICATION CHALLENGE</div>
-<div class="week-theme">"THE RESEARCH FRAUD: HOW 'MINIMAL RISK' BECAME
-MAXIMUM DEATH"</div>
-<div class="dates">April 7-11, 2025</div>
-<div class="special-note">Coincident with final WHO Intergovernmental Negotiating
-Body session</div>
-</td>
-</tr>
-<tr>
-<td></td>
-<td></td>
-<td>
-<button class="episode-button" data-emoji="🔥 " onclick="openModal('week4-
-monday')">MONDAY: Deconstructing the Minimal Risk Paradigm: The Regulatory Lie That
-Killed Millions</button>
-<button class="episode-button" data-emoji="🔒 " onclick="openModal('week4-
-tuesday')">TUESDAY: Informed Consent: The Constitutional Bulwark They Demolished</
-button>
-<button class="episode-button" data-emoji="🔬 " onclick="openModal('week4-
-wednesday')">WEDNESDAY: Ethical Research Standards: Reconstructing What They
-Destroyed</button>
-<button class="episode-button" data-emoji="⚖ " onclick="openModal('week4-
-thursday')">THURSDAY: Substantive Due Process: The Constitutional Shield Against Medical
-Tyranny</button>
-<button class="episode-button" data-emoji="🔄 " onclick="openModal('week4-
-friday')">FRIDAY: Reconstructing the Ethical Research Paradigm: The Path Forward</button>
-</td>
-</tr>
-<!-- WEEK 5 -->
-<tr id="week5" class="week-header">
-<td colspan="3">
-<div class="week-title">WEEK 5: EMERGENCY USE AUTHORIZATION
-JURISDICTIONAL CHALLENGE</div>
-<div class="week-theme">"THE LEGAL FICTION THAT BYPASSED SAFETY:
-EXPOSING EUA FRAUD"</div>
-<div class="dates">April 14-18, 2025</div>
-</td>
-</tr>
-<tr>
-<td></td>
-<td></td>
-<td>
-<button class="episode-button" data-emoji="🔥 " onclick="openModal('week5-
-monday')">MONDAY: Statutory Interpretation: Deconstructing the EUA Regulatory Apparatus</
-button>
-<button class="episode-button" data-emoji="⚡ " onclick="openModal('week5-
-tuesday')">TUESDAY: Challenging Administrative Overreach: The Major Questions Doctrine</
-button>
-<button class="episode-button" data-emoji="🧪 " onclick="openModal('week5-
-wednesday')">WEDNESDAY: Evidence and Authorization: The Data They Buried</button>
-<button class="episode-button" data-emoji="⚖ " onclick="openModal('week5-
-thursday')">THURSDAY: Procedural Accountability: Challenging the Immunity Shield</button>
-<button class="episode-button" data-emoji="🔄 " onclick="openModal('week5-
-friday')">FRIDAY: Reconstructing Emergency Use Authorization Governance: Never Again</
-button>
-</td>
-</tr>
-<!-- WEEK 6 -->
-<tr id="week6" class="week-header">
-<td colspan="3">
-<div class="week-title">WEEK 6: DEPARTMENT OF DEFENSE OTHER TRANSACTION
-AUTHORITY INVESTIGATION</div>
-<div class="week-theme">"THE MILITARY CONNECTION: PENTAGON'S SECRET
-ROLE IN THE PANDEMIC RESPONSE"</div>
-<div class="dates">April 21-25, 2025</div>
-</td>
-</tr>
-<tr>
-<td></td>
-<td></td>
-<td>
-<button class="episode-button" data-emoji="🔥 " onclick="openModal('week6-
-monday')">MONDAY: Deconstructing Discretionary Procurement Mechanisms: The Pentagon's
-Pandemic Playbook</button>
-<button class="episode-button" data-emoji="🔒 " onclick="openModal('week6-
-tuesday')">TUESDAY: Challenging Procurement Mechanism Opacity: Following the Defense
-Money</button>
-<button class="episode-button" data-emoji="🛡 " onclick="openModal('week6-
-wednesday')">WEDNESDAY: Forensic Analysis of Procurement Safety Protocol
-Vulnerabilities</button>
-<button class="episode-button" data-emoji="🔎 " onclick="openModal('week6-
-thursday')">THURSDAY: Jurisdictional Accountability: The Military Authority Boundaries They
-Crossed</button>
-<button class="episode-button" data-emoji="🔄 " onclick="openModal('week6-
-friday')">FRIDAY: Reconstructing Procurement Governance: Demilitarizing Public Health</
-button>
-</td>
-</tr>
-<!-- WEEK 7 -->
-<tr id="week7" class="week-header">
-<td colspan="3">
-<div class="week-title">WEEK 7: CONGRESSIONAL INFORMED CONSENT
-INQUIRY</div>
-<div class="week-theme">"NUREMBERG CODE 2.0: CONFRONTING SYSTEMIC
-VIOLATIONS OF INFORMED CONSENT"</div>
-<div class="dates">April 28-May 2, 2025</div>
-</td>
-</tr>
-<tr>
-<td></td>
-<td></td>
-<td>
-<button class="episode-button" data-emoji="🔥 " onclick="openModal('week7-
-monday')">MONDAY: Deconstructing Consent: The Constitutional Bulwark of Bodily
-Autonomy</button>
-<button class="episode-button" data-emoji="🚨 " onclick="openModal('week7-
-tuesday')">TUESDAY: Whistleblower Protections: Unveiling Institutional Malfeasance</button>
-<button class="episode-button" data-emoji="🔬 " onclick="openModal('week7-
-wednesday')">WEDNESDAY: Military Medical Ethics: Challenging Experimental Protocols</
-button>
-<button class="episode-button" data-emoji="🌐 " onclick="openModal('week7-
-thursday')">THURSDAY: International Human Rights Intervention: Global Standards vs.
-National Violations</button>
-<button class="episode-button" data-emoji="⚖ " onclick="openModal('week7-
-friday')">FRIDAY: Reconstructing Medical Consent Paradigms: Building the Unbreakable
-Shield</button>
-</td>
-</tr>
-<!-- WEEK 8 -->
-<tr id="week8" class="week-header">
-<td colspan="3">
-<div class="week-title">WEEK 8: CONSTITUTIONAL CHALLENGE TO CANADIAN ONE
-HEALTH ACT</div>
-<div class="week-theme">"THE SOVEREIGNTY BATTLE: DISMANTLING CANADA'S
-GATEWAY TO GLOBAL HEALTH CONTROL"</div>
-<div class="dates">May 5-9, 2025</div>
-</td>
-</tr>
-<tr>
-<td></td>
-<td></td>
-<td>
-<button class="episode-button" data-emoji="🔥 " onclick="openModal('week8-
-monday')">MONDAY: Deconstructing Jurisdictional Boundaries: Constitutional Sovereignty
-Analysis</button>
-<button class="episode-button" data-emoji="🔒 " onclick="openModal('week8-
-tuesday')">TUESDAY: Federal-Provincial Power Distribution: Exposing the Jurisdictional
-Fraud</button>
-<button class="episode-button" data-emoji="🔬 " onclick="openModal('week8-
-wednesday')">WEDNESDAY: Charter Rights Analysis: The Constitutional Rights They're
-Surrendering</button>
-<button class="episode-button" data-emoji="🌐 " onclick="openModal('week8-
-thursday')">THURSDAY: International Governance Interface: Treaty Law vs. Constitutional
-Supremacy</button>
-<button class="episode-button" data-emoji="⚖ " onclick="openModal('week8-
-friday')">FRIDAY: Reconstructing Health Federalism: Restoring Provincial Sovereignty</
-button>
-</td>
-</tr>
-<!-- WEEK 9 -->
-<tr id="week9" class="week-header">
-<td colspan="3">
-<div class="week-title">WEEK 9: HEALTH CANADA REGULATORY ENGAGEMENT</
-div>
-<div class="week-theme">"SCIENTIFIC FRAUD: CHALLENGING REGULATORY
-CAPTURE THROUGH CANADIAN ADMINISTRATIVE LAW"</div>
-<div class="dates">May 12-16, 2025</div>
-</td>
-</tr>
-<tr>
-<td></td>
-<td></td>
-<td>
-<button class="episode-button" data-emoji="🔥 " onclick="openModal('week9-
-monday')">MONDAY: Scientific Integrity: Challenging Regulatory Classification Mechanisms</
-button>
-<button class="episode-button" data-emoji="🔎 " onclick="openModal('week9-
-tuesday')">TUESDAY: Freedom of Information: Exposing the Hidden Canadian Data</button>
-<button class="episode-button" data-emoji="🧪 " onclick="openModal('week9-
-wednesday')">WEDNESDAY: Scientific Dispute Mechanism: The Administrative Challenge
-They Fear</button>
-<button class="episode-button" data-emoji="⚖ " onclick="openModal('week9-
-thursday')">THURSDAY: Judicial Review Application: Breaking Through Regulatory Capture</
-button>
-<button class="episode-button" data-emoji="🔄 " onclick="openModal('week9-
-friday')">FRIDAY: Canadian Charter Challenge Strategy: Section 7 Rights Reclaimed</button>
-</td>
-</tr>
-<!-- WEEK 10 -->
-<tr id="week10" class="week-header">
-<td colspan="3">
-<div class="week-title">WEEK 10: EUROPEAN MEDICINES AGENCY SCIENTIFIC
-DISPUTE</div>
-<div class="week-theme">"EUROZONE BATTLEGROUND: CHALLENGING THE
-EMA'S PRODUCT AUTHORIZATION FRAUD"</div>
-<div class="dates">May 19-23, 2025</div>
-</td>
-</tr>
-<tr>
-<td></td>
-<td></td>
-<td>
-<button class="episode-button" data-emoji="🔥 " onclick="openModal('week10-
-monday')">MONDAY: Transnational Regulatory Accountability: Deconstructing Authorization
-Mechanisms</button>
-<button class="episode-button" data-emoji="🔍 " onclick="openModal('week10-
-tuesday')">TUESDAY: EU Transparency Regulation: Forcing Open the Data Vaults</button>
-<button class="episode-button" data-emoji="🧪 " onclick="openModal('week10-
-wednesday')">WEDNESDAY: Clinical Trial Regulation Challenge: The Scientific Fraud Across
-Europe</button>
-<button class="episode-button" data-emoji="⚖ " onclick="openModal('week10-
-thursday')">THURSDAY: European Court Precedent: Building the Case for Judicial
-Intervention</button>
-<button class="episode-button" data-emoji="🔄 " onclick="openModal('week10-
-friday')">FRIDAY: EU Future Framework: Reconstructing European Pharmaceutical
-Regulation</button>
-</td>
-</tr>
-<!-- WEEK 11 -->
-<tr id="week11" class="week-header">
-<td colspan="3">
-<div class="week-title">WEEK 11: COSTA RICAN COMPTROLLER INVESTIGATION
-ESCALATION</div>
-<div class="week-theme">"PROCUREMENT FRAUD INVESTIGATION: EXPOSING THE
-GLOBAL PHARMACEUTICAL CONTRACT SCANDAL"</div>
-<div class="dates">May 26-30, 2025</div>
-<div class="special-note">Coincident with World Health Assembly voting procedures
-and IHR Amendments rejection deadline</div>
-</td>
-</tr>
-<tr>
-<td></td>
-<td></td>
-<td>
-<button class="episode-button" data-emoji="🔥 " onclick="openModal('week11-
-monday')">MONDAY: WHA Begins: The Final Stand Against WHO Treaty Overreach</button>
-<button class="episode-button" data-emoji="💰 " onclick="openModal('week11-
-tuesday')">TUESDAY: Tracing the Pandemic Procurement Chain: Following Global Money
-Flows</button>
-<button class="episode-button" data-emoji="🔎 " onclick="openModal('week11-
-wednesday')">WEDNESDAY: Contract Indemnification Clauses: The Liability Shield Scandal</
-button>
-<button class="episode-button" data-emoji="🌐 " onclick="openModal('week11-
-thursday')">THURSDAY: International Accountability Mechanisms: FATF and Beyond</button>
-<button class="episode-button" data-emoji="⚖ " onclick="openModal('week11-
-friday')">FRIDAY: Victory or Resistance: The Path Forward After WHA</button>
-</td>
-</tr>
-<!-- WEEK 12 -->
-<tr id="week12" class="week-header">
-<td colspan="3">
-<div class="week-title">WEEK 12: COMPREHENSIVE GLOBAL ACCOUNTABILITY
-SYNTHESIS</div>
-<div class="week-theme">"THE GLOBAL LEGAL ARCHITECTURE: BUILDING THE
-INTERNATIONAL ACCOUNTABILITY FRAMEWORK"</div>
-<div class="dates">June 2-6, 2025</div>
-</td>
-</tr>
-<tr>
-<td></td>
-<td></td>
-<td>
-<button class="episode-button" data-emoji="🔥 " onclick="openModal('week12-
-monday')">MONDAY: Post-WHA Strategy: Implementing the Global Resistance Framework</
-button>
-<button class="episode-button" data-emoji="🌐 " onclick="openModal('week12-
-tuesday')">TUESDAY: International Court Mechanisms: Building the Global Prosecution
-Strategy</button>
-<button class="episode-button" data-emoji="⚖ " onclick="openModal('week12-
-wednesday')">WEDNESDAY: Coordinating Non-Compliance: The Multi-Jurisdictional
-Strategy</button>
-<button class="episode-button" data-emoji="🔄 " onclick="openModal('week12-
-thursday')">THURSDAY: Prevention Architecture: Building the Framework to Prevent Future
-Abuses</button>
-<button class="episode-button" data-emoji="🏆 " onclick="openModal('week12-
-friday')">FRIDAY: The Nuremberg Legacy: Justice, Accountability, and Global Transformation</
-button>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="call-to-action">
-<h2>Join Our Global Accountability Challenge</h2>
-<p>Support our legal interventions to restore medical sovereignty and establish
-accountability for unprecedented governance failures.</p>
-<a href="https://stopcovidvaccinesnow.org/donate" class="action-button">Support Our
-Legal Actions</a>
-<a href="https://community.interestofjustice.org" class="action-button" style="margin-left:
-15px;">Join the Community</a>
-</div>
-<div class="footer">
-<p>The Nuremberg Hearing Miniseries</p>
-<p>Global Science Integrity Task Force</p>
-<p><a href="http://www.NurembergHearing.org" class="website-
-link">www.NurembergHearing.org</a></p>
-</div>
-</div>
-<!-- MODALS -->
-<div id="modal" class="modal">
-<div class="modal-content">
-<span class="close-button" onclick="closeModal()">&times;</span>
-<div id="modal-data">
-<!-- Modal content will be inserted here -->
-</div>
-</div>
-</div>
-<script>
-// Modal data storage
-const modalData = {
-// WEEK 1
-'week1-monday': {
-title: "The 10-Day Loophole That Could Destroy the WHO",
-date: "Monday, March 17, 2025",
-description: "This opening episode exposes a forgotten constitutional weapon in Costa
-Rican law that provides a powerful legal mechanism to challenge WHO authority through the
-invocation of Costa Rican Constitutional Articles 27 and 50.",
-content: [
-"Comprehensive analysis of Costa Rican Administrative Silence Doctrine",
-"Detailed examination of Constitutional Article 27 (right to petition) and Article 50 (right to
-healthy environment)",
-"Exploration of the 10-day window that creates administrative acquiescence",
-"Strategic framework for international challenge to WHO governance"
-],
-hashtags: ["#WHOTakedown", "#MedicalFreedom", "#CostaRicaRises"],
-donorEngagement: ""
-},
-'week1-tuesday': {
-title: "Whispers to Roars: How One Nation Can Bring Down a Global Regime",
-date: "Tuesday, March 18, 2025",
-description: "This episode provides an in-depth analysis of International Health
-Regulations nullification through Article 55(2) Dispute Resolution Mechanism, demonstrating
-how grassroots resistance can eﬀectively challenge institutional power.",
-content: [
-"Strategic application of IHR Article 55(2) dispute mechanisms",
-"Analysis of WHO Constitution Article 75 referral pathways",
-"Vienna Convention on Treaties application to procedural irregularities",
-"Multi-jurisdictional strategy for international challenge"
-],
-hashtags: ["#IHRDispute", "#GlobalResistance", "#LegalStrategy"],
-donorEngagement: ""
-},
-// ... [other week/modal data remains unchanged]
-};
-// Function to open modal
-function openModal(id) {
-const data = modalData[id];
-if (!data) return;
-let hashtagsHTML = '';
-data.hashtags.forEach(tag => {
-hashtagsHTML += `<span class="hashtag">${tag}</span>`;
-});
-let contentListHTML = '';
-data.content.forEach(item => {
-contentListHTML += `<li>${item}</li>`;
-});
-const modalContent = `
-<h2 class="modal-title">${data.title}</h2>
-<p class="modal-date">${data.date}</p>
-<p class="modal-description">${data.description}</p>
-<h3>Content Overview:</h3>
-<ul class="content-list">
-${contentListHTML}
-</ul>
-<div class="hashtags">
-${hashtagsHTML}
-</div>
-<div class="community-action">
-<a href="https://community.interestofjustice.org" class="community-button">Join the
-Community Now: community.interestofjustice.org</a>
-</div>
-`;
-document.getElementById('modal-data').innerHTML = modalContent;
-document.getElementById('modal').style.display = 'block';
-}
-// Function to close modal
-function closeModal() {
-document.getElementById('modal').style.display = 'none';
-}
-// Close modal when clicking outside of it
-window.onclick = function(event) {
-const modal = document.getElementById('modal');
-if (event.target == modal) {
-closeModal();
-}
-}
-</script>
-<!--
-To embed this page in an iframe hosted on GitHub Pages, you could use:
-<iframe src="https://yourgithubusername.github.io/yourrepository/thispage.html"
-frameborder="0" style="width:100%; height:100vh;"></iframe>
--->
+  <div class="container">
+    <header>
+      <h1>The Nuremberg Hearing Miniseries</h1>
+      <p class="tagline">"The Greatest Medical Crime in History: How We Take Back Our Freedom"</p>
+      <div class="start-date">Starting March 17, 2025</div>
+    </header>
+    
+    <!-- Week Navigation -->
+    <div class="week-nav">
+      <div class="week-nav-row">
+        <a class="week-nav-link" onclick="showWeek('week1Content')">Week 1</a>
+        <a class="week-nav-link" onclick="showWeek('week2Content')">Week 2</a>
+        <a class="week-nav-link" onclick="showWeek('week3Content')">Week 3</a>
+        <a class="week-nav-link" onclick="showWeek('week4Content')">Week 4</a>
+        <a class="week-nav-link" onclick="showWeek('week5Content')">Week 5</a>
+        <a class="week-nav-link" onclick="showWeek('week6Content')">Week 6</a>
+      </div>
+      <div class="week-nav-row">
+        <a class="week-nav-link" onclick="showWeek('week7Content')">Week 7</a>
+        <a class="week-nav-link" onclick="showWeek('week8Content')">Week 8</a>
+        <a class="week-nav-link" onclick="showWeek('week9Content')">Week 9</a>
+        <a class="week-nav-link" onclick="showWeek('week10Content')">Week 10</a>
+        <a class="week-nav-link" onclick="showWeek('week11Content')">Week 11</a>
+        <a class="week-nav-link" onclick="showWeek('week12Content')">Week 12</a>
+      </div>
+    </div>
+    
+    <!-- Weeks Container -->
+    <div id="weeksContainer">
+      <!-- Week 1 -->
+      <div id="week1Content" class="week-container active">
+        <div class="week-header">
+          <div class="week-title">WEEK 1: BREAKING THE SILENCE - COSTA RICA'S CONSTITUTIONAL REBELLION</div>
+          <div class="week-theme">"UNMASKING THE 10-DAY LOOPHOLE THAT COULD DESTROY THE WHO"</div>
+          <div class="dates">March 17-21, 2025</div>
+        </div>
+        <div class="episodes">
+          <button class="episode-button" data-emoji="🔥 " onclick="openModal('week1-monday')">MONDAY: The 10-Day Loophole That Could Destroy the WHO</button>
+          <button class="episode-button" data-emoji="🚨 " onclick="openModal('week1-tuesday')">TUESDAY: Whispers to Roars: How One Nation Can Bring Down a Global Regime</button>
+          <button class="episode-button" data-emoji="🌍 " onclick="openModal('week1-wednesday')">WEDNESDAY: Administrative Silence: The Legal Weapon They Never Saw Coming</button>
+          <button class="episode-button" data-emoji="🔍 " onclick="openModal('week1-thursday')">THURSDAY: Diplomatic Dominoes: Building the Global Accountability Network</button>
+          <button class="episode-button" data-emoji="💥 " onclick="openModal('week1-friday')">FRIDAY: SueTheWHO.org: Your Weapon Against Medical Tyranny</button>
+        </div>
+      </div>
+      
+      <!-- Week 2 -->
+      <div id="week2Content" class="week-container">
+        <div class="week-header">
+          <div class="week-title">WEEK 2: EXPOSING THE ADMINISTRATIVE DEATH MACHINE</div>
+          <div class="week-theme">"ADMINISTRATIVE TYRANNY: THE SECRET GOVERNMENT PANEL THAT SOLD YOUR HEALTH"</div>
+          <div class="dates">March 24-28, 2025</div>
+        </div>
+        <div class="episodes">
+          <button class="episode-button" data-emoji="🔥 " onclick="openModal('week2-monday')">MONDAY: EXPOSED: The Secret Government Panel That Sold Your Health</button>
+          <button class="episode-button" data-emoji="🚨 " onclick="openModal('week2-tuesday')">TUESDAY: The APA Weapon: Your Legal Nuclear Option Against Corrupt Agencies</button>
+          <button class="episode-button" data-emoji="🌪 " onclick="openModal('week2-wednesday')">WEDNESDAY: PREP Act Immunity: The License to Kill Hidden in Plain Sight</button>
+          <button class="episode-button" data-emoji="🔍 " onclick="openModal('week2-thursday')">THURSDAY: Congressional Whistleblowers: The Last Line of Defense</button>
+          <button class="episode-button" data-emoji="💥 " onclick="openModal('week2-friday')">FRIDAY: Rebuilding Scientific Integrity: How We Reclaim Public Health</button>
+        </div>
+      </div>
+      
+      <!-- Week 3 -->
+      <div id="week3Content" class="week-container">
+        <div class="week-header">
+          <div class="week-title">WEEK 3: INSTITUTIONAL COMMUNICATION NETWORKS</div>
+          <div class="week-theme">"WHO, WEF AND GATES FOUNDATION: THE HIDDEN COMMUNICATIONS THEY DON'T WANT YOU TO SEE"</div>
+          <div class="dates">March 31-April 4, 2025</div>
+        </div>
+        <div class="episodes">
+          <button class="episode-button" data-emoji="🔥 " onclick="openModal('week3-monday')">MONDAY: Institutional Communication Networks: Mapping the Invisible Infrastructure</button>
+          <button class="episode-button" data-emoji="🚨 " onclick="openModal('week3-tuesday')">TUESDAY: Transnational Information Sovereignty: Breaking Their Code of Silence</button>
+          <button class="episode-button" data-emoji="💰 " onclick="openModal('week3-wednesday')">WEDNESDAY: Financial Trajectory Analysis: Following the Pandemic Money Trail</button>
+          <button class="episode-button" data-emoji="🔎 " onclick="openModal('week3-thursday')">THURSDAY: Diplomatic Communication Intervention: Cracking Open the Private Channels</button>
+          <button class="episode-button" data-emoji="🌐 " onclick="openModal('week3-friday')">FRIDAY: Constructing the Global Transparency Architecture</button>
+        </div>
+      </div>
+      
+      <!-- Week 4 -->
+      <div id="week4Content" class="week-container">
+        <div class="week-header">
+          <div class="week-title">WEEK 4: MINIMAL RISK CLASSIFICATION CHALLENGE</div>
+          <div class="week-theme">"THE RESEARCH FRAUD: HOW 'MINIMAL RISK' BECAME MAXIMUM DEATH"</div>
+          <div class="dates">April 7-11, 2025</div>
+          <div class="special-note">Coincident with final WHO Intergovernmental Negotiating Body session</div>
+        </div>
+        <div class="episodes">
+          <button class="episode-button" data-emoji="🔥 " onclick="openModal('week4-monday')">MONDAY: Deconstructing the Minimal Risk Paradigm: The Regulatory Lie That Killed Millions</button>
+          <button class="episode-button" data-emoji="🔒 " onclick="openModal('week4-tuesday')">TUESDAY: Informed Consent: The Constitutional Bulwark They Demolished</button>
+          <button class="episode-button" data-emoji="🔬 " onclick="openModal('week4-wednesday')">WEDNESDAY: Ethical Research Standards: Reconstructing What They Destroyed</button>
+          <button class="episode-button" data-emoji="⚖ " onclick="openModal('week4-thursday')">THURSDAY: Substantive Due Process: The Constitutional Shield Against Medical Tyranny</button>
+          <button class="episode-button" data-emoji="🔄 " onclick="openModal('week4-friday')">FRIDAY: Reconstructing the Ethical Research Paradigm: The Path Forward</button>
+        </div>
+      </div>
+      
+      <!-- Week 5 -->
+      <div id="week5Content" class="week-container">
+        <div class="week-header">
+          <div class="week-title">WEEK 5: EMERGENCY USE AUTHORIZATION JURISDICTIONAL CHALLENGE</div>
+          <div class="week-theme">"THE LEGAL FICTION THAT BYPASSED SAFETY: EXPOSING EUA FRAUD"</div>
+          <div class="dates">April 14-18, 2025</div>
+        </div>
+        <div class="episodes">
+          <button class="episode-button" data-emoji="🔥 " onclick="openModal('week5-monday')">MONDAY: Statutory Interpretation: Deconstructing the EUA Regulatory Apparatus</button>
+          <button class="episode-button" data-emoji="⚡ " onclick="openModal('week5-tuesday')">TUESDAY: Challenging Administrative Overreach: The Major Questions Doctrine</button>
+          <button class="episode-button" data-emoji="🧪 " onclick="openModal('week5-wednesday')">WEDNESDAY: Evidence and Authorization: The Data They Buried</button>
+          <button class="episode-button" data-emoji="⚖ " onclick="openModal('week5-thursday')">THURSDAY: Procedural Accountability: Challenging the Immunity Shield</button>
+          <button class="episode-button" data-emoji="🔄 " onclick="openModal('week5-friday')">FRIDAY: Reconstructing Emergency Use Authorization Governance: Never Again</button>
+        </div>
+      </div>
+      
+      <!-- Week 6 -->
+      <div id="week6Content" class="week-container">
+        <div class="week-header">
+          <div class="week-title">WEEK 6: DEPARTMENT OF DEFENSE OTHER TRANSACTION AUTHORITY INVESTIGATION</div>
+          <div class="week-theme">"THE MILITARY CONNECTION: PENTAGON'S SECRET ROLE IN THE PANDEMIC RESPONSE"</div>
+          <div class="dates">April 21-25, 2025</div>
+        </div>
+        <div class="episodes">
+          <button class="episode-button" data-emoji="🔥 " onclick="openModal('week6-monday')">MONDAY: Deconstructing Discretionary Procurement Mechanisms: The Pentagon's Pandemic Playbook</button>
+          <button class="episode-button" data-emoji="🔒 " onclick="openModal('week6-tuesday')">TUESDAY: Challenging Procurement Mechanism Opacity: Following the Defense Money</button>
+          <button class="episode-button" data-emoji="🛡 " onclick="openModal('week6-wednesday')">WEDNESDAY: Forensic Analysis of Procurement Safety Protocol Vulnerabilities</button>
+          <button class="episode-button" data-emoji="🔎 " onclick="openModal('week6-thursday')">THURSDAY: Jurisdictional Accountability: The Military Authority Boundaries They Crossed</button>
+          <button class="episode-button" data-emoji="🔄 " onclick="openModal('week6-friday')">FRIDAY: Reconstructing Procurement Governance: Demilitarizing Public Health</button>
+        </div>
+      </div>
+      
+      <!-- Week 7 -->
+      <div id="week7Content" class="week-container">
+        <div class="week-header">
+          <div class="week-title">WEEK 7: CONGRESSIONAL INFORMED CONSENT INQUIRY</div>
+          <div class="week-theme">"NUREMBERG CODE 2.0: CONFRONTING SYSTEMIC VIOLATIONS OF INFORMED CONSENT"</div>
+          <div class="dates">April 28-May 2, 2025</div>
+        </div>
+        <div class="episodes">
+          <button class="episode-button" data-emoji="🔥 " onclick="openModal('week7-monday')">MONDAY: Deconstructing Consent: The Constitutional Bulwark of Bodily Autonomy</button>
+          <button class="episode-button" data-emoji="🚨 " onclick="openModal('week7-tuesday')">TUESDAY: Whistleblower Protections: Unveiling Institutional Malfeasance</button>
+          <button class="episode-button" data-emoji="🔬 " onclick="openModal('week7-wednesday')">WEDNESDAY: Military Medical Ethics: Challenging Experimental Protocols</button>
+          <button class="episode-button" data-emoji="🌐 " onclick="openModal('week7-thursday')">THURSDAY: International Human Rights Intervention: Global Standards vs. National Violations</button>
+          <button class="episode-button" data-emoji="⚖ " onclick="openModal('week7-friday')">FRIDAY: Reconstructing Medical Consent Paradigms: Building the Unbreakable Shield</button>
+        </div>
+      </div>
+      
+      <!-- Week 8 -->
+      <div id="week8Content" class="week-container">
+        <div class="week-header">
+          <div class="week-title">WEEK 8: CONSTITUTIONAL CHALLENGE TO CANADIAN ONE HEALTH ACT</div>
+          <div class="week-theme">"THE SOVEREIGNTY BATTLE: DISMANTLING CANADA'S GATEWAY TO GLOBAL HEALTH CONTROL"</div>
+          <div class="dates">May 5-9, 2025</div>
+        </div>
+        <div class="episodes">
+          <button class="episode-button" data-emoji="🔥 " onclick="openModal('week8-monday')">MONDAY: Deconstructing Jurisdictional Boundaries: Constitutional Sovereignty Analysis</button>
+          <button class="episode-button" data-emoji="🔒 " onclick="openModal('week8-tuesday')">TUESDAY: Federal-Provincial Power Distribution: Exposing the Jurisdictional Fraud</button>
+          <button class="episode-button" data-emoji="🔬 " onclick="openModal('week8-wednesday')">WEDNESDAY: Charter Rights Analysis: The Constitutional Rights They're Surrendering</button>
+          <button class="episode-button" data-emoji="🌐 " onclick="openModal('week8-thursday')">THURSDAY: International Governance Interface: Treaty Law vs. Constitutional Supremacy</button>
+          <button class="episode-button" data-emoji="⚖ " onclick="openModal('week8-friday')">FRIDAY: Reconstructing Health Federalism: Restoring Provincial Sovereignty</button>
+        </div>
+      </div>
+      
+      <!-- Week 9 -->
+      <div id="week9Content" class="week-container">
+        <div class="week-header">
+          <div class="week-title">WEEK 9: HEALTH CANADA REGULATORY ENGAGEMENT</div>
+          <div class="week-theme">"SCIENTIFIC FRAUD: CHALLENGING REGULATORY CAPTURE THROUGH CANADIAN ADMINISTRATIVE LAW"</div>
+          <div class="dates">May 12-16, 2025</div>
+        </div>
+        <div class="episodes">
+          <button class="episode-button" data-emoji="🔥 " onclick="openModal('week9-monday')">MONDAY: Scientific Integrity: Challenging Regulatory Classification Mechanisms</button>
+          <button class="episode-button" data-emoji="🔎 " onclick="openModal('week9-tuesday')">TUESDAY: Freedom of Information: Exposing the Hidden Canadian Data</button>
+          <button class="episode-button" data-emoji="🧪 " onclick="openModal('week9-wednesday')">WEDNESDAY: Scientific Dispute Mechanism: The Administrative Challenge They Fear</button>
+          <button class="episode-button" data-emoji="⚖ " onclick="openModal('week9-thursday')">THURSDAY: Judicial Review Application: Breaking Through Regulatory Capture</button>
+          <button class="episode-button" data-emoji="🔄 " onclick="openModal('week9-friday')">FRIDAY: Canadian Charter Challenge Strategy: Section 7 Rights Reclaimed</button>
+        </div>
+      </div>
+      
+      <!-- Week 10 -->
+      <div id="week10Content" class="week-container">
+        <div class="week-header">
+          <div class="week-title">WEEK 10: EUROPEAN MEDICINES AGENCY SCIENTIFIC DISPUTE</div>
+          <div class="week-theme">"EUROZONE BATTLEGROUND: CHALLENGING THE EMA'S PRODUCT AUTHORIZATION FRAUD"</div>
+          <div class="dates">May 19-23, 2025</div>
+        </div>
+        <div class="episodes">
+          <button class="episode-button" data-emoji="🔥 " onclick="openModal('week10-monday')">MONDAY: Transnational Regulatory Accountability: Deconstructing Authorization Mechanisms</button>
+          <button class="episode-button" data-emoji="🔍 " onclick="openModal('week10-tuesday')">TUESDAY: EU Transparency Regulation: Forcing Open the Data Vaults</button>
+          <button class="episode-button" data-emoji="🧪 " onclick="openModal('week10-wednesday')">WEDNESDAY: Clinical Trial Regulation Challenge: The Scientific Fraud Across Europe</button>
+          <button class="episode-button" data-emoji="⚖ " onclick="openModal('week10-thursday')">THURSDAY: European Court Precedent: Building the Case for Judicial Intervention</button>
+          <button class="episode-button" data-emoji="🔄 " onclick="openModal('week10-friday')">FRIDAY: EU Future Framework: Reconstructing European Pharmaceutical Regulation</button>
+        </div>
+      </div>
+      
+      <!-- Week 11 -->
+      <div id="week11Content" class="week-container">
+        <div class="week-header">
+          <div class="week-title">WEEK 11: COSTA RICAN COMPTROLLER INVESTIGATION ESCALATION</div>
+          <div class="week-theme">"PROCUREMENT FRAUD INVESTIGATION: EXPOSING THE GLOBAL PHARMACEUTICAL CONTRACT SCANDAL"</div>
+          <div class="dates">May 26-30, 2025</div>
+          <div class="special-note">Coincident with World Health Assembly voting procedures and IHR Amendments rejection deadline</div>
+        </div>
+        <div class="episodes">
+          <button class="episode-button" data-emoji="🔥 " onclick="openModal('week11-monday')">MONDAY: WHA Begins: The Final Stand Against WHO Treaty Overreach</button>
+          <button class="episode-button" data-emoji="💰 " onclick="openModal('week11-tuesday')">TUESDAY: Tracing the Pandemic Procurement Chain: Following Global Money Flows</button>
+          <button class="episode-button" data-emoji="🔎 " onclick="openModal('week11-wednesday')">WEDNESDAY: Contract Indemnification Clauses: The Liability Shield Scandal</button>
+          <button class="episode-button" data-emoji="🌐 " onclick="openModal('week11-thursday')">THURSDAY: International Accountability Mechanisms: FATF and Beyond</button>
+          <button class="episode-button" data-emoji="⚖ " onclick="openModal('week11-friday')">FRIDAY: Victory or Resistance: The Path Forward After WHA</button>
+        </div>
+      </div>
+      
+      <!-- Week 12 -->
+      <div id="week12Content" class="week-container">
+        <div class="week-header">
+          <div class="week-title">WEEK 12: COMPREHENSIVE GLOBAL ACCOUNTABILITY SYNTHESIS</div>
+          <div class="week-theme">"THE GLOBAL LEGAL ARCHITECTURE: BUILDING THE INTERNATIONAL ACCOUNTABILITY FRAMEWORK"</div>
+          <div class="dates">June 2-6, 2025</div>
+        </div>
+        <div class="episodes">
+          <button class="episode-button" data-emoji="🔥 " onclick="openModal('week12-monday')">MONDAY: Post-WHA Strategy: Implementing the Global Resistance Framework</button>
+          <button class="episode-button" data-emoji="🌐 " onclick="openModal('week12-tuesday')">TUESDAY: International Court Mechanisms: Building the Global Prosecution Strategy</button>
+          <button class="episode-button" data-emoji="⚖ " onclick="openModal('week12-wednesday')">WEDNESDAY: Coordinating Non-Compliance: The Multi-Jurisdictional Strategy</button>
+          <button class="episode-button" data-emoji="🔄 " onclick="openModal('week12-thursday')">THURSDAY: Prevention Architecture: Building the Framework to Prevent Future Abuses</button>
+          <button class="episode-button" data-emoji="🏆 " onclick="openModal('week12-friday')">FRIDAY: The Nuremberg Legacy: Justice, Accountability, and Global Transformation</button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Call-to-Action -->
+    <div class="call-to-action">
+      <h2>Join Our Global Accountability Challenge</h2>
+      <p>Support our legal interventions to restore medical sovereignty and establish accountability for unprecedented governance failures.</p>
+      <a href="https://stopcovidvaccinesnow.org/donate" class="action-button">Support Our Legal Actions</a>
+      <a href="https://community.interestofjustice.org" class="action-button">Join the Community</a>
+    </div>
+    
+    <div class="footer">
+      <p>The Nuremberg Hearing Miniseries</p>
+      <p>Global Science Integrity Task Force</p>
+      <p><a href="http://www.NurembergHearing.org" class="website-link">www.NurembergHearing.org</a></p>
+    </div>
+  </div>
+  
+  <!-- MODALS -->
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <span class="close-button" onclick="closeModal()">&times;</span>
+      <div id="modal-data">
+        <!-- Modal content will be inserted here -->
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    // Function to show a selected week and hide the others
+    function showWeek(weekId) {
+      const weeks = document.querySelectorAll('.week-container');
+      weeks.forEach(week => {
+        week.classList.remove('active');
+      });
+      document.getElementById(weekId).classList.add('active');
+    }
+    
+    // Modal data storage (example for Week 1; other weeks' modal data remain unchanged)
+    const modalData = {
+      // WEEK 1
+      'week1-monday': {
+        title: "The 10-Day Loophole That Could Destroy the WHO",
+        date: "Monday, March 17, 2025",
+        description: "This opening episode exposes a forgotten constitutional weapon in Costa Rican law that provides a powerful legal mechanism to challenge WHO authority through the invocation of Costa Rican Constitutional Articles 27 and 50.",
+        content: [
+          "Comprehensive analysis of Costa Rican Administrative Silence Doctrine",
+          "Detailed examination of Constitutional Article 27 (right to petition) and Article 50 (right to healthy environment)",
+          "Exploration of the 10-day window that creates administrative acquiescence",
+          "Strategic framework for international challenge to WHO governance"
+        ],
+        hashtags: ["#WHOTakedown", "#MedicalFreedom", "#CostaRicaRises"],
+        donorEngagement: ""
+      },
+      'week1-tuesday': {
+        title: "Whispers to Roars: How One Nation Can Bring Down a Global Regime",
+        date: "Tuesday, March 18, 2025",
+        description: "This episode provides an in-depth analysis of International Health Regulations nullification through Article 55(2) Dispute Resolution Mechanism, demonstrating how grassroots resistance can effectively challenge institutional power.",
+        content: [
+          "Strategic application of IHR Article 55(2) dispute mechanisms",
+          "Analysis of WHO Constitution Article 75 referral pathways",
+          "Vienna Convention on Treaties application to procedural irregularities",
+          "Multi-jurisdictional strategy for international challenge"
+        ],
+        hashtags: ["#IHRDispute", "#GlobalResistance", "#LegalStrategy"],
+        donorEngagement: ""
+      }
+      // ... [Additional modal data for weeks 1-12 would follow here]
+    };
+    
+    // Function to open modal
+    function openModal(id) {
+      const data = modalData[id];
+      if (!data) return;
+      let hashtagsHTML = '';
+      data.hashtags.forEach(tag => {
+        hashtagsHTML += `<span class="hashtag">${tag}</span>`;
+      });
+      let contentListHTML = '';
+      data.content.forEach(item => {
+        contentListHTML += `<li>${item}</li>`;
+      });
+      const modalContent = `
+        <h2 class="modal-title">${data.title}</h2>
+        <p class="modal-date">${data.date}</p>
+        <p class="modal-description">${data.description}</p>
+        <h3>Content Overview:</h3>
+        <ul class="content-list">
+          ${contentListHTML}
+        </ul>
+        <div class="hashtags">
+          ${hashtagsHTML}
+        </div>
+        <div class="community-action">
+          <a href="https://community.interestofjustice.org" class="community-button">Join the Community Now: community.interestofjustice.org</a>
+        </div>
+      `;
+      document.getElementById('modal-data').innerHTML = modalContent;
+      document.getElementById('modal').style.display = 'block';
+    }
+    
+    // Function to close modal
+    function closeModal() {
+      document.getElementById('modal').style.display = 'none';
+    }
+    
+    // Close modal when clicking outside of it
+    window.onclick = function(event) {
+      const modal = document.getElementById('modal');
+      if (event.target === modal) {
+        closeModal();
+      }
+    }
+  </script>
+  
+  <!--
+    To embed this page in an iframe on GitHub Pages, you might use:
+    <iframe src="https://yourgithubusername.github.io/yourrepository/thispage.html" frameborder="0" style="width:100%; height:100vh;"></iframe>
+  -->
 </body>
 </html>

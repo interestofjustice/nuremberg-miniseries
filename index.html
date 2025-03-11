@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>The Nuremberg Hearing Miniseries</title>
   <style>
-    /* Ensure full viewport height and no outer scrolling */
+    /* Ensure the page fills the iframe without scrolling */
     html, body {
       height: 100%;
       margin: 0;
@@ -13,94 +13,116 @@
       overflow: hidden;
       font-family: Arial, sans-serif;
     }
-    /* Main container: header, nav, content, footer */
+    :root {
+      --primary-color: #1a2f4b;
+      --secondary-color: #a93f55;
+      --accent-color: #d15a7c;
+      --light-color: #f3f4f6;
+      --dark-color: #111827;
+      --border-color: #e5e7eb;
+    }
+    /* Main container divided into header, nav, content, and footer */
     .container {
       display: flex;
       flex-direction: column;
       height: 100vh;
     }
-    /* Compact header */
+    /* Compact Header */
     header {
       flex: 0 0 50px;
-      background: #1a2f4b;
+      background: var(--primary-color);
       color: #fff;
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 1.5rem;
+      padding: 0.2rem;
     }
-    /* Compact navigation (tabs) */
+    /* Navigation Tabs */
     .nav {
       flex: 0 0 40px;
-      background: #a93f55;
+      background: var(--secondary-color);
       display: flex;
       justify-content: center;
       align-items: center;
+      flex-wrap: wrap;
+      padding: 0.2rem;
     }
     .nav button {
-      background: #d15a7c;
+      background: var(--accent-color);
       border: none;
       color: #fff;
-      padding: 5px 8px;
-      margin: 0 4px;
+      padding: 4px 6px;
+      margin: 2px;
       border-radius: 4px;
       cursor: pointer;
-      font-size: 0.85rem;
+      font-size: 0.75rem;
       transition: background 0.3s ease;
     }
     .nav button.active {
-      background: #a93f55;
+      background: var(--secondary-color);
     }
-    /* Content area: fills remaining space */
+    /* Content area – displays one week at a time */
     .content {
       flex: 1;
-      background: #f3f4f6;
-      padding: 5px;
       position: relative;
+      background: var(--light-color);
+      padding: 4px;
+      overflow: hidden;
     }
-    /* Each week tab – only one is visible at a time */
+    /* Each week container */
     .week {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      padding: 4px;
       display: none;
-      height: 100%;
       box-sizing: border-box;
-      padding: 5px;
     }
     .week.active {
       display: block;
     }
-    /* Episode cards: five per week, fixed height */
+    /* Episode cards (5 per week, fixed height so all 5 fit) */
     .episode-card {
       background: #fff;
-      border: 1px solid #e5e7eb;
+      border: 1px solid var(--border-color);
       border-radius: 4px;
-      padding: 8px 10px;
-      margin-bottom: 5px;
-      height: calc((100% - 20px) / 5); /* 5 cards with minimal gap */
+      padding: 6px 8px;
+      margin-bottom: 4px;
+      height: calc((100% - 16px) / 5); /* Five cards with small gaps */
       display: flex;
       align-items: center;
       cursor: pointer;
-      font-size: 0.9rem;
+      font-size: 0.75rem;
       overflow: hidden;
     }
+    .episode-card strong {
+      flex-shrink: 0;
+    }
     .episode-card span {
-      margin-left: 8px;
+      margin-left: 6px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     /* Footer */
     .footer {
       flex: 0 0 30px;
-      background: #1a2f4b;
+      background: var(--primary-color);
       color: #fff;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.8rem;
+      font-size: 0.7rem;
     }
     .footer a {
       color: #fff;
       text-decoration: underline;
       font-weight: bold;
     }
-    /* Modal styles */
+    /* Modal – full screen pop-out without scrolling */
     .modal {
       position: fixed;
       top: 0;
@@ -111,35 +133,43 @@
       display: none;
       align-items: center;
       justify-content: center;
-      padding: 5px;
+      padding: 4px;
       box-sizing: border-box;
     }
     .modal-content {
       background: #fff;
-      width: 90%;
-      height: 90%;
+      width: 90vw;
+      height: 90vh;
       border-radius: 4px;
-      padding: 10px;
+      padding: 8px;
       box-sizing: border-box;
-      font-size: 0.75rem;
+      overflow: hidden; /* No scrolling */
+      font-size: 0.65rem;
+      line-height: 1.1;
     }
     .modal-content h2 {
       margin-top: 0;
       font-size: 1.1rem;
     }
-    .modal-content p {
-      margin: 5px 0;
+    .modal-content p, 
+    .modal-content h3,
+    .modal-content ul {
+      margin: 4px 0;
     }
     .modal-content ul {
-      padding-left: 20px;
-      margin: 5px 0;
+      padding-left: 16px;
+      list-style: none;
+    }
+    .modal-content ul li::before {
+      content: "• ";
+      color: var(--secondary-color);
     }
     .close-modal {
       position: absolute;
       top: 10px;
       right: 15px;
       cursor: pointer;
-      font-size: 1.2rem;
+      font-size: 1rem;
     }
   </style>
 </head>
@@ -154,64 +184,232 @@
       <button id="btn-week1" onclick="showWeek('week1')" class="active">Week 1</button>
       <button id="btn-week2" onclick="showWeek('week2')">Week 2</button>
       <button id="btn-week3" onclick="showWeek('week3')">Week 3</button>
-      <!-- Add more week buttons as needed -->
+      <button id="btn-week4" onclick="showWeek('week4')">Week 4</button>
+      <button id="btn-week5" onclick="showWeek('week5')">Week 5</button>
+      <button id="btn-week6" onclick="showWeek('week6')">Week 6</button>
+      <button id="btn-week7" onclick="showWeek('week7')">Week 7</button>
+      <button id="btn-week8" onclick="showWeek('week8')">Week 8</button>
+      <button id="btn-week9" onclick="showWeek('week9')">Week 9</button>
+      <button id="btn-week10" onclick="showWeek('week10')">Week 10</button>
+      <button id="btn-week11" onclick="showWeek('week11')">Week 11</button>
+      <button id="btn-week12" onclick="showWeek('week12')">Week 12</button>
     </div>
     <!-- Content Area -->
     <div class="content">
-      <!-- Week 1: 5 Episodes -->
+      <!-- Week 1 -->
       <div id="week1" class="week active">
         <div class="episode-card" onclick="openModal('week1-monday')">
           <strong>MONDAY:</strong><span> The 10-Day Loophole That Could Destroy the WHO</span>
         </div>
         <div class="episode-card" onclick="openModal('week1-tuesday')">
-          <strong>TUESDAY:</strong><span> Whispers to Roars: Bringing Down Global Regimes</span>
+          <strong>TUESDAY:</strong><span> Whispers to Roars: How One Nation Can Bring Down a Global Regime</span>
         </div>
         <div class="episode-card" onclick="openModal('week1-wednesday')">
-          <strong>WEDNESDAY:</strong><span> Administrative Silence: The Unseen Legal Weapon</span>
+          <strong>WEDNESDAY:</strong><span> Administrative Silence: The Legal Weapon They Never Saw Coming</span>
         </div>
         <div class="episode-card" onclick="openModal('week1-thursday')">
-          <strong>THURSDAY:</strong><span> Diplomatic Dominoes: Building Accountability</span>
+          <strong>THURSDAY:</strong><span> Diplomatic Dominoes: Building the Global Accountability Network</span>
         </div>
         <div class="episode-card" onclick="openModal('week1-friday')">
-          <strong>FRIDAY:</strong><span> SueTheWHO.org: Weaponizing Legal Action</span>
+          <strong>FRIDAY:</strong><span> SueTheWHO.org: Your Weapon Against Medical Tyranny</span>
         </div>
       </div>
-      
-      <!-- Week 2: Example placeholders (replace with your content) -->
+      <!-- Week 2 -->
       <div id="week2" class="week">
         <div class="episode-card" onclick="openModal('week2-monday')">
-          <strong>MONDAY:</strong><span> Week 2 Episode 1 Title</span>
+          <strong>MONDAY:</strong><span> Week 2 Monday: Episode Title</span>
         </div>
         <div class="episode-card" onclick="openModal('week2-tuesday')">
-          <strong>TUESDAY:</strong><span> Week 2 Episode 2 Title</span>
+          <strong>TUESDAY:</strong><span> Week 2 Tuesday: Episode Title</span>
         </div>
         <div class="episode-card" onclick="openModal('week2-wednesday')">
-          <strong>WEDNESDAY:</strong><span> Week 2 Episode 3 Title</span>
+          <strong>WEDNESDAY:</strong><span> Week 2 Wednesday: Episode Title</span>
         </div>
         <div class="episode-card" onclick="openModal('week2-thursday')">
-          <strong>THURSDAY:</strong><span> Week 2 Episode 4 Title</span>
+          <strong>THURSDAY:</strong><span> Week 2 Thursday: Episode Title</span>
         </div>
         <div class="episode-card" onclick="openModal('week2-friday')">
-          <strong>FRIDAY:</strong><span> Week 2 Episode 5 Title</span>
+          <strong>FRIDAY:</strong><span> Week 2 Friday: Episode Title</span>
         </div>
       </div>
-      
-      <!-- Week 3: Example placeholders -->
+      <!-- Week 3 -->
       <div id="week3" class="week">
         <div class="episode-card" onclick="openModal('week3-monday')">
-          <strong>MONDAY:</strong><span> Week 3 Episode 1 Title</span>
+          <strong>MONDAY:</strong><span> Week 3 Monday: Episode Title</span>
         </div>
         <div class="episode-card" onclick="openModal('week3-tuesday')">
-          <strong>TUESDAY:</strong><span> Week 3 Episode 2 Title</span>
+          <strong>TUESDAY:</strong><span> Week 3 Tuesday: Episode Title</span>
         </div>
         <div class="episode-card" onclick="openModal('week3-wednesday')">
-          <strong>WEDNESDAY:</strong><span> Week 3 Episode 3 Title</span>
+          <strong>WEDNESDAY:</strong><span> Week 3 Wednesday: Episode Title</span>
         </div>
         <div class="episode-card" onclick="openModal('week3-thursday')">
-          <strong>THURSDAY:</strong><span> Week 3 Episode 4 Title</span>
+          <strong>THURSDAY:</strong><span> Week 3 Thursday: Episode Title</span>
         </div>
         <div class="episode-card" onclick="openModal('week3-friday')">
-          <strong>FRIDAY:</strong><span> Week 3 Episode 5 Title</span>
+          <strong>FRIDAY:</strong><span> Week 3 Friday: Episode Title</span>
+        </div>
+      </div>
+      <!-- Week 4 -->
+      <div id="week4" class="week">
+        <div class="episode-card" onclick="openModal('week4-monday')">
+          <strong>MONDAY:</strong><span> Week 4 Monday: Episode Title</span>
+        </div>
+        <div class="episode-card" onclick="openModal('week4-tuesday')">
+          <strong>TUESDAY:</strong><span> Week 4 Tuesday: Episode Title</span>
+        </div>
+        <div class="episode-card" onclick="openModal('week4-wednesday')">
+          <strong>WEDNESDAY:</strong><span> Week 4 Wednesday: Episode Title</span>
+        </div>
+        <div class="episode-card" onclick="openModal('week4-thursday')">
+          <strong>THURSDAY:</strong><span> Week 4 Thursday: Episode Title</span>
+        </div>
+        <div class="episode-card" onclick="openModal('week4-friday')">
+          <strong>FRIDAY:</strong><span> Week 4 Friday: Episode Title</span>
+        </div>
+      </div>
+      <!-- Week 5 -->
+      <div id="week5" class="week">
+        <div class="episode-card" onclick="openModal('week5-monday')">
+          <strong>MONDAY:</strong><span> Week 5 Monday: Episode Title</span>
+        </div>
+        <div class="episode-card" onclick="openModal('week5-tuesday')">
+          <strong>TUESDAY:</strong><span> Week 5 Tuesday: Episode Title</span>
+        </div>
+        <div class="episode-card" onclick="openModal('week5-wednesday')">
+          <strong>WEDNESDAY:</strong><span> Week 5 Wednesday: Episode Title</span>
+        </div>
+        <div class="episode-card" onclick="openModal('week5-thursday')">
+          <strong>THURSDAY:</strong><span> Week 5 Thursday: Episode Title</span>
+        </div>
+        <div class="episode-card" onclick="openModal('week5-friday')">
+          <strong>FRIDAY:</strong><span> Week 5 Friday: Episode Title</span>
+        </div>
+      </div>
+      <!-- Week 6 -->
+      <div id="week6" class="week">
+        <div class="episode-card" onclick="openModal('week6-monday')">
+          <strong>MONDAY:</strong><span> Week 6 Monday: Episode Title</span>
+        </div>
+        <div class="episode-card" onclick="openModal('week6-tuesday')">
+          <strong>TUESDAY:</strong><span> Week 6 Tuesday: Episode Title</span>
+        </div>
+        <div class="episode-card" onclick="openModal('week6-wednesday')">
+          <strong>WEDNESDAY:</strong><span> Week 6 Wednesday: Episode Title</span>
+        </div>
+        <div class="episode-card" onclick="openModal('week6-thursday')">
+          <strong>THURSDAY:</strong><span> Week 6 Thursday: Episode Title</span>
+        </div>
+        <div class="episode-card" onclick="openModal('week6-friday')">
+          <strong>FRIDAY:</strong><span> Week 6 Friday: Episode Title</span>
+        </div>
+      </div>
+      <!-- Week 7 -->
+      <div id="week7" class="week">
+        <div class="episode-card" onclick="openModal('week7-monday')">
+          <strong>MONDAY:</strong><span> Week 7 Monday: Episode Title</span>
+        </div>
+        <div class="episode-card" onclick="openModal('week7-tuesday')">
+          <strong>TUESDAY:</strong><span> Week 7 Tuesday: Episode Title</span>
+        </div>
+        <div class="episode-card" onclick="openModal('week7-wednesday')">
+          <strong>WEDNESDAY:</strong><span> Week 7 Wednesday: Episode Title</span>
+        </div>
+        <div class="episode-card" onclick="openModal('week7-thursday')">
+          <strong>THURSDAY:</strong><span> Week 7 Thursday: Episode Title</span>
+        </div>
+        <div class="episode-card" onclick="openModal('week7-friday')">
+          <strong>FRIDAY:</strong><span> Week 7 Friday: Episode Title</span>
+        </div>
+      </div>
+      <!-- Week 8 -->
+      <div id="week8" class="week">
+        <div class="episode-card" onclick="openModal('week8-monday')">
+          <strong>MONDAY:</strong><span> Week 8 Monday: Episode Title</span>
+        </div>
+        <div class="episode-card" onclick="openModal('week8-tuesday')">
+          <strong>TUESDAY:</strong><span> Week 8 Tuesday: Episode Title</span>
+        </div>
+        <div class="episode-card" onclick="openModal('week8-wednesday')">
+          <strong>WEDNESDAY:</strong><span> Week 8 Wednesday: Episode Title</span>
+        </div>
+        <div class="episode-card" onclick="openModal('week8-thursday')">
+          <strong>THURSDAY:</strong><span> Week 8 Thursday: Episode Title</span>
+        </div>
+        <div class="episode-card" onclick="openModal('week8-friday')">
+          <strong>FRIDAY:</strong><span> Week 8 Friday: Episode Title</span>
+        </div>
+      </div>
+      <!-- Week 9 -->
+      <div id="week9" class="week">
+        <div class="episode-card" onclick="openModal('week9-monday')">
+          <strong>MONDAY:</strong><span> Week 9 Monday: Episode Title</span>
+        </div>
+        <div class="episode-card" onclick="openModal('week9-tuesday')">
+          <strong>TUESDAY:</strong><span> Week 9 Tuesday: Episode Title</span>
+        </div>
+        <div class="episode-card" onclick="openModal('week9-wednesday')">
+          <strong>WEDNESDAY:</strong><span> Week 9 Wednesday: Episode Title</span>
+        </div>
+        <div class="episode-card" onclick="openModal('week9-thursday')">
+          <strong>THURSDAY:</strong><span> Week 9 Thursday: Episode Title</span>
+        </div>
+        <div class="episode-card" onclick="openModal('week9-friday')">
+          <strong>FRIDAY:</strong><span> Week 9 Friday: Episode Title</span>
+        </div>
+      </div>
+      <!-- Week 10 -->
+      <div id="week10" class="week">
+        <div class="episode-card" onclick="openModal('week10-monday')">
+          <strong>MONDAY:</strong><span> Week 10 Monday: Episode Title</span>
+        </div>
+        <div class="episode-card" onclick="openModal('week10-tuesday')">
+          <strong>TUESDAY:</strong><span> Week 10 Tuesday: Episode Title</span>
+        </div>
+        <div class="episode-card" onclick="openModal('week10-wednesday')">
+          <strong>WEDNESDAY:</strong><span> Week 10 Wednesday: Episode Title</span>
+        </div>
+        <div class="episode-card" onclick="openModal('week10-thursday')">
+          <strong>THURSDAY:</strong><span> Week 10 Thursday: Episode Title</span>
+        </div>
+        <div class="episode-card" onclick="openModal('week10-friday')">
+          <strong>FRIDAY:</strong><span> Week 10 Friday: Episode Title</span>
+        </div>
+      </div>
+      <!-- Week 11 -->
+      <div id="week11" class="week">
+        <div class="episode-card" onclick="openModal('week11-monday')">
+          <strong>MONDAY:</strong><span> Week 11 Monday: Episode Title</span>
+        </div>
+        <div class="episode-card" onclick="openModal('week11-tuesday')">
+          <strong>TUESDAY:</strong><span> Week 11 Tuesday: Episode Title</span>
+        </div>
+        <div class="episode-card" onclick="openModal('week11-wednesday')">
+          <strong>WEDNESDAY:</strong><span> Week 11 Wednesday: Episode Title</span>
+        </div>
+        <div class="episode-card" onclick="openModal('week11-thursday')">
+          <strong>THURSDAY:</strong><span> Week 11 Thursday: Episode Title</span>
+        </div>
+        <div class="episode-card" onclick="openModal('week11-friday')">
+          <strong>FRIDAY:</strong><span> Week 11 Friday: Episode Title</span>
+        </div>
+      </div>
+      <!-- Week 12 -->
+      <div id="week12" class="week">
+        <div class="episode-card" onclick="openModal('week12-monday')">
+          <strong>MONDAY:</strong><span> Week 12 Monday: Episode Title</span>
+        </div>
+        <div class="episode-card" onclick="openModal('week12-tuesday')">
+          <strong>TUESDAY:</strong><span> Week 12 Tuesday: Episode Title</span>
+        </div>
+        <div class="episode-card" onclick="openModal('week12-wednesday')">
+          <strong>WEDNESDAY:</strong><span> Week 12 Wednesday: Episode Title</span>
+        </div>
+        <div class="episode-card" onclick="openModal('week12-thursday')">
+          <strong>THURSDAY:</strong><span> Week 12 Thursday: Episode Title</span>
+        </div>
+        <div class="episode-card" onclick="openModal('week12-friday')">
+          <strong>FRIDAY:</strong><span> Week 12 Friday: Episode Title</span>
         </div>
       </div>
     </div>
@@ -221,7 +419,7 @@
     </div>
   </div>
   
-  <!-- Modal (Full-Screen Pop-Out) -->
+  <!-- Full-Screen Modal (No Scrolling) -->
   <div id="modal" class="modal" onclick="if(event.target===this) closeModal()">
     <div class="modal-content">
       <span class="close-modal" onclick="closeModal()">×</span>
@@ -230,83 +428,103 @@
   </div>
   
   <script>
-    // Switch visible week and update nav button active state
+    // Switch active week tab
     function showWeek(weekId) {
       document.querySelectorAll('.week').forEach(function(week) {
         week.classList.remove('active');
       });
       document.getElementById(weekId).classList.add('active');
+      
       document.querySelectorAll('.nav button').forEach(function(btn) {
         btn.classList.remove('active');
       });
       document.getElementById('btn-' + weekId).classList.add('active');
     }
     
-    // Modal data for each episode (sample for Week 1; add more as needed)
+    // Modal data for Week 1 episodes (detailed)
     const modalData = {
-      'week1-monday': {
+      "week1-monday": {
         title: "The 10-Day Loophole That Could Destroy the WHO",
         date: "Monday, Mar 17, 2025",
-        description: "This episode reveals a forgotten constitutional tool in Costa Rican law that challenges WHO authority.",
+        description: "This episode reveals a forgotten constitutional tool in Costa Rican law that challenges WHO authority by exploiting a 10-day window of administrative inaction.",
         content: [
-          "In-depth analysis of Administrative Silence Doctrine",
-          "Examination of Constitutional Articles 27 & 50",
-          "Insights into the 10-day administrative window",
-          "Strategic legal framework for accountability"
+          "In-depth analysis of the Administrative Silence Doctrine",
+          "Examination of Costa Rican Constitutional Articles 27 & 50",
+          "Insights into the 10-day window mechanism",
+          "Strategic legal framework for global accountability"
         ],
         hashtags: ["#WHOTakedown", "#MedicalFreedom", "#CostaRicaRises"]
       },
-      'week1-tuesday': {
+      "week1-tuesday": {
         title: "Whispers to Roars: How One Nation Can Bring Down a Global Regime",
         date: "Tuesday, Mar 18, 2025",
-        description: "An exploration of grassroots legal strategies to challenge global power structures.",
+        description: "An exploration of grassroots legal strategies that transform whispers of dissent into a global movement challenging established power structures.",
         content: [
-          "Analysis of key legal mechanisms",
-          "Examination of international health regulations",
-          "Strategies for public dissent",
-          "Multi-jurisdictional legal challenges"
+          "Analysis of key international legal instruments",
+          "Examination of health regulation loopholes",
+          "Strategies for mobilizing public dissent",
+          "Framework for multi-jurisdictional legal challenge"
         ],
         hashtags: ["#IHRDispute", "#GlobalResistance", "#LegalStrategy"]
       },
-      'week1-wednesday': {
+      "week1-wednesday": {
         title: "Administrative Silence: The Legal Weapon They Never Saw Coming",
         date: "Wednesday, Mar 19, 2025",
-        description: "A deep dive into the implications of administrative inaction under Costa Rican law.",
+        description: "A deep dive into the implications of government inaction under Costa Rican law and how it can be weaponized against institutional overreach.",
         content: [
-          "Review of legal precedents",
-          "Discussion on constitutional silence",
-          "Implications for health governance",
-          "Case study analysis"
+          "Review of judicial precedents on administrative silence",
+          "Discussion on constitutional safeguards",
+          "Impact analysis on public health governance",
+          "Case studies of successful legal challenges"
         ],
         hashtags: ["#AdminSilence", "#LegalWeapon", "#CaseStudy"]
       },
-      'week1-thursday': {
+      "week1-thursday": {
         title: "Diplomatic Dominoes: Building the Global Accountability Network",
         date: "Thursday, Mar 20, 2025",
-        description: "Examining how diplomatic strategies can hold international institutions accountable.",
+        description: "Examining how strategic diplomatic moves can build a network of global accountability against corrupt international institutions.",
         content: [
-          "Analysis of diplomatic channels",
-          "Framework for international accountability",
-          "Strategies for global coalition building",
-          "Treaty implications review"
+          "Analysis of diplomatic channels and treaty obligations",
+          "Framework for international coalition building",
+          "Review of global accountability mechanisms",
+          "Implications for sovereign legal action"
         ],
         hashtags: ["#DiplomaticStrategy", "#GlobalCoalition", "#Accountability"]
       },
-      'week1-friday': {
+      "week1-friday": {
         title: "SueTheWHO.org: Your Weapon Against Medical Tyranny",
         date: "Friday, Mar 21, 2025",
-        description: "Showcasing a digital legal platform designed to empower citizens against medical tyranny.",
+        description: "Showcasing a digital legal resource platform designed to empower citizens to challenge medical tyranny and hold global institutions accountable.",
         content: [
-          "Introduction to the digital legal resource",
-          "Step-by-step guide to legal action",
-          "Analysis of global health governance failures",
-          "Call to citizen engagement"
+          "Overview of the digital legal toolkit",
+          "Step-by-step guide to initiating legal action",
+          "Analysis of regulatory overreach in global health",
+          "Call for citizen engagement and accountability"
         ],
         hashtags: ["#SueTheWHO", "#LegalAction", "#GlobalJustice"]
       }
-      // Add modal data for week2 and week3 episodes as needed.
     };
     
+    // Auto-generate modalData for Weeks 2-12 with placeholder text
+    const days = ["monday", "tuesday", "wednesday", "thursday", "friday"];
+    for (let w = 2; w <= 12; w++) {
+      days.forEach(day => {
+        modalData[`week${w}-${day}`] = {
+          title: `Week ${w} ${day.charAt(0).toUpperCase() + day.slice(1)}: Episode Title`,
+          date: `${day.charAt(0).toUpperCase() + day.slice(1)}, Date for Week ${w}`,
+          description: `This is the description for Week ${w} ${day}.`,
+          content: [
+            `Detail 1 for Week ${w} ${day}`,
+            `Detail 2 for Week ${w} ${day}`,
+            `Detail 3 for Week ${w} ${day}`,
+            `Detail 4 for Week ${w} ${day}`
+          ],
+          hashtags: [`#Week${w}`, `#${day}`, `#Episode`]
+        };
+      });
+    }
+    
+    // Open modal and populate with episode details
     function openModal(id) {
       const data = modalData[id];
       if (!data) return;

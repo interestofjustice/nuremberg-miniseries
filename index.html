@@ -33,7 +33,7 @@
     }
     /* Header */
     header {
-      height: 70px;
+      height: 60px;
       background: var(--primary-color);
       color: #000;
       display: flex;
@@ -54,7 +54,7 @@
       background: var(--accent-color);
       border: none;
       color: white;
-      padding: 5px 12px;
+      padding: 5px 10px;
       margin: 2px;
       border-radius: 6px;
       cursor: pointer;
@@ -65,30 +65,29 @@
       background: var(--primary-color);
       color: #000;
     }
-    /* Episodes Layout */
+    /* Episode Layout */
     .episodes-container {
       flex: 1;
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
-      flex-direction: column;
-      padding: 5px;
     }
     .week {
       display: none;
-      width: 95%;
-      flex-direction: column;
-      align-items: center;
+      width: 100%;
     }
     .week.active {
       display: flex;
+      flex-direction: column;
+      align-items: center;
     }
-    /* Grid-based Episode Cards */
+    /* Episode Cards Grid */
     .episodes-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 10px;
-      width: 100%;
+      width: 90%;
     }
     .episode-card {
       background: var(--dark-color);
@@ -126,7 +125,10 @@
     }
     .modal p {
       font-size: 1rem;
-      margin-bottom: 5px;
+    }
+    .modal ul {
+      text-align: left;
+      margin-left: 20px;
     }
     .close-modal {
       position: absolute;
@@ -137,7 +139,7 @@
     }
     /* Footer with IOJ Logo */
     .footer {
-      height: 70px;
+      height: 60px;
       background: var(--primary-color);
       display: flex;
       align-items: center;
@@ -156,9 +158,7 @@
 </head>
 <body>
   <div class="container">
-    <header>
-      The Nuremberg Hearing Miniseries
-    </header>
+    <header>The Nuremberg Hearing Miniseries</header>
     
     <!-- Week Navigation -->
     <div class="nav">
@@ -174,11 +174,11 @@
     <div class="episodes-container">
       <div id="week1" class="week active">
         <div class="episodes-grid">
-          <div class="episode-card" onclick="openModal('March 17', 'The 10-Day Loophole')">MONDAY - March 17</div>
-          <div class="episode-card" onclick="openModal('March 18', 'Whispers to Roars')">TUESDAY - March 18</div>
-          <div class="episode-card" onclick="openModal('March 19', 'Admin Silence')">WEDNESDAY - March 19</div>
-          <div class="episode-card" onclick="openModal('March 20', 'Diplomatic Dominoes')">THURSDAY - March 20</div>
-          <div class="episode-card" onclick="openModal('March 21', 'SueTheWHO')">FRIDAY - March 21</div>
+          <div class="episode-card" onclick="openModal('March 17', 'The 10-Day Loophole That Could Destroy the WHO', ['Unveiling Costa Rican legal loophole', 'Administrative Silence explained', 'Impact on global governance'])">MONDAY - March 17</div>
+          <div class="episode-card" onclick="openModal('March 18', 'Whispers to Roars: One Nation vs. Global Regime', ['How small nations create impact', 'Global resistance strategies', 'Legal precedents'])">TUESDAY - March 18</div>
+          <div class="episode-card" onclick="openModal('March 19', 'Administrative Silence: The Unexpected Legal Weapon', ['Case study on legal silence', 'Power of inaction as strategy', 'Implications on public health'])">WEDNESDAY - March 19</div>
+          <div class="episode-card" onclick="openModal('March 20', 'Diplomatic Dominoes: Building Global Accountability', ['Role of treaties in accountability', 'Building coalitions', 'How to push back'])">THURSDAY - March 20</div>
+          <div class="episode-card" onclick="openModal('March 21', 'SueTheWHO.org: Your Weapon Against Medical Tyranny', ['Legal action steps', 'Global lawsuit collaboration', 'How to participate'])">FRIDAY - March 21</div>
         </div>
       </div>
     </div>
@@ -189,7 +189,7 @@
     <span class="close-modal" onclick="closeModal()">×</span>
     <h2 id="modal-title"></h2>
     <p id="modal-date"></p>
-    <p id="modal-content"></p>
+    <ul id="modal-content"></ul>
   </div>
 
   <!-- Footer -->
@@ -207,10 +207,10 @@
       event.target.classList.add('active');
     }
 
-    function openModal(date, title) {
+    function openModal(date, title, points) {
       document.getElementById('modal-title').textContent = title;
       document.getElementById('modal-date').textContent = date;
-      document.getElementById('modal-content').textContent = "Full details about " + title;
+      document.getElementById('modal-content').innerHTML = points.map(point => `<li>${point}</li>`).join("");
       document.getElementById('modal').style.display = 'block';
     }
 

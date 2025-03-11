@@ -1,570 +1,22 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nuremberg Hearing Miniseries</title>
-  <style>
-    /* Base styles */
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #f5f5f7; padding: 20px; }
-    
-    /* Container */
-    .container { max-width: 900px; margin: 0 auto; }
-    .card { background: white; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); overflow: hidden; border: 1px solid #e0e0e0; }
-    
-    /* Header */
-    .header { background: linear-gradient(to right, #1a365d, #2a4365); color: white; padding: 16px; }
-    .header-content { display: flex; justify-content: space-between; align-items: center; }
-    .logo { display: flex; align-items: center; }
-    .logo-circle { width: 36px; height: 36px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #1a365d; font-weight: bold; margin-right: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
-    .title { font-size: 20px; font-weight: bold; letter-spacing: -0.5px; }
-    .subtitle { font-size: 12px; color: rgba(255,255,255,0.8); margin-top: 4px; font-style: italic; }
-    .overview-btn { background: rgba(255,255,255,0.15); border: none; color: white; padding: 6px 10px; border-radius: 4px; font-size: 12px; cursor: pointer; display: flex; align-items: center; }
-    .overview-btn:hover { background: rgba(255,255,255,0.25); }
-    
-    /* Overview panel */
-    .overview-panel { background: #eff6ff; padding: 16px; border-bottom: 1px solid #bfdbfe; display: none; }
-    .overview-panel.active { display: block; animation: fadeIn 0.3s ease; }
-    .overview-title { font-size: 14px; font-weight: 600; color: #1e40af; margin-bottom: 8px; }
-    .overview-text { font-size: 12px; color: #334155; margin-bottom: 12px; line-height: 1.5; }
-    .priority-list { list-style-type: disc; padding-left: 20px; font-size: 12px; color: #334155; }
-    
-    /* Navigation */
-    .navigation { background: #f8fafc; padding: 12px; border-bottom: 1px solid #e2e8f0; }
-    .nav-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-    .nav-btn { background: none; border: none; color: #3b82f6; padding: 6px; border-radius: 4px; font-size: 12px; cursor: pointer; display: flex; align-items: center; }
-    .nav-btn:hover { background: #e0f2fe; }
-    .nav-btn:disabled { color: #cbd5e1; cursor: not-allowed; }
-    .date-pill { background: white; padding: 4px 12px; border-radius: 20px; font-size: 14px; display: flex; align-items: center; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-    
-    /* Week buttons */
-    .week-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; margin-bottom: 6px; }
-    .week-btn { background: white; border: 1px solid #e2e8f0; padding: 6px 2px; border-radius: 4px; font-size: 12px; cursor: pointer; transition: all 0.2s; }
-    .week-btn:hover { background: #eff6ff; border-color: #bfdbfe; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-    .week-btn.active { background: #3b82f6; color: white; border-color: #2563eb; box-shadow: 0 1px 3px rgba(0,0,0,0.1); transform: scale(1.05); }
-    
-    /* Content */
-    .content { padding: 16px; }
-    .week-title { font-size: 18px; font-weight: bold; color: #1e293b; margin-bottom: 4px; }
-    .week-subtitle { font-size: 12px; color: #64748b; margin-bottom: 16px; }
-    
-    /* Day cards */
-    .day-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 20px; }
-    .day-card { background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.05); transition: all 0.2s; }
-    .day-card:hover { background: #eff6ff; border-color: #bfdbfe; box-shadow: 0 2px 5px rgba(0,0,0,0.1); transform: translateY(-2px); }
-    .icon-circle { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; margin-bottom: 6px; }
-    .day-name { font-size: 11px; color: #64748b; }
-    .day-title { font-size: 11px; font-weight: 500; margin-top: 4px; height: 30px; overflow: hidden; }
-    
-    /* Day colors */
-    .monday { background: linear-gradient(to right, #3b82f6, #2563eb); }
-    .tuesday { background: linear-gradient(to right, #f59e0b, #d97706); }
-    .wednesday { background: linear-gradient(to right, #10b981, #059669); }
-    .thursday { background: linear-gradient(to right, #8b5cf6, #7c3aed); }
-    .friday { background: linear-gradient(to right, #ef4444, #dc2626); }
-    
-    /* Resource buttons */
-    .resources-title { font-size: 11px; font-weight: 600; color: #475569; margin-bottom: 8px; }
-    .resources-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-    .resource-btn { border: none; border-radius: 6px; padding: 8px; cursor: pointer; font-size: 12px; display: flex; align-items: center; justify-content: center; transition: background-color 0.2s; }
-    
-    /* Resource colors */
-    .legal { background: #dbeafe; color: #1e40af; } 
-    .legal:hover { background: #bfdbfe; }
-    .evidence { background: #dcfce7; color: #166534; }
-    .evidence:hover { background: #bbf7d0; }
-    .expert { background: #f3e8ff; color: #6b21a8; }
-    .expert:hover { background: #e9d5ff; }
-    .urgent { background: #fee2e2; color: #b91c1c; }
-    .urgent:hover { background: #fecaca; }
-    .training { background: #fef3c7; color: #92400e; }
-    .training:hover { background: #fde68a; }
-    .success { background: #ccfbf1; color: #115e59; }
-    .success:hover { background: #99f6e4; }
-    
-    /* Modal */
-    .modal-backdrop { 
-      position: fixed; 
-      top: 0; 
-      left: 0; 
-      right: 0; 
-      bottom: 0; 
-      background: rgba(0,0,0,0.6); 
-      backdrop-filter: blur(3px); 
-      display: flex; 
-      align-items: center; 
-      justify-content: center; 
-      z-index: 1000; 
-      opacity: 0; 
-      pointer-events: none;
-      transition: opacity 0.3s ease;
-    }
-    .modal-backdrop.active { 
-      opacity: 1; 
-      pointer-events: auto; 
-    }
-    .modal-container { 
-      background: white; 
-      border-radius: 8px; 
-      width: 90%; 
-      max-width: 500px; 
-      max-height: 80vh; 
-      overflow: hidden; 
-      box-shadow: 0 4px 20px rgba(0,0,0,0.15); 
-      transform: scale(0.9); 
-      opacity: 0;
-      transition: transform 0.3s ease, opacity 0.3s ease;
-    }
-    .modal-backdrop.active .modal-container { 
-      transform: scale(1); 
-      opacity: 1;
-    }
-    .modal-header { 
-      display: flex; 
-      justify-content: space-between; 
-      align-items: center; 
-      padding: 14px 16px; 
-      border-bottom: 1px solid #e2e8f0; 
-    }
-    .modal-gradient-header {
-      background: linear-gradient(to right, #1a365d, #2a4365);
-      color: white;
-      border-radius: 8px 8px 0 0;
-    }
-    .modal-title { font-size: 16px; font-weight: 600; }
-    .modal-close { 
-      background: none; 
-      border: none; 
-      font-size: 20px; 
-      cursor: pointer; 
-      width: 24px;
-      height: 24px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 50%;
-      color: white;
-    }
-    .modal-close:hover { 
-      background: rgba(255,255,255,0.2); 
-    }
-    .modal-body { 
-      padding: 16px; 
-      overflow-y: auto; 
-      max-height: calc(80vh - 120px); 
-    }
-    .modal-day-badge {
-      padding: 6px 10px;
-      border-radius: 4px;
-      font-size: 12px;
-      color: white;
-      margin-bottom: 12px;
-      display: inline-block;
-    }
-    .modal-description {
-      font-size: 14px;
-      color: #334155;
-      line-height: 1.5;
-      margin-bottom: 14px;
-    }
-    .modal-points-title {
-      font-size: 14px;
-      font-weight: 600;
-      color: #1e40af;
-      margin-bottom: 8px;
-    }
-    .modal-points-list {
-      list-style-type: disc;
-      padding-left: 20px;
-      font-size: 13px;
-      color: #334155;
-      line-height: 1.4;
-    }
-    .modal-points-list li {
-      margin-bottom: 6px;
-    }
-    .modal-footer { 
-      display: flex; 
-      justify-content: space-between; 
-      padding: 12px 16px; 
-      border-top: 1px solid #e2e8f0; 
-      background: #f8fafc; 
-      border-radius: 0 0 8px 8px;
-    }
-    .modal-calendar-btn {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      background: #e2e8f0;
-      border: none;
-      color: #475569;
-      padding: 6px 10px;
-      border-radius: 4px;
-      font-size: 12px;
-      cursor: pointer;
-    }
-    .modal-calendar-btn:hover {
-      background: #cbd5e1;
-    }
-    .modal-close-btn {
-      background: #3b82f6;
-      border: none;
-      color: white;
-      padding: 6px 14px;
-      border-radius: 4px;
-      font-size: 12px;
-      cursor: pointer;
-    }
-    .modal-close-btn:hover {
-      background: #2563eb;
-    }
-    
-    /* Animations */
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-    
-    /* Responsive */
-    @media (max-width: 768px) {
-      .resources-grid { grid-template-columns: repeat(2, 1fr); }
-    }
-    
-    @media (max-width: 640px) {
-      .day-grid { grid-template-columns: repeat(3, 1fr); }
-      .week-grid { grid-template-columns: repeat(3, 1fr); }
-      .logo-circle { display: none; }
-    }
-    
-    @media (max-width: 480px) {
-      .day-grid { grid-template-columns: repeat(2, 1fr); }
-      .week-grid { grid-template-columns: repeat(2, 1fr); }
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <div class="card">
-      <!-- Header -->
-      <div class="header">
-        <div class="header-content">
-          <div class="logo">
-            <div class="logo-circle">NH</div>
-            <h1 class="title">Nuremberg Hearing Miniseries</h1>
-          </div>
-          <button class="overview-btn" id="toggleOverview">
-            <span style="margin-right: 4px;">Show Overview</span>
-          </button>
-        </div>
-        <p class="subtitle">March 17 - June 6, 2025 • "The Greatest Medical Crime in History: How We Take Back Our Freedom"</p>
-      </div>
-      
-      <!-- Overview Panel -->
-      <div class="overview-panel" id="overviewPanel">
-        <h3 class="overview-title">Series Overview</h3>
-        <p class="overview-text">
-          A 12-week miniseries exposing medical crimes and providing legal strategies. 
-          Key focus areas include constitutional challenges, informed consent violations, 
-          regulatory capture, and international health regulation challenges.
-        </p>
-        
-        <h3 class="overview-title">Highest Priority Filings</h3>
-        <ul class="priority-list">
-          <li>Week 4: Minimal Risk Classification Challenge</li>
-          <li>Week 5: Emergency Use Authorization Challenge</li>
-          <li>Week 7: Congressional Informed Consent Inquiry</li>
-          <li>Week 10: International Health Regulations Legal Challenge</li>
-          <li>Week 11: WHO Pandemic Treaty Challenge</li>
-        </ul>
-      </div>
-      
-      <!-- Navigation -->
-      <div class="navigation">
-        <div class="nav-controls">
-          <button class="nav-btn" id="prevWeekBtn">
-            ◀ Previous
-          </button>
-          
-          <div class="date-pill">
-            <span style="margin-right: 6px;">📅</span>
-            <span id="currentDate">March 17-21, 2025</span>
-          </div>
-          
-          <button class="nav-btn" id="nextWeekBtn">
-            Next ▶
-          </button>
-        </div>
-        
-        <!-- Week 1-6 buttons -->
-        <div class="week-grid">
-          <button class="week-btn active" data-week="1">Week 1</button>
-          <button class="week-btn" data-week="2">Week 2</button>
-          <button class="week-btn" data-week="3">Week 3</button>
-          <button class="week-btn" data-week="4">Week 4</button>
-          <button class="week-btn" data-week="5">Week 5</button>
-          <button class="week-btn" data-week="6">Week 6</button>
-        </div>
-        
-        <!-- Week 7-12 buttons -->
-        <div class="week-grid">
-          <button class="week-btn" data-week="7">Week 7</button>
-          <button class="week-btn" data-week="8">Week 8</button>
-          <button class="week-btn" data-week="9">Week 9</button>
-          <button class="week-btn" data-week="10">Week 10</button>
-          <button class="week-btn" data-week="11">Week 11</button>
-          <button class="week-btn" data-week="12">Week 12</button>
-        </div>
-      </div>
-      
-      <!-- Content -->
-      <div class="content">
-        <h2 class="week-title" id="weekTitle">Week 1: BREAKING THE SILENCE - COSTA RICA'S CONSTITUTIONAL REBELLION</h2>
-        <p class="week-subtitle" id="weekSubtitle">UNMASKING THE 10-DAY LOOPHOLE THAT COULD DESTROY THE WHO</p>
-        
-        <!-- Day cards -->
-        <div class="day-grid" id="dayGrid">
-          <!-- Days will be dynamically inserted here -->
-        </div>
-        
-        <!-- Resource buttons -->
-        <h3 class="resources-title">STRATEGIC RESOURCES</h3>
-        <div class="resources-grid">
-          <button class="resource-btn legal" data-resource="legal">📄 Legal Templates</button>
-          <button class="resource-btn evidence" data-resource="evidence">🔍 Evidence Repository</button>
-          <button class="resource-btn expert" data-resource="expert">👥 Expert Network</button>
-          <button class="resource-btn urgent" data-resource="urgent">⚠️ Urgent Actions</button>
-          <button class="resource-btn training" data-resource="training">📚 Training Materials</button>
-          <button class="resource-btn success" data-resource="success">🏆 Success Stories</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  
-  <!-- Modal -->
-  <div class="modal-backdrop" id="modalBackdrop">
-    <div class="modal-container">
-      <div class="modal-header modal-gradient-header">
-        <h3 class="modal-title" id="modalTitle">Episode Title</h3>
-        <button class="modal-close" id="modalClose">×</button>
-      </div>
-      <div class="modal-body" id="modalBody">
-        <!-- Modal content will be dynamically inserted here -->
-      </div>
-      <div class="modal-footer">
-        <button class="modal-calendar-btn">
-          <span>📅</span>
-          <span>Add to Calendar</span>
-        </button>
-        <button class="modal-close-btn" id="modalCloseBtn">Close</button>
-      </div>
-    </div>
-  </div>
-  
-  <script>
-    // Series data
-    const seriesData = [
-      {
-        week: 1,
-        title: "BREAKING THE SILENCE - COSTA RICA'S CONSTITUTIONAL REBELLION",
-        subtitle: "UNMASKING THE 10-DAY LOOPHOLE THAT COULD DESTROY THE WHO",
-        date: "March 17-21, 2025",
-        episodes: [
-          {
-            day: "Monday",
-            title: "The 10-Day Loophole That Could Destroy the WHO",
-            description: "This opening episode exposes a forgotten constitutional weapon in Costa Rican law that provides a powerful legal mechanism to challenge WHO authority through the invocation of Costa Rican Constitutional Articles 27 and 50.",
-            points: [
-              "Comprehensive analysis of Costa Rican Administrative Silence Doctrine.",
-              "Detailed examination of Constitutional Article 27 (right to petition) and Article 50 (right to a healthy environment).",
-              "Exploration of the 10-day window that creates administrative acquiescence.",
-              "Strategic framework for international challenge to WHO governance."
-            ]
-          },
-          {
-            day: "Tuesday",
-            title: "Whispers to Roars: How One Nation Can Bring Down a Global Regime",
-            description: "This episode provides an in-depth analysis of International Health Regulations nullification through Article 55(2) Dispute Resolution Mechanism, demonstrating how grassroots resistance can effectively challenge institutional power.",
-            points: [
-              "Strategic application of IHR Article 55(2) dispute mechanisms.",
-              "Analysis of WHO Constitution Article 75 referral pathways.",
-              "Vienna Convention on Treaties application to procedural irregularities.",
-              "Multi-jurisdictional strategy for international challenge."
-            ]
-          },
-          {
-            day: "Wednesday",
-            title: "Administrative Silence: The Legal Weapon They Never Saw Coming",
-            description: "This episode exposes the powerful legal doctrine of Positive Administrative Silence as codified in Law No. 6227, General Law of Public Administration, which creates administrative acquiescence through inaction.",
-            points: [
-              "Comprehensive analysis of Positive Silence Doctrine under Costa Rican law.",
-              "Constitutional Chamber Decision No. 5694-2008 application.",
-              "Strategic implementation of Law No. 9097 on Right of Petition.",
-              "International implications of administrative acquiescence."
-            ]
-          },
-          {
-            day: "Thursday",
-            title: "Diplomatic Dominoes: Building the Global Accountability Network",
-            description: "This episode outlines coalition formation strategies utilizing diplomatic channels under Vienna Convention on Diplomatic Relations, Article 3(1)(c) to establish a global network of sovereign resistance.",
-            points: [
-              "Strategic implementation of Vienna Convention on Diplomatic Relations.",
-              "UN Charter Article 33 peaceful dispute settlement mechanisms.",
-              "Paris Principles on National Human Rights Institutions application.",
-              "Global coalition-building methodology and diplomatic framework."
-            ]
-          },
-          {
-            day: "Friday",
-            title: "SueTheWHO.org: Your Weapon Against Medical Tyranny",
-            description: "This episode unveils our comprehensive documentation repository and international legal resource platform, providing citizens and governments the tools needed to challenge global health governance overreach.",
-            points: [
-              "Platform launch with comprehensive juridical analysis tools.",
-              "Document repository for international legal challenges.",
-              "Strategic templates for administrative and judicial filings.",
-              "Global evidence compilation and crowdsourced documentation."
-            ]
-          }
-        ]
-      },
-      {
-        week: 2,
-        title: "EXPOSING THE ADMINISTRATIVE DEATH MACHINE",
-        subtitle: "ADMINISTRATIVE TYRANNY: THE SECRET GOVERNMENT PANEL THAT SOLD YOUR HEALTH",
-        date: "March 24-28, 2025",
-        episodes: [
-          {
-            day: "Monday",
-            title: "EXPOSED: The Secret Government Panel That Sold Your Health",
-            description: "This explosive episode provides a comprehensive breakdown of the Federal Advisory Committee Act (FACA) and reveals how institutional failures enabled regulatory capture and compromised public health decision-making.",
-            points: [
-              "Comprehensive analysis of 5 U.S.C. App. 2 §§1-16 requirements.",
-              "Detailed examination of \"fairly balanced\" committee membership violations.",
-              "Forensic analysis of undue influence by pharmaceutical interests.",
-              "Historical pattern of regulatory capture through advisory mechanisms."
-            ]
-          },
-          {
-            day: "Tuesday",
-            title: "The APA Weapon: Your Legal Nuclear Option Against Corrupt Agencies",
-            description: "This strategic episode outlines citizen petition mechanisms under the Administrative Procedure Act, providing a powerful framework for challenging agency actions that are \"arbitrary, capricious, or not in accordance with law.\"",
-            points: [
-              "Strategic implementation of 5 U.S.C. §553 rulemaking procedures.",
-              "Administrative challenge framework under 5 U.S.C. §706(2)(A).",
-              "Comprehensive APA petition strategy for emergency authorizations.",
-              "Judicial review pathways for administrative challenges."
-            ]
-          },
-          {
-            day: "Wednesday",
-            title: "PREP Act Immunity: The License to Kill Hidden in Plain Sight",
-            description: "This critical episode deconstructs the Public Readiness and Emergency Preparedness Act, exposing how unprecedented liability shields were created for pandemic countermeasures with minimal judicial oversight.",
-            points: [
-              "Comprehensive analysis of 42 U.S.C. §247d-6d immunity provisions.",
-              "Examination of PREP Act's constitutional vulnerabilities.",
-              "Strategic framework for challenging \"willful misconduct\" standards.",
-              "Judicial review pathway for PREP Act declarations."
-            ]
-          },
-          {
-            day: "Thursday",
-            title: "Congressional Whistleblowers: The Last Line of Defense",
-            description: "This episode reveals the power of congressional investigative authority under 2 U.S.C. §192 and provides a framework for whistleblower protection and testimony before oversight committees.",
-            points: [
-              "Strategic utilization of 2 U.S.C. §190d committee oversight functions.",
-              "Congressional Review Act implementation strategy.",
-              "Whistleblower protection framework for agency testimony.",
-              "Historical precedents for effective congressional investigations."
-            ]
-          },
-          {
-            day: "Friday",
-            title: "Rebuilding Scientific Integrity: How We Reclaim Public Health",
-            description: "This forward-looking episode outlines a comprehensive framework for restoring scientific integrity in public health governance through structural reforms and accountability mechanisms.",
-            points: [
-              "Comprehensive proposal for independent scientific advisory structures.",
-              "Conflict of interest prohibition framework for public health governance.",
-              "Transparency requirements for decision-making processes.",
-              "International scientific integrity standards implementation."
-            ]
-          }
-        ]
-      }
-    ];
-    
-    // Generate placeholder data for weeks 3-12
-    for (let i = 3; i <= 12; i++) {
-      const weekData = {
-        week: i,
-        title: `WEEK ${i}: ${['INSTITUTIONAL COMMUNICATION NETWORKS', 'MINIMAL RISK CLASSIFICATION CHALLENGE', 'EMERGENCY USE AUTHORIZATION JURISDICTIONAL CHALLENGE', 'DEPARTMENT OF DEFENSE OTHER TRANSACTION AUTHORITY INVESTIGATION', 'CONGRESSIONAL INFORMED CONSENT INQUIRY', 'CONSTITUTIONAL CHALLENGE TO CANADIAN ONE HEALTH ACT', 'HEALTH CANADA REGULATORY ENGAGEMENT', 'INTERNATIONAL HEALTH REGULATIONS (IHR) LEGAL CHALLENGE', 'WHO PANDEMIC TREATY CHALLENGE', 'THE PATH FORWARD'][i-3]}`,
-        subtitle: `Subtitle for Week ${i}`,
-        date: i <= 6 ? `April ${(i-2)*7}-${(i-2)*7+4}, 2025` : `May ${(i-7)*7+1}-${(i-7)*7+5}, 2025`,
-        episodes: [
-          { day: "Monday", title: `Week ${i} Monday Episode`, description: "Episode description", points: ["Point 1", "Point 2", "Point 3", "Point 4"] },
-          { day: "Tuesday", title: `Week ${i} Tuesday Episode`, description: "Episode description", points: ["Point 1", "Point 2", "Point 3", "Point 4"] },
-          { day: "Wednesday", title: `Week ${i} Wednesday Episode`, description: "Episode description", points: ["Point 1", "Point 2", "Point 3", "Point 4"] },
-          { day: "Thursday", title: `Week ${i} Thursday Episode`, description: "Episode description", points: ["Point 1", "Point 2", "Point 3", "Point 4"] },
-          { day: "Friday", title: `Week ${i} Friday Episode`, description: "Episode description", points: ["Point 1", "Point 2", "Point 3", "Point 4"] }
-        ]
-      };
-      seriesData.push(weekData);
-    }
-    
-    // Resource descriptions
-    const resourceDescriptions = {
-      legal: {
-        title: "Legal Templates",
-        content: "Comprehensive collection of ready-to-use legal templates for challenging health regulations in multiple jurisdictions. Includes administrative filings, court submissions, and international challenge frameworks."
-      },
-      evidence: {
-        title: "Evidence Repository",
-        content: "Centralized database of scientific evidence, whistleblower testimonies, and institutional documentation related to pandemic response malfeasance. Fully categorized and searchable by jurisdiction, agency, and topic."
-      },
-      expert: {
-        title: "Expert Network",
-        content: "Connect with legal and medical experts who can provide guidance on specific challenges. Our network includes constitutional attorneys, administrative law specialists, medical ethics experts, and scientific researchers."
-      },
-      urgent: {
-        title: "Urgent Actions",
-        content: "Time-sensitive legal and advocacy actions requiring immediate attention. These actions are prioritized based on strategic impact and critical deadlines for maximum effectiveness."
-      },
-      training: {
-        title: "Training Materials",
-        content: "Educational resources for understanding legal frameworks and preparing challenges. Includes online courses, webinar recordings, procedural guides, and strategic implementation frameworks."
-      },
-      success: {
-        title: "Success Stories",
-        content: "Case studies of successful legal challenges and their strategic implications. Learn from victories in various jurisdictions to replicate effective strategies in your own legal actions."
-      }
-    };
-    
-    // Current week
-    let currentWeek = 1;
-    
-    // DOM Elements
-    const toggleOverviewBtn = document.getElementById('toggleOverview');
-    const overviewPanel = document.getElementById('overviewPanel');
-    const weekButtons = document.querySelectorAll('.week-btn');
-    const prevWeekBtn = document.getElementById('prevWeekBtn');
-    const nextWeekBtn = document.getElementById('nextWeekBtn');
-    const currentDateDisplay = document.getElementById('currentDate');
-    const weekTitleDisplay = document.getElementById('weekTitle');
-    const weekSubtitleDisplay = document.getElementById('weekSubtitle');
+titleDisplay = document.getElementById('weekSubtitle');
     const dayGridContainer = document.getElementById('dayGrid');
+    const weekContentContainer = document.getElementById('weekContent');
     const modalBackdrop = document.getElementById('modalBackdrop');
     const modalTitle = document.getElementById('modalTitle');
     const modalBody = document.getElementById('modalBody');
     const modalClose = document.getElementById('modalClose');
     const modalCloseBtn = document.getElementById('modalCloseBtn');
+    const addToCalendarBtn = document.getElementById('addToCalendarBtn');
+    const toast = document.getElementById('toast');
     const resourceButtons = document.querySelectorAll('.resource-btn');
-    
-    // Toggle overview panel
-    toggleOverviewBtn.addEventListener('click', () => {
-      overviewPanel.classList.toggle('active');
-      toggleOverviewBtn.querySelector('span').textContent = 
-        overviewPanel.classList.contains('active') ? 'Hide Overview' : 'Show Overview';
-    });
-    
+
+    // Initialize UI
+    function init() {
+      renderWeekContent(currentWeek);
+      updateNavigationControls();
+      setupEventListeners();
+    }
+
     // Get day class
     function getDayClass(day) {
       switch(day) {
@@ -576,7 +28,7 @@
         default: return 'monday';
       }
     }
-    
+
     // Get day emoji
     function getDayEmoji(day) {
       switch(day) {
@@ -588,6 +40,199 @@
         default: return '📅';
       }
     }
-    
-    // Render week content
+
+    // Render week content with animation
     function renderWeekContent(weekNumber) {
+      const weekData = seriesData.find(week => week.week === weekNumber);
+      if (!weekData) return;
+
+      weekContentContainer.classList.add('fade-out');
+      
+      setTimeout(() => {
+        // Update header content
+        weekTitleDisplay.textContent = `Week ${weekData.week}: ${weekData.title}`;
+        weekSubtitleDisplay.textContent = weekData.subtitle;
+        currentDateDisplay.textContent = weekData.date;
+        
+        // Clear existing day cards
+        dayGridContainer.innerHTML = '';
+        
+        // Create day cards with staggered animation
+        weekData.episodes.forEach((episode, index) => {
+          const dayCard = document.createElement('div');
+          dayCard.className = 'day-card';
+          dayCard.style.animationDelay = `${index * 0.05}s`;
+          dayCard.classList.add('fade-in-up');
+          
+          dayCard.innerHTML = `
+            <div class="icon-circle ${getDayClass(episode.day)}">
+              ${getDayEmoji(episode.day)}
+            </div>
+            <span class="day-name">${episode.day}</span>
+            <div class="day-title">${episode.title}</div>
+          `;
+          
+          dayCard.addEventListener('click', () => {
+            currentEpisodeInfo = {
+              day: episode.day,
+              title: episode.title,
+              weekDate: weekData.date
+            };
+            openEpisodeModal(episode, weekData.date);
+          });
+          
+          dayGridContainer.appendChild(dayCard);
+        });
+        
+        // Update active state of week buttons
+        weekButtons.forEach(button => {
+          button.classList.toggle('active', parseInt(button.dataset.week) === weekNumber);
+        });
+        
+        // Show content with animation
+        weekContentContainer.classList.remove('fade-out');
+      }, 150);
+    }
+
+    // Update navigation controls (enable/disable prev/next buttons)
+    function updateNavigationControls() {
+      prevWeekBtn.disabled = currentWeek <= 1;
+      nextWeekBtn.disabled = currentWeek >= seriesData.length;
+    }
+
+    // Open episode modal
+    function openEpisodeModal(episode, weekDate) {
+      const dayClass = getDayClass(episode.day);
+      
+      modalTitle.textContent = `${episode.day}: ${episode.title}`;
+      
+      modalBody.innerHTML = `
+        <div class="modal-day-badge ${dayClass}">
+          ${episode.day}, ${weekDate.split('-')[0]}
+        </div>
+        <p class="modal-description">${episode.description}</p>
+        <h4 class="modal-points-title">Key Points:</h4>
+        <ul class="modal-points-list">
+          ${episode.points.map(point => `<li>${point}</li>`).join('')}
+        </ul>
+      `;
+      
+      modalBackdrop.classList.add('active');
+      
+      // Prevent body scrolling when modal is open
+      document.body.style.overflow = 'hidden';
+    }
+
+    // Open resource modal
+    function openResourceModal(resourceKey) {
+      const resource = resourceDescriptions[resourceKey];
+      if (!resource) return;
+      
+      modalTitle.textContent = resource.title;
+      
+      modalBody.innerHTML = `
+        <p class="modal-description">${resource.content}</p>
+      `;
+      
+      modalBackdrop.classList.add('active');
+      
+      // Prevent body scrolling when modal is open
+      document.body.style.overflow = 'hidden';
+    }
+
+    // Close modal
+    function closeModal() {
+      modalBackdrop.classList.remove('active');
+      
+      // Re-enable body scrolling
+      document.body.style.overflow = 'auto';
+    }
+
+    // Show toast notification
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add('active');
+      
+      setTimeout(() => {
+        toast.classList.remove('active');
+      }, 3000);
+    }
+
+    // Set up event listeners
+    function setupEventListeners() {
+      // Overview toggle
+      toggleOverviewBtn.addEventListener('click', () => {
+        overviewPanel.classList.toggle('active');
+        toggleOverviewBtn.querySelector('span').textContent = 
+          overviewPanel.classList.contains('active') ? 'Hide Overview' : 'Show Overview';
+      });
+      
+      // Week navigation
+      prevWeekBtn.addEventListener('click', () => {
+        if (currentWeek > 1) {
+          currentWeek--;
+          renderWeekContent(currentWeek);
+          updateNavigationControls();
+        }
+      });
+      
+      nextWeekBtn.addEventListener('click', () => {
+        if (currentWeek < seriesData.length) {
+          currentWeek++;
+          renderWeekContent(currentWeek);
+          updateNavigationControls();
+        }
+      });
+      
+      // Week buttons
+      weekButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          const weekNum = parseInt(button.dataset.week);
+          if (weekNum !== currentWeek) {
+            currentWeek = weekNum;
+            renderWeekContent(currentWeek);
+            updateNavigationControls();
+          }
+        });
+      });
+      
+      // Modal close buttons
+      modalClose.addEventListener('click', closeModal);
+      modalCloseBtn.addEventListener('click', closeModal);
+      modalBackdrop.addEventListener('click', (e) => {
+        if (e.target === modalBackdrop) {
+          closeModal();
+        }
+      });
+      
+      // Add to calendar button
+      addToCalendarBtn.addEventListener('click', () => {
+        if (currentEpisodeInfo) {
+          const { day, title, weekDate } = currentEpisodeInfo;
+          showToast(`Added to calendar: ${day} - ${title}`);
+        } else {
+          showToast('Event added to calendar');
+        }
+      });
+      
+      // Resource buttons
+      resourceButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          const resourceKey = button.dataset.resource;
+          openResourceModal(resourceKey);
+        });
+      });
+      
+      // Keyboard event to close modal with Escape key
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modalBackdrop.classList.contains('active')) {
+          closeModal();
+        }
+      });
+    }
+
+    // Initialize the application
+    init();
+  </script>
+</body>
+</html>

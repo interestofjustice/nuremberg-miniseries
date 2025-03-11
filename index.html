@@ -53,8 +53,9 @@
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      padding: 5px;
+      gap: 5px;
       background: var(--secondary-color);
+      padding: 5px;
     }
     .nav button {
       background: var(--accent-color);
@@ -169,7 +170,7 @@
       <div class="subtitle">"The Greatest Medical Crime in History: How We Take Back Our Freedom"</div>
     </header>
     
-    <!-- Week Navigation -->
+    <!-- Week Navigation (2 Rows) -->
     <div class="nav">
       <script>
         for (let i = 1; i <= 12; i++) {
@@ -188,17 +189,17 @@
           `);
           let days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
           let titles = [
-            "The 10-Day Loophole That Could Destroy the WHO",
-            "Whispers to Roars: One Nation vs. Global Regime",
-            "Administrative Silence: The Unexpected Legal Weapon",
-            "Diplomatic Dominoes: Building Global Accountability",
-            "SueTheWHO.org: Your Weapon Against Medical Tyranny"
+            "The 10-Day Loophole That Could Destroy the WHO 📅",
+            "Whispers to Roars: One Nation vs. Global Regime 🔥",
+            "Administrative Silence: The Unexpected Legal Weapon ⚖️",
+            "Diplomatic Dominoes: Building Global Accountability 🌍",
+            "SueTheWHO.org: Your Weapon Against Medical Tyranny 🛑"
           ];
           let dates = ["March 17", "March 18", "March 19", "March 20", "March 21"];
           days.forEach((day, i) => {
             document.write(`
               <div class="episode-card" onclick="openModal('${dates[i]}', '${titles[i]}', ['Key point 1', 'Key point 2', 'Key point 3'])">
-                ${day} - ${dates[i]}
+                ${day} - ${dates[i]}<br>${titles[i]}
               </div>
             `);
           });

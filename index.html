@@ -33,14 +33,20 @@
     }
     /* Header */
     header {
-      height: 60px;
+      height: 80px;
       background: var(--primary-color);
       color: #000;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      font-size: 1.4rem;
+      font-size: 1.2rem;
       font-weight: bold;
+      padding: 5px;
+    }
+    .subtitle {
+      font-size: 0.9rem;
+      font-style: italic;
     }
     /* Week Navigation */
     .nav {
@@ -65,7 +71,7 @@
       background: var(--primary-color);
       color: #000;
     }
-    /* Episode Layout */
+    /* Episodes Layout */
     .episodes-container {
       flex: 1;
       display: flex;
@@ -158,29 +164,48 @@
 </head>
 <body>
   <div class="container">
-    <header>The Nuremberg Hearing Miniseries</header>
+    <header>
+      The Nuremberg Hearing Miniseries
+      <div class="subtitle">"The Greatest Medical Crime in History: How We Take Back Our Freedom"</div>
+    </header>
     
     <!-- Week Navigation -->
     <div class="nav">
-      <button onclick="showWeek(1)" class="active">Week 1</button>
-      <button onclick="showWeek(2)">Week 2</button>
-      <button onclick="showWeek(3)">Week 3</button>
-      <button onclick="showWeek(4)">Week 4</button>
-      <button onclick="showWeek(5)">Week 5</button>
-      <button onclick="showWeek(6)">Week 6</button>
+      <!-- Buttons for 12 Weeks -->
+      <script>
+        for (let i = 1; i <= 12; i++) {
+          document.write(`<button onclick="showWeek(${i})">${i <= 6 ? 'Week ' + i : 'Week ' + i}</button>`);
+        }
+      </script>
     </div>
 
     <!-- Episodes Container -->
     <div class="episodes-container">
-      <div id="week1" class="week active">
-        <div class="episodes-grid">
-          <div class="episode-card" onclick="openModal('March 17', 'The 10-Day Loophole That Could Destroy the WHO', ['Unveiling Costa Rican legal loophole', 'Administrative Silence explained', 'Impact on global governance'])">MONDAY - March 17</div>
-          <div class="episode-card" onclick="openModal('March 18', 'Whispers to Roars: One Nation vs. Global Regime', ['How small nations create impact', 'Global resistance strategies', 'Legal precedents'])">TUESDAY - March 18</div>
-          <div class="episode-card" onclick="openModal('March 19', 'Administrative Silence: The Unexpected Legal Weapon', ['Case study on legal silence', 'Power of inaction as strategy', 'Implications on public health'])">WEDNESDAY - March 19</div>
-          <div class="episode-card" onclick="openModal('March 20', 'Diplomatic Dominoes: Building Global Accountability', ['Role of treaties in accountability', 'Building coalitions', 'How to push back'])">THURSDAY - March 20</div>
-          <div class="episode-card" onclick="openModal('March 21', 'SueTheWHO.org: Your Weapon Against Medical Tyranny', ['Legal action steps', 'Global lawsuit collaboration', 'How to participate'])">FRIDAY - March 21</div>
-        </div>
-      </div>
+      <script>
+        for (let week = 1; week <= 12; week++) {
+          document.write(`
+            <div id="week${week}" class="week">
+              <div class="episodes-grid">
+          `);
+          let days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+          let titles = [
+            "The 10-Day Loophole That Could Destroy the WHO",
+            "Whispers to Roars: One Nation vs. Global Regime",
+            "Administrative Silence: The Unexpected Legal Weapon",
+            "Diplomatic Dominoes: Building Global Accountability",
+            "SueTheWHO.org: Your Weapon Against Medical Tyranny"
+          ];
+          let dates = ["March 17", "March 18", "March 19", "March 20", "March 21"];
+          days.forEach((day, i) => {
+            document.write(`
+              <div class="episode-card" onclick="openModal('${dates[i]}', '${titles[i]}', ['Key point 1', 'Key point 2', 'Key point 3'])">
+                ${day} - ${dates[i]}
+              </div>
+            `);
+          });
+          document.write(`</div></div>`);
+        }
+      </script>
     </div>
   </div>
 
@@ -203,14 +228,12 @@
     function showWeek(week) {
       document.querySelectorAll('.week').forEach(w => w.classList.remove('active'));
       document.getElementById('week' + week).classList.add('active');
-      document.querySelectorAll('.nav button').forEach(btn => btn.classList.remove('active'));
-      event.target.classList.add('active');
     }
 
     function openModal(date, title, points) {
       document.getElementById('modal-title').textContent = title;
       document.getElementById('modal-date').textContent = date;
-      document.getElementById('modal-content').innerHTML = points.map(point => `<li>${point}</li>`).join("");
+      document.getElementById('modal-content').innerHTML = points.map(p => `<li>${p}</li>`).join("");
       document.getElementById('modal').style.display = 'block';
     }
 

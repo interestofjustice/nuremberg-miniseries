@@ -67,6 +67,7 @@
       cursor: pointer;
       font-size: 0.9rem;
       transition: background 0.3s ease;
+      width: 120px;
     }
     .nav button.active {
       background: var(--primary-color);
@@ -170,11 +171,12 @@
       <div class="subtitle">"The Greatest Medical Crime in History: How We Take Back Our Freedom"</div>
     </header>
     
-    <!-- Week Navigation (2 Rows) -->
+    <!-- Week Navigation (Two Rows of 6 Buttons) -->
     <div class="nav">
       <script>
         for (let i = 1; i <= 12; i++) {
-          document.write(`<button onclick="showWeek(${i})">${'Week ' + i}</button>`);
+          document.write(`<button onclick="showWeek(${i})">Week ${i}</button>`);
+          if (i === 6) document.write('<br>'); // Creates the second row after Week 6
         }
       </script>
     </div>
@@ -182,24 +184,21 @@
     <!-- Episodes Container -->
     <div class="episodes-container">
       <script>
+        let episodeData = [
+          ["📅 The 10-Day Loophole That Could Destroy the WHO", "🔥 Whispers to Roars: One Nation vs. Global Regime", "⚖️ Administrative Silence: The Unexpected Legal Weapon", "🌍 Diplomatic Dominoes: Building Global Accountability", "🛑 SueTheWHO.org: Your Weapon Against Medical Tyranny"]
+        ];
+        
         for (let week = 1; week <= 12; week++) {
           document.write(`
             <div id="week${week}" class="week">
               <div class="episodes-grid">
           `);
           let days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
-          let titles = [
-            "The 10-Day Loophole That Could Destroy the WHO 📅",
-            "Whispers to Roars: One Nation vs. Global Regime 🔥",
-            "Administrative Silence: The Unexpected Legal Weapon ⚖️",
-            "Diplomatic Dominoes: Building Global Accountability 🌍",
-            "SueTheWHO.org: Your Weapon Against Medical Tyranny 🛑"
-          ];
           let dates = ["March 17", "March 18", "March 19", "March 20", "March 21"];
           days.forEach((day, i) => {
             document.write(`
-              <div class="episode-card" onclick="openModal('${dates[i]}', '${titles[i]}', ['Key point 1', 'Key point 2', 'Key point 3'])">
-                ${day} - ${dates[i]}<br>${titles[i]}
+              <div class="episode-card" onclick="openModal('${dates[i]}', '${episodeData[0][i]}', ['Key Point 1', 'Key Point 2', 'Key Point 3'])">
+                ${day} - ${dates[i]}<br>${episodeData[0][i]}
               </div>
             `);
           });

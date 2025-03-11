@@ -1,238 +1,641 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>The Nuremberg Hearing Miniseries</title>
-  <style>
-    /* Full Layout for Kajabi iFrame */
-    html, body {
-      width: 800px;
-      height: 600px;
-      margin: 0;
-      padding: 0;
-      overflow: hidden;
-      font-family: Arial, sans-serif;
-      background-color: #121212;
-      color: #fff;
-    }
-    :root {
-      --primary-color: #ffcc00;
-      --secondary-color: #d50000;
-      --accent-color: #2196f3;
-      --dark-color: #1a1a1a;
-      --light-color: #fff;
-      --border-color: #444;
-    }
-    .container {
-      display: flex;
-      flex-direction: column;
-      width: 100%;
-      height: 100%;
-      text-align: center;
-    }
-    /* Header */
-    header {
-      height: 80px;
-      background: var(--primary-color);
-      color: #000;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.2rem;
-      font-weight: bold;
-      padding: 5px;
-    }
-    .subtitle {
-      font-size: 0.9rem;
-      font-style: italic;
-    }
-    /* Week Navigation */
-    .nav {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 5px;
-      background: var(--secondary-color);
-      padding: 5px;
-    }
-    .nav button {
-      background: var(--accent-color);
-      border: none;
-      color: white;
-      padding: 4px 8px;
-      margin: 2px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 0.8rem;
-      transition: background 0.3s ease;
-      width: 100px;
-    }
-    .nav button.active {
-      background: var(--primary-color);
-      color: #000;
-    }
-    /* Episodes Layout */
-    .episodes-container {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-    }
-    .week {
-      display: none;
-      width: 100%;
-    }
-    .week.active {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    /* Episode Cards Grid */
-    .episodes-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-      width: 90%;
-    }
-    .episode-card {
-      background: var(--dark-color);
-      border: 1px solid var(--border-color);
-      border-radius: 6px;
-      padding: 10px;
-      cursor: pointer;
-      text-align: center;
-      font-size: 0.9rem;
-      transition: background 0.3s ease;
-    }
-    .episode-card:hover {
-      background: var(--primary-color);
-      color: #000;
-    }
-    /* Modal Pop-out */
-    .modal {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      width: 80%;
-      height: 80%;
-      transform: translate(-50%, -50%);
-      background: white;
-      box-shadow: 0 0 10px rgba(0,0,0,0.3);
-      border-radius: 8px;
-      padding: 16px;
-      display: none;
-      text-align: center;
-      color: black;
-    }
-    .modal h2 {
-      font-size: 1.3rem;
-      margin-bottom: 10px;
-    }
-    .modal p {
-      font-size: 1rem;
-    }
-    .modal ul {
-      text-align: left;
-      margin-left: 20px;
-    }
-    .close-modal {
-      position: absolute;
-      top: 10px;
-      right: 15px;
-      cursor: pointer;
-      font-size: 1.5rem;
-    }
-    /* Footer with IOJ Logo */
-    .footer {
-      height: 60px;
-      background: var(--primary-color);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 5px 15px;
-    }
-    .footer img {
-      height: 50px;
-    }
-    .footer a {
-      color: black;
-      font-weight: bold;
-      text-decoration: none;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Nuremberg Hearing Miniseries</title>
+<style>
+:root {
+  --primary-color: #1a2f4b;
+  --secondary-color: #a93f55;
+  --accent-color: #d15a7c;
+  --light-color: #f3f4f6;
+  --dark-color: #111827;
+  --border-color: #e5e7eb;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  background-color: #f9fafb;
+  color: var(--dark-color);
+  line-height: 1.6;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  padding: 1.5rem;
+  background-color: var(--primary-color);
+  color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+  font-size: 2.2rem;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+h2 {
+  font-size: 1.6rem;
+  margin-bottom: 1rem;
+  color: var(--secondary-color);
+}
+
+.tagline {
+  font-size: 1.2rem;
+  font-style: italic;
+  margin-bottom: 0.5rem;
+}
+
+.start-date {
+  display: inline-block;
+  background-color: var(--secondary-color);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-weight: bold;
+  margin-top: 0.5rem;
+}
+
+.series-overview {
+  margin-bottom: 1.5rem;
+}
+
+/* Tabs */
+.tab-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.tab-row {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.tab {
+  background-color: var(--light-color);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  color: var(--primary-color);
+  text-align: center;
+  min-width: 110px;
+}
+
+.tab:hover {
+  background-color: #e5e7eb;
+  border-color: var(--secondary-color);
+}
+
+.tab.active {
+  background-color: var(--primary-color);
+  color: white;
+  border-color: var(--primary-color);
+}
+
+/* Week content */
+.week-content {
+  display: none;
+  background-color: white;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.week-content.active {
+  display: block;
+}
+
+.week-header {
+  margin-bottom: 1.5rem;
+}
+
+.week-title {
+  font-size: 1.4rem;
+  color: var(--primary-color);
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+}
+
+.week-theme {
+  font-style: italic;
+  color: var(--secondary-color);
+  margin-bottom: 0.5rem;
+}
+
+.dates {
+  color: #6b7280;
+  font-size: 0.9rem;
+}
+
+.special-note {
+  background-color: var(--secondary-color);
+  color: white;
+  padding: 0.5rem;
+  margin-top: 0.5rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  font-weight: bold;
+}
+
+.episode-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 0.75rem;
+}
+
+.episode-button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 0.75rem 1rem;
+  background-color: #f3f4f6;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: var(--primary-color);
+  font-weight: bold;
+  position: relative;
+  padding-left: 2.5rem;
+  height: 100%;
+}
+
+.episode-button:hover {
+  background-color: #e5e7eb;
+  border-color: var(--secondary-color);
+}
+
+.episode-button::before {
+  content: attr(data-emoji);
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 1000;
+  overflow: auto;
+  padding: 1rem;
+}
+
+.modal-content {
+  background-color: white;
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  position: relative;
+  animation: modalfade 0.3s ease-in-out;
+}
+
+@keyframes modalfade {
+  from { opacity: 0; transform: translateY(-30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.close-button {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--dark-color);
+  transition: color 0.3s ease;
+}
+
+.close-button:hover {
+  color: var(--secondary-color);
+}
+
+.modal-title {
+  color: var(--primary-color);
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--secondary-color);
+}
+
+.modal-date {
+  color: var(--secondary-color);
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.modal-description {
+  margin-bottom: 1rem;
+  line-height: 1.7;
+}
+
+.content-list {
+  list-style-type: none;
+  margin-bottom: 1.5rem;
+}
+
+.content-list li {
+  margin-bottom: 0.5rem;
+  padding-left: 1.5rem;
+  position: relative;
+}
+
+.content-list li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: var(--secondary-color);
+  font-weight: bold;
+}
+
+.hashtags {
+  margin-top: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.hashtag {
+  background-color: var(--light-color);
+  color: var(--primary-color);
+  padding: 0.25rem 0.75rem;
+  border-radius: 16px;
+  font-size: 0.9rem;
+  font-weight: bold;
+}
+
+.community-action {
+  margin-top: 1.5rem;
+  text-align: center;
+}
+
+.community-button {
+  display: inline-block;
+  background-color: var(--secondary-color);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+  width: 100%;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.community-button:hover {
+  background-color: var(--accent-color);
+  text-decoration: none;
+  color: white;
+}
+
+.call-to-action {
+  margin-top: 1.5rem;
+  text-align: center;
+}
+
+.action-button {
+  display: inline-block;
+  background-color: var(--secondary-color);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+  margin: 0.5rem;
+}
+
+.action-button:hover {
+  background-color: var(--accent-color);
+}
+
+.footer {
+  text-align: center;
+  margin-top: 1.5rem;
+  padding: 1.5rem;
+  background-color: var(--primary-color);
+  color: white;
+  border-radius: 8px;
+}
+
+.footer p {
+  margin-bottom: 0.5rem;
+}
+
+.website-link {
+  color: white;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+  
+  h1 {
+    font-size: 1.8rem;
+  }
+  
+  h2 {
+    font-size: 1.4rem;
+  }
+  
+  .tab {
+    font-size: 0.85rem;
+    padding: 0.6rem 0.75rem;
+    min-width: 90px;
+  }
+  
+  .episode-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .episode-button {
+    padding: 0.6rem 0.75rem;
+    padding-left: 2.25rem;
+    font-size: 0.9rem;
+  }
+  
+  .modal-content {
+    padding: 1.5rem;
+    margin: 1rem;
+  }
+}
+</style>
 </head>
 <body>
-  <div class="container">
-    <header>
-      The Nuremberg Hearing Miniseries
-      <div class="subtitle">"The Greatest Medical Crime in History: How We Take Back Our Freedom"</div>
-    </header>
-    
-    <!-- Week Navigation (Two Rows of 6 Buttons) -->
-    <div class="nav">
-      <script>
-        for (let i = 1; i <= 12; i++) {
-          document.write(`<button id="week-btn-${i}" onclick="showWeek(${i})">Week ${i}</button>`);
-          if (i === 6) document.write('<br>'); // Creates the second row after Week 6
-        }
-      </script>
+<div class="container">
+  <header>
+    <h1>The Nuremberg Hearing Miniseries</h1>
+    <p class="tagline">"The Greatest Medical Crime in History: How We Take Back Our Freedom"</p>
+    <div class="start-date">Starting March 17, 2025</div>
+  </header>
+  
+  <div class="series-overview">
+    <p>Join us for a meticulously structured 12-week legal campaign that strategically targets vulnerable points within the global health governance architecture. Each week constitutes a cohesive episode in our miniseries, with compelling daily content that builds upon preceding legal actions to create a comprehensive challenge to pandemic governance structures.</p>
+  </div>
+  
+  <!-- Week Tabs -->
+  <div class="tab-container">
+    <div class="tab-row">
+      <button class="tab active" onclick="showWeek(1)">Week 1<br>Mar 17-21</button>
+      <button class="tab" onclick="showWeek(2)">Week 2<br>Mar 24-28</button>
+      <button class="tab" onclick="showWeek(3)">Week 3<br>Mar 31-Apr 4</button>
+      <button class="tab" onclick="showWeek(4)">Week 4<br>Apr 7-11</button>
+      <button class="tab" onclick="showWeek(5)">Week 5<br>Apr 14-18</button>
+      <button class="tab" onclick="showWeek(6)">Week 6<br>Apr 21-25</button>
     </div>
-
-    <!-- Episodes Container -->
-    <div class="episodes-container">
-      <script>
-        let episodeData = [
-          ["📅 The 10-Day Loophole That Could Destroy the WHO", "🔥 Whispers to Roars: One Nation vs. Global Regime", "⚖️ Administrative Silence: The Unexpected Legal Weapon", "🌍 Diplomatic Dominoes: Building Global Accountability", "🛑 SueTheWHO.org: Your Weapon Against Medical Tyranny"]
-        ];
-        
-        for (let week = 1; week <= 12; week++) {
-          document.write(`
-            <div id="week${week}" class="week">
-              <div class="episodes-grid">
-          `);
-          let days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
-          let dates = ["March 17", "March 18", "March 19", "March 20", "March 21"];
-          days.forEach((day, i) => {
-            document.write(`
-              <div class="episode-card" onclick="openModal('${dates[i]}', '${episodeData[0][i]}', ['Key Point 1', 'Key Point 2', 'Key Point 3'])">
-                ${day} - ${dates[i]}<br>${episodeData[0][i]}
-              </div>
-            `);
-          });
-          document.write(`</div></div>`);
-        }
-      </script>
+    <div class="tab-row">
+      <button class="tab" onclick="showWeek(7)">Week 7<br>Apr 28-May 2</button>
+      <button class="tab" onclick="showWeek(8)">Week 8<br>May 5-9</button>
+      <button class="tab" onclick="showWeek(9)">Week 9<br>May 12-16</button>
+      <button class="tab" onclick="showWeek(10)">Week 10<br>May 19-23</button>
+      <button class="tab" onclick="showWeek(11)">Week 11<br>May 26-30</button>
+      <button class="tab" onclick="showWeek(12)">Week 12<br>Jun 2-6</button>
     </div>
   </div>
-
-  <!-- Footer -->
+  
+  <!-- Week 1 -->
+  <div id="week1" class="week-content active">
+    <div class="week-header">
+      <div class="week-title">WEEK 1: BREAKING THE SILENCE - COSTA RICA'S CONSTITUTIONAL REBELLION</div>
+      <div class="week-theme">"UNMASKING THE 10-DAY LOOPHOLE THAT COULD DESTROY THE WHO"</div>
+      <div class="dates">March 17-21, 2025</div>
+    </div>
+    <div class="episode-grid">
+      <button class="episode-button" data-emoji="🔥 " onclick="openModal('week1-monday')">MONDAY: The 10-Day Loophole That Could Destroy the WHO</button>
+      <button class="episode-button" data-emoji="🚨 " onclick="openModal('week1-tuesday')">TUESDAY: Whispers to Roars: How One Nation Can Bring Down a Global Regime</button>
+      <button class="episode-button" data-emoji="🌍 " onclick="openModal('week1-wednesday')">WEDNESDAY: Administrative Silence: The Legal Weapon They Never Saw Coming</button>
+      <button class="episode-button" data-emoji="🔍 " onclick="openModal('week1-thursday')">THURSDAY: Diplomatic Dominoes: Building the Global Accountability Network</button>
+      <button class="episode-button" data-emoji="💥 " onclick="openModal('week1-friday')">FRIDAY: SueTheWHO.org: Your Weapon Against Medical Tyranny</button>
+    </div>
+  </div>
+  
+  <!-- Week 2 -->
+  <div id="week2" class="week-content">
+    <div class="week-header">
+      <div class="week-title">WEEK 2: EXPOSING THE ADMINISTRATIVE DEATH MACHINE</div>
+      <div class="week-theme">"ADMINISTRATIVE TYRANNY: THE SECRET GOVERNMENT PANEL THAT SOLD YOUR HEALTH"</div>
+      <div class="dates">March 24-28, 2025</div>
+    </div>
+    <div class="episode-grid">
+      <button class="episode-button" data-emoji="🔥 " onclick="openModal('week2-monday')">MONDAY: EXPOSED: The Secret Government Panel That Sold Your Health</button>
+      <button class="episode-button" data-emoji="🚨 " onclick="openModal('week2-tuesday')">TUESDAY: The APA Weapon: Your Legal Nuclear Option Against Corrupt Agencies</button>
+      <button class="episode-button" data-emoji="🌪 " onclick="openModal('week2-wednesday')">WEDNESDAY: PREP Act Immunity: The License to Kill Hidden in Plain Sight</button>
+      <button class="episode-button" data-emoji="🔍 " onclick="openModal('week2-thursday')">THURSDAY: Congressional Whistleblowers: The Last Line of Defense</button>
+      <button class="episode-button" data-emoji="💥 " onclick="openModal('week2-friday')">FRIDAY: Rebuilding Scientific Integrity: How We Reclaim Public Health</button>
+    </div>
+  </div>
+  
+  <!-- Week 3 -->
+  <div id="week3" class="week-content">
+    <div class="week-header">
+      <div class="week-title">WEEK 3: INSTITUTIONAL COMMUNICATION NETWORKS</div>
+      <div class="week-theme">"WHO, WEF AND GATES FOUNDATION: THE HIDDEN COMMUNICATIONS THEY DON'T WANT YOU TO SEE"</div>
+      <div class="dates">March 31-April 4, 2025</div>
+    </div>
+    <div class="episode-grid">
+      <button class="episode-button" data-emoji="🔥 " onclick="openModal('week3-monday')">MONDAY: Institutional Communication Networks: Mapping the Invisible Infrastructure</button>
+      <button class="episode-button" data-emoji="🚨 " onclick="openModal('week3-tuesday')">TUESDAY: Transnational Information Sovereignty: Breaking Their Code of Silence</button>
+      <button class="episode-button" data-emoji="💰 " onclick="openModal('week3-wednesday')">WEDNESDAY: Financial Trajectory Analysis: Following the Pandemic Money Trail</button>
+      <button class="episode-button" data-emoji="🔎 " onclick="openModal('week3-thursday')">THURSDAY: Diplomatic Communication Intervention: Cracking Open the Private Channels</button>
+      <button class="episode-button" data-emoji="🌐 " onclick="openModal('week3-friday')">FRIDAY: Constructing the Global Transparency Architecture</button>
+    </div>
+  </div>
+  
+  <!-- Week 4 -->
+  <div id="week4" class="week-content">
+    <div class="week-header">
+      <div class="week-title">WEEK 4: MINIMAL RISK CLASSIFICATION CHALLENGE</div>
+      <div class="week-theme">"THE RESEARCH FRAUD: HOW 'MINIMAL RISK' BECAME MAXIMUM DEATH"</div>
+      <div class="dates">April 7-11, 2025</div>
+      <div class="special-note">Coincident with final WHO Intergovernmental Negotiating Body session</div>
+    </div>
+    <div class="episode-grid">
+      <button class="episode-button" data-emoji="🔥 " onclick="openModal('week4-monday')">MONDAY: Deconstructing the Minimal Risk Paradigm: The Regulatory Lie That Killed Millions</button>
+      <button class="episode-button" data-emoji="🔒 " onclick="openModal('week4-tuesday')">TUESDAY: Informed Consent: The Constitutional Bulwark They Demolished</button>
+      <button class="episode-button" data-emoji="🔬 " onclick="openModal('week4-wednesday')">WEDNESDAY: Ethical Research Standards: Reconstructing What They Destroyed</button>
+      <button class="episode-button" data-emoji="⚖ " onclick="openModal('week4-thursday')">THURSDAY: Substantive Due Process: The Constitutional Shield Against Medical Tyranny</button>
+      <button class="episode-button" data-emoji="🔄 " onclick="openModal('week4-friday')">FRIDAY: Reconstructing the Ethical Research Paradigm: The Path Forward</button>
+    </div>
+  </div>
+  
+  <!-- Week 5 -->
+  <div id="week5" class="week-content">
+    <div class="week-header">
+      <div class="week-title">WEEK 5: EMERGENCY USE AUTHORIZATION JURISDICTIONAL CHALLENGE</div>
+      <div class="week-theme">"THE LEGAL FICTION THAT BYPASSED SAFETY: EXPOSING EUA FRAUD"</div>
+      <div class="dates">April 14-18, 2025</div>
+    </div>
+    <div class="episode-grid">
+      <button class="episode-button" data-emoji="🔥 " onclick="openModal('week5-monday')">MONDAY: Statutory Interpretation: Deconstructing the EUA Regulatory Apparatus</button>
+      <button class="episode-button" data-emoji="⚡ " onclick="openModal('week5-tuesday')">TUESDAY: Challenging Administrative Overreach: The Major Questions Doctrine</button>
+      <button class="episode-button" data-emoji="🧪 " onclick="openModal('week5-wednesday')">WEDNESDAY: Evidence and Authorization: The Data They Buried</button>
+      <button class="episode-button" data-emoji="⚖ " onclick="openModal('week5-thursday')">THURSDAY: Procedural Accountability: Challenging the Immunity Shield</button>
+      <button class="episode-button" data-emoji="🔄 " onclick="openModal('week5-friday')">FRIDAY: Reconstructing Emergency Use Authorization Governance: Never Again</button>
+    </div>
+  </div>
+  
+  <!-- Week 6 -->
+  <div id="week6" class="week-content">
+    <div class="week-header">
+      <div class="week-title">WEEK 6: DEPARTMENT OF DEFENSE OTHER TRANSACTION AUTHORITY INVESTIGATION</div>
+      <div class="week-theme">"THE MILITARY CONNECTION: PENTAGON'S SECRET ROLE IN THE PANDEMIC RESPONSE"</div>
+      <div class="dates">April 21-25, 2025</div>
+    </div>
+    <div class="episode-grid">
+      <button class="episode-button" data-emoji="🔥 " onclick="openModal('week6-monday')">MONDAY: Deconstructing Discretionary Procurement Mechanisms: The Pentagon's Pandemic Playbook</button>
+      <button class="episode-button" data-emoji="🔒 " onclick="openModal('week6-tuesday')">TUESDAY: Challenging Procurement Mechanism Opacity: Following the Defense Money</button>
+      <button class="episode-button" data-emoji="🛡 " onclick="openModal('week6-wednesday')">WEDNESDAY: Forensic Analysis of Procurement Safety Protocol Vulnerabilities</button>
+      <button class="episode-button" data-emoji="🔎 " onclick="openModal('week6-thursday')">THURSDAY: Jurisdictional Accountability: The Military Authority Boundaries They Crossed</button>
+      <button class="episode-button" data-emoji="🔄 " onclick="openModal('week6-friday')">FRIDAY: Reconstructing Procurement Governance: Demilitarizing Public Health</button>
+    </div>
+  </div>
+  
+  <!-- Week 7 -->
+  <div id="week7" class="week-content">
+    <div class="week-header">
+      <div class="week-title">WEEK 7: CONGRESSIONAL INFORMED CONSENT INQUIRY</div>
+      <div class="week-theme">"NUREMBERG CODE 2.0: CONFRONTING SYSTEMIC VIOLATIONS OF INFORMED CONSENT"</div>
+      <div class="dates">April 28-May 2, 2025</div>
+    </div>
+    <div class="episode-grid">
+      <button class="episode-button" data-emoji="🔥 " onclick="openModal('week7-monday')">MONDAY: Deconstructing Consent: The Constitutional Bulwark of Bodily Autonomy</button>
+      <button class="episode-button" data-emoji="🚨 " onclick="openModal('week7-tuesday')">TUESDAY: Whistleblower Protections: Unveiling Institutional Malfeasance</button>
+      <button class="episode-button" data-emoji="🔬 " onclick="openModal('week7-wednesday')">WEDNESDAY: Military Medical Ethics: Challenging Experimental Protocols</button>
+      <button class="episode-button" data-emoji="🌐 " onclick="openModal('week7-thursday')">THURSDAY: International Human Rights Intervention: Global Standards vs. National Violations</button>
+      <button class="episode-button" data-emoji="⚖ " onclick="openModal('week7-friday')">FRIDAY: Reconstructing Medical Consent Paradigms: Building the Unbreakable Shield</button>
+    </div>
+  </div>
+  
+  <!-- Week 8 -->
+  <div id="week8" class="week-content">
+    <div class="week-header">
+      <div class="week-title">WEEK 8: CONSTITUTIONAL CHALLENGE TO CANADIAN ONE HEALTH ACT</div>
+      <div class="week-theme">"THE SOVEREIGNTY BATTLE: DISMANTLING CANADA'S GATEWAY TO GLOBAL HEALTH CONTROL"</div>
+      <div class="dates">May 5-9, 2025</div>
+    </div>
+    <div class="episode-grid">
+      <button class="episode-button" data-emoji="🔥 " onclick="openModal('week8-monday')">MONDAY: Deconstructing Jurisdictional Boundaries: Constitutional Sovereignty Analysis</button>
+      <button class="episode-button" data-emoji="🔒 " onclick="openModal('week8-tuesday')">TUESDAY: Federal-Provincial Power Distribution: Exposing the Jurisdictional Fraud</button>
+      <button class="episode-button" data-emoji="🔬 " onclick="openModal('week8-wednesday')">WEDNESDAY: Charter Rights Analysis: The Constitutional Rights They're Surrendering</button>
+      <button class="episode-button" data-emoji="🌐 " onclick="openModal('week8-thursday')">THURSDAY: International Governance Interface: Treaty Law vs. Constitutional Supremacy</button>
+      <button class="episode-button" data-emoji="⚖ " onclick="openModal('week8-friday')">FRIDAY: Reconstructing Health Federalism: Restoring Provincial Sovereignty</button>
+    </div>
+  </div>
+  
+  <!-- Week 9 -->
+  <div id="week9" class="week-content">
+    <div class="week-header">
+      <div class="week-title">WEEK 9: HEALTH CANADA REGULATORY ENGAGEMENT</div>
+      <div class="week-theme">"SCIENTIFIC FRAUD: CHALLENGING REGULATORY CAPTURE THROUGH CANADIAN ADMINISTRATIVE LAW"</div>
+      <div class="dates">May 12-16, 2025</div>
+    </div>
+    <div class="episode-grid">
+      <button class="episode-button" data-emoji="🔥 " onclick="openModal('week9-monday')">MONDAY: Scientific Integrity: Challenging Regulatory Classification Mechanisms</button>
+      <button class="episode-button" data-emoji="🔎 " onclick="openModal('week9-tuesday')">TUESDAY: Freedom of Information: Exposing the Hidden Canadian Data</button>
+      <button class="episode-button" data-emoji="🧪 " onclick="openModal('week9-wednesday')">WEDNESDAY: Scientific Dispute Mechanism: The Administrative Challenge They Fear</button>
+      <button class="episode-button" data-emoji="⚖ " onclick="openModal('week9-thursday')">THURSDAY: Judicial Review Application: Breaking Through Regulatory Capture</button>
+      <button class="episode-button" data-emoji="🔄 " onclick="openModal('week9-friday')">FRIDAY: Canadian Charter Challenge Strategy: Section 7 Rights Reclaimed</button>
+    </div>
+  </div>
+  
+  <!-- Week 10 -->
+  <div id="week10" class="week-content">
+    <div class="week-header">
+      <div class="week-title">WEEK 10: EUROPEAN MEDICINES AGENCY SCIENTIFIC DISPUTE</div>
+      <div class="week-theme">"EUROZONE BATTLEGROUND: CHALLENGING THE EMA'S PRODUCT AUTHORIZATION FRAUD"</div>
+      <div class="dates">May 19-23, 2025</div>
+    </div>
+    <div class="episode-grid">
+      <button class="episode-button" data-emoji="🔥 " onclick="openModal('week10-monday')">MONDAY: Transnational Regulatory Accountability: Deconstructing Authorization Mechanisms</button>
+      <button class="episode-button" data-emoji="🔍 " onclick="openModal('week10-tuesday')">TUESDAY: EU Transparency Regulation: Forcing Open the Data Vaults</button>
+      <button class="episode-button" data-emoji="🧪 " onclick="openModal('week10-wednesday')">WEDNESDAY: Clinical Trial Regulation Challenge: The Scientific Fraud Across Europe</button>
+      <button class="episode-button" data-emoji="⚖ " onclick="openModal('week10-thursday')">THURSDAY: European Court Precedent: Building the Case for Judicial Intervention</button>
+      <button class="episode-button" data-emoji="🔄 " onclick="openModal('week10-friday')">FRIDAY: EU Future Framework: Reconstructing European Pharmaceutical Regulation</button>
+    </div>
+  </div>
+  
+  <!-- Week 11 -->
+  <div id="week11" class="week-content">
+    <div class="week-header">
+      <div class="week-title">WEEK 11: COSTA RICAN COMPTROLLER INVESTIGATION ESCALATION</div>
+      <div class="week-theme">"PROCUREMENT FRAUD INVESTIGATION: EXPOSING THE GLOBAL PHARMACEUTICAL CONTRACT SCANDAL"</div>
+      <div class="dates">May 26-30, 2025</div>
+      <div class="special-note">Coincident with World Health Assembly voting procedures and IHR Amendments rejection deadline</div>
+    </div>
+    <div class="episode-grid">
+      <button class="episode-button" data-emoji="🔥 " onclick="openModal('week11-monday')">MONDAY: WHA Begins: The Final Stand Against WHO Treaty Overreach</button>
+      <button class="episode-button" data-emoji="💰 " onclick="openModal('week11-tuesday')">TUESDAY: Tracing the Pandemic Procurement Chain: Following Global Money Flows</button>
+      <button class="episode-button" data-emoji="🔎 " onclick="openModal('week11-wednesday')">WEDNESDAY: Contract Indemnification Clauses: The Liability Shield Scandal</button>
+      <button class="episode-button" data-emoji="🌐 " onclick="openModal('week11-thursday')">THURSDAY: International Accountability Mechanisms: FATF and Beyond</button>
+      <button class="episode-button" data-emoji="⚖ " onclick="openModal('week11-friday')">FRIDAY: Victory or Resistance: The Path Forward After WHA</button>
+    </div>
+  </div>
+  
+  <!-- Week 12 -->
+  <div id="week12" class="week-content">
+    <div class="week-header">
+      <div class="week-title">WEEK 12: COMPREHENSIVE GLOBAL ACCOUNTABILITY SYNTHESIS</div>
+      <div class="week-theme">"THE GLOBAL LEGAL ARCHITECTURE: BUILDING THE INTERNATIONAL ACCOUNTABILITY FRAMEWORK"</div>
+      <div class="dates">June 2-6, 2025</div>
+    </div>
+    <div class="episode-grid">
+      <button class="episode-button" data-emoji="🔥 " onclick="openModal('week12-monday')">MONDAY: Post-WHA Strategy: Implementing the Global Resistance Framework</button>
+      <button class="episode-button" data-emoji="🌐 " onclick="openModal('week12-tuesday')">TUESDAY: International Court Mechanisms: Building the Global Prosecution Strategy</button>
+      <button class="episode-button" data-emoji="⚖ " onclick="openModal('week12-wednesday')">WEDNESDAY: Coordinating Non-Compliance: The Multi-Jurisdictional Strategy</button>
+      <button class="episode-button" data-emoji="🔄 " onclick="openModal('week12-thursday')">THURSDAY: Prevention Architecture: Building the Framework to Prevent Future Abuses</button>
+      <button class="episode-button" data-emoji="🏆 " onclick="openModal('week12-friday')">FRIDAY: The Nuremberg Legacy: Justice, Accountability, and Global Transformation</button>
+    </div>
+  </div>
+  
+  <div class="call-to-action">
+    <h2>Join Our Global Accountability Challenge</h2>
+    <p>Support our legal interventions to restore medical sovereignty and establish accountability for unprecedented governance failures.</p>
+    <a href="https://stopcovidvaccinesnow.org/donate" class="action-button">Support Our Legal Actions</a>
+    <a href="https://community.interestofjustice.org" class="action-button">Join the Community</a>
+  </div>
+  
   <div class="footer">
-    <a href="https://stopcovidvaccinesnow.org/donate">Support Legal Actions</a>
-    <img src="/mnt/data/Interest-Of-Justice-Logo-layers-2048x565.png" alt="IOJ Logo">
-    <a href="https://community.interestofjustice.org">Join IOJ Community</a>
+    <p>The Nuremberg Hearing Miniseries</p>
+    <p>Global Science Integrity Task Force</p>
+    <p><a href="http://www.NurembergHearing.org" class="website-link">www.NurembergHearing.org</a></p>
   </div>
-
-  <script>
-    function showWeek(week) {
-      document.querySelectorAll('.week').forEach(w => w.classList.remove('active'));
-      document.getElementById('week' + week).classList.add('active');
-      document.querySelectorAll('.nav button').forEach(btn => btn.classList.remove('active'));
-      document.getElementById('week-btn-' + week).classList.add('active');
-    }
-
-    function openModal(date, title, points) {
-      document.getElementById('modal-title').textContent = title;
-      document.getElementById('modal-date').textContent = date;
-      document.getElementById('modal-content').innerHTML = points.map(p => `<li>${p}</li>`).join("");
-      document.getElementById('modal').style.display = 'block';
-    }
-
-    function closeModal() {
-      document.getElementById('modal').style.display = 'none';
-    }
-  </script>
-</body>
-</html>

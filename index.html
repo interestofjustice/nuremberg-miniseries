@@ -1,140 +1,156 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The Nuremberg Hearing Miniseries</title>
-<style>
-  :root {
-    --primary-color: #1a2f4b;
-    --secondary-color: #a93f55;
-    --accent-color: #d15a7c;
-    --light-color: #f3f4f6;
-    --dark-color: #111827;
+// Enhanced Modal Management System
+class EpisodeModalManager {
+  constructor() {
+    this.modal = null;
+    this.modalData = null;
+    this.initializeDOM();
+    this.bindEvents();
   }
-  body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: var(--light-color);
-    color: var(--dark-color);
-    margin: 0;
-    padding: 0;
-  }
-  .iframe-container {
-    width: 800px;
-    height: 600px;
-    margin: auto;
-    border: 1px solid var(--primary-color);
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    background-color: white;
-  }
-  header {
-    text-align: center;
-    background-color: var(--primary-color);
-    color: white;
-    padding: 1rem;
-  }
-  header h1 {
-    font-size: 1.5rem;
-    margin-bottom: 0.5rem;
-  }
-  .content {
-    padding: 1rem;
-    text-align: center;
-  }
-  .buttons-container {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 1rem;
-  }
-  .week-button {
-    background-color: var(--secondary-color);
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s ease-in-out;
-  }
-  .week-button:hover {
-    background-color: var(--accent-color);
-  }
-  .episodes-container {
-    display: none; /* Hidden by default */
-    margin-top: 1rem;
-    text-align: left;
-  }
-</style>
-</head>
-<body>
-<div class="iframe-container">
-<header>
-<h1>The Nuremberg Hearing Miniseries</h1>
-<p>Starting March 17, 2025</p>
-</header>
-<div class="content">
-<p>Select a week to view its episodes:</p>
-<div class="buttons-container">
-<button class="week-button" onclick="showEpisodes('week1')">Week 1</button>
-<button class="week-button" onclick="showEpisodes('week2')">Week 2</button>
-<button class="week-button" onclick="showEpisodes('week3')">Week 3</button>
-<!-- Add more week buttons as needed -->
-</div>
 
-<div id="week1" class="episodes-container">
-<h3>Week 1 Episodes:</h3>
-<ul>
-<li>🔥 MONDAY - The 10-Day Loophole That Could Destroy the WHO</li>
-<li>🚨 TUESDAY - Whispers to Roars</li>
-<li>🌍 WEDNESDAY - Administrative Silence</li>
-<li>🔍 THURSDAY - Diplomatic Dominoes</li>
-<li>💥 FRIDAY - SueTheWHO.org</li>
-</ul>
-</div>
+  initializeDOM() {
+    // Create modal if not existing
+    if (!document.getElementById('episode-modal')) {
+      const modalHTML = `
+        <div id="episode-modal" class="modal">
+          <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <div id="modal-data"></div>
+          </div>
+        </div>
+      `;
+      document.body.insertAdjacentHTML('beforeend', modalHTML);
+    }
 
-<div id="week2" class="episodes-container">
-<h3>Week 2 Episodes:</h3>
-<ul>
-<li>🔥 MONDAY - EXPOSED!</li>
-<li>🚨 TUESDAY - The APA Weapon</li>
-<li>🌪 WEDNESDAY - PREP Act Immunity</li>
-<li>🔍 THURSDAY - Congressional Whistleblowers</li>
-<li>💥 FRIDAY - Rebuilding Scientific Integrity</li>
-</ul>
-</div>
+    this.modal = document.getElementById('episode-modal');
+    this.modalData = document.getElementById('modal-data');
+  }
 
-<div id="week3" class="episodes-container">
-<h3>Week 3 Episodes:</h3>
-<ul>
-<li>🔥 MONDAY - Institutional Communication Networks</li>
-<li>🚨 TUESDAY - Transnational Information Sovereignty</li>
-<li>💰 WEDNESDAY - Financial Trajectory Analysis</li>
-<li>🔎 THURSDAY - Diplomatic Communication Intervention</li>
-<li>🌐 FRIDAY - Constructing the Global Transparency Architecture</li>
-</ul>
-</div>
+  bindEvents() {
+    // Delegate event handling for efficiency
+    document.addEventListener('click', (event) => {
+      const episodeButton = event.target.closest('.episode-button');
+      const closeButton = event.target.closest('.close-button');
+      
+      if (episodeButton) {
+        const episodeId = episodeButton.getAttribute('data-episode');
+        this.showEpisodeModal(episodeId);
+      }
+      
+      if (closeButton || event.target === this.modal) {
+        this.closeModal();
+      }
+    });
 
-<!-- Add more weeks as needed -->
-</div>
+    // Add keyboard support for closing modal
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && this.modal.style.display === 'block') {
+        this.closeModal();
+      }
+    });
+  }
 
-<script>
-// Function to show episodes for a selected week
-function showEpisodes(weekId) {
-   // Hide all episode containers
-   const allWeeks = document.querySelectorAll('.episodes-container');
-   allWeeks.forEach(week => week.style.display = 'none');
-   
-   // Show the selected week's episodes
-   const selectedWeek = document.getElementById(weekId);
-   if (selectedWeek) {
-     selectedWeek.style.display = 'block';
-   }
+  showEpisodeModal(episodeId) {
+    const data = this.getEpisodeData(episodeId);
+    
+    if (!data) {
+      console.error('No modal data found for episode:', episodeId);
+      return;
+    }
+
+    const modalContent = this.generateModalContent(data);
+    
+    this.modalData.innerHTML = modalContent;
+    this.modal.style.display = 'block';
+    
+    // Accessibility and focus management
+    this.modal.setAttribute('aria-hidden', 'false');
+    const closeButton = this.modal.querySelector('.close-button');
+    closeButton?.focus();
+  }
+
+  getEpisodeData(episodeId) {
+    // Use the existing modalData object from the previous implementation
+    return window.modalData?.[episodeId];
+  }
+
+  generateModalContent(data) {
+    const hashtagsHTML = data.hashtags?.map(tag => 
+      `<span class="hashtag">${tag}</span>`
+    ).join('') || '';
+
+    const contentListHTML = data.content?.map(item => 
+      `<li>${item}</li>`
+    ).join('') || '';
+
+    return `
+      <h2 class="modal-title">${data.title}</h2>
+      <p class="modal-date">${data.date}</p>
+      <p class="modal-description">${data.description}</p>
+      ${contentListHTML ? `
+        <div class="content-list-header">Content Overview:</div>
+        <ul class="content-list">
+          ${contentListHTML}
+        </ul>
+      ` : ''}
+      <div class="hashtags">
+        ${hashtagsHTML}
+      </div>
+      <div class="community-action">
+        <a href="https://community.interestofjustice.org" class="community-button">Join the Community</a>
+      </div>
+    `;
+  }
+
+  closeModal() {
+    this.modal.style.display = 'none';
+    this.modal.setAttribute('aria-hidden', 'true');
+    
+    // Return focus to the triggering element if possible
+    const lastTriggeredButton = document.querySelector('.episode-button:focus');
+    lastTriggeredButton?.focus();
+  }
 }
-</script>
 
-</div>
-</body>
-</html>
+// Initialize the modal manager when the DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+  // Attach modalData to window to ensure it's accessible
+  window.modalData = {
+    // Copy the entire modalData object from the original script
+    ...modalData
+  };
+
+  // Create the modal manager instance
+  window.episodeModalManager = new EpisodeModalManager();
+
+  // Additional optimizations and enhancements
+  const optimizeHeights = () => {
+    const container = document.querySelector('.container');
+    const episodesContainer = document.querySelector('.episodes-container');
+    
+    if (!container || !episodesContainer) return;
+
+    const calculateAvailableHeight = () => {
+      const windowHeight = window.innerHeight;
+      const headerHeight = document.querySelector('header')?.offsetHeight || 0;
+      const weekSelectorHeight = document.querySelector('.week-selector')?.offsetHeight || 0;
+      const padding = 40; // Additional padding
+
+      return windowHeight - headerHeight - weekSelectorHeight - padding;
+    };
+
+    episodesContainer.style.maxHeight = `${calculateAvailableHeight()}px`;
+    episodesContainer.style.overflowY = 'auto';
+  };
+
+  // Run on initial load and window resize
+  optimizeHeights();
+  window.addEventListener('resize', optimizeHeights);
+});
+
+// Performance and accessibility enhancements
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'hidden') {
+    // Cleanup when page is not visible
+    window.episodeModalManager?.closeModal();
+  }
+});

@@ -1,238 +1,494 @@
-titleDisplay = document.getElementById('weekSubtitle');
-    const dayGridContainer = document.getElementById('dayGrid');
-    const weekContentContainer = document.getElementById('weekContent');
-    const modalBackdrop = document.getElementById('modalBackdrop');
-    const modalTitle = document.getElementById('modalTitle');
-    const modalBody = document.getElementById('modalBody');
-    const modalClose = document.getElementById('modalClose');
-    const modalCloseBtn = document.getElementById('modalCloseBtn');
-    const addToCalendarBtn = document.getElementById('addToCalendarBtn');
-    const toast = document.getElementById('toast');
-    const resourceButtons = document.querySelectorAll('.resource-btn');
+import React, { useState } from 'react';
+import { ChevronLeft, ChevronRight, Info, Calendar, X } from 'lucide-react';
 
-    // Initialize UI
-    function init() {
-      renderWeekContent(currentWeek);
-      updateNavigationControls();
-      setupEventListeners();
+const NurembergInterface = () => {
+  const [activeWeek, setActiveWeek] = useState(1);
+  const [showOverview, setShowOverview] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [modalContent, setModalContent] = useState({ title: '', content: '' });
+  
+  // Week data - simplified for demo
+  const weeks = [
+    {
+      number: 1,
+      title: "BREAKING THE SILENCE - COSTA RICA'S CONSTITUTIONAL REBELLION",
+      subtitle: "UNMASKING THE 10-DAY LOOPHOLE THAT COULD DESTROY THE WHO",
+      date: "March 17-21, 2025",
+      episodes: [
+        {
+          day: "Monday",
+          title: "The 10-Day Loophole That Could Destroy the WHO",
+          description: "This opening episode exposes a forgotten constitutional weapon in Costa Rican law that provides a powerful legal mechanism to challenge WHO authority.",
+          points: [
+            "Comprehensive analysis of Costa Rican Administrative Silence Doctrine.",
+            "Detailed examination of Constitutional Article 27 and Article 50.",
+            "Exploration of the 10-day window that creates administrative acquiescence.",
+            "Strategic framework for international challenge to WHO governance."
+          ]
+        },
+        {
+          day: "Tuesday",
+          title: "Whispers to Roars: How One Nation Can Bring Down a Global Regime",
+          description: "This episode provides an in-depth analysis of International Health Regulations nullification through Article 55(2) Dispute Resolution Mechanism.",
+          points: [
+            "Strategic application of IHR Article 55(2) dispute mechanisms.",
+            "Analysis of WHO Constitution Article 75 referral pathways.",
+            "Vienna Convention on Treaties application to procedural irregularities.",
+            "Multi-jurisdictional strategy for international challenge."
+          ]
+        },
+        {
+          day: "Wednesday",
+          title: "Administrative Silence: The Legal Weapon They Never Saw Coming",
+          description: "This episode exposes the powerful legal doctrine of Positive Administrative Silence as codified in Law No. 6227.",
+          points: [
+            "Comprehensive analysis of Positive Silence Doctrine under Costa Rican law.",
+            "Constitutional Chamber Decision No. 5694-2008 application.",
+            "Strategic implementation of Law No. 9097 on Right of Petition.",
+            "International implications of administrative acquiescence."
+          ]
+        },
+        {
+          day: "Thursday",
+          title: "Diplomatic Dominoes: Building the Global Accountability Network",
+          description: "This episode outlines coalition formation strategies utilizing diplomatic channels under Vienna Convention on Diplomatic Relations.",
+          points: [
+            "Strategic implementation of Vienna Convention on Diplomatic Relations.",
+            "UN Charter Article 33 peaceful dispute settlement mechanisms.",
+            "Paris Principles on National Human Rights Institutions application.",
+            "Global coalition-building methodology and diplomatic framework."
+          ]
+        },
+        {
+          day: "Friday",
+          title: "SueTheWHO.org: Your Weapon Against Medical Tyranny",
+          description: "This episode unveils our comprehensive documentation repository and international legal resource platform.",
+          points: [
+            "Platform launch with comprehensive juridical analysis tools.",
+            "Document repository for international legal challenges.",
+            "Strategic templates for administrative and judicial filings.",
+            "Global evidence compilation and crowdsourced documentation."
+          ]
+        }
+      ]
+    },
+    {
+      number: 2,
+      title: "EXPOSING THE ADMINISTRATIVE DEATH MACHINE",
+      subtitle: "ADMINISTRATIVE TYRANNY: THE SECRET GOVERNMENT PANEL THAT SOLD YOUR HEALTH",
+      date: "March 24-28, 2025",
+      episodes: [
+        {
+          day: "Monday",
+          title: "EXPOSED: The Secret Government Panel That Sold Your Health",
+          description: "This explosive episode provides a comprehensive breakdown of the Federal Advisory Committee Act (FACA).",
+          points: [
+            "Comprehensive analysis of 5 U.S.C. App. 2 §§1-16 requirements.",
+            "Detailed examination of \"fairly balanced\" committee membership violations.",
+            "Forensic analysis of undue influence by pharmaceutical interests.",
+            "Historical pattern of regulatory capture through advisory mechanisms."
+          ]
+        },
+        {
+          day: "Tuesday",
+          title: "The APA Weapon: Your Legal Nuclear Option Against Corrupt Agencies",
+          description: "Strategic episode outline",
+          points: ["Point 1", "Point 2", "Point 3", "Point 4"]
+        },
+        {
+          day: "Wednesday",
+          title: "PREP Act Immunity: The License to Kill Hidden in Plain Sight",
+          description: "Strategic episode outline",
+          points: ["Point 1", "Point 2", "Point 3", "Point 4"]
+        },
+        {
+          day: "Thursday",
+          title: "Congressional Whistleblowers: The Last Line of Defense",
+          description: "Strategic episode outline",
+          points: ["Point 1", "Point 2", "Point 3", "Point 4"]
+        },
+        {
+          day: "Friday",
+          title: "Rebuilding Scientific Integrity: How We Reclaim Public Health",
+          description: "Strategic episode outline",
+          points: ["Point 1", "Point 2", "Point 3", "Point 4"]
+        }
+      ]
     }
+  ];
+  
+  // Add placeholder weeks for demo
+  for (let i = 3; i <= 12; i++) {
+    weeks.push({
+      number: i,
+      title: `WEEK ${i} TITLE`,
+      subtitle: `Week ${i} Subtitle`,
+      date: `May-June 2025`,
+      episodes: [
+        {
+          day: "Monday",
+          title: `Week ${i} Monday Episode`,
+          description: "Episode description",
+          points: ["Point 1", "Point 2", "Point 3", "Point 4"]
+        },
+        {
+          day: "Tuesday",
+          title: `Week ${i} Tuesday Episode`,
+          description: "Episode description",
+          points: ["Point 1", "Point 2", "Point 3", "Point 4"]
+        },
+        {
+          day: "Wednesday",
+          title: `Week ${i} Wednesday Episode`,
+          description: "Episode description",
+          points: ["Point 1", "Point 2", "Point 3", "Point 4"]
+        },
+        {
+          day: "Thursday",
+          title: `Week ${i} Thursday Episode`,
+          description: "Episode description",
+          points: ["Point 1", "Point 2", "Point 3", "Point 4"]
+        },
+        {
+          day: "Friday",
+          title: `Week ${i} Friday Episode`,
+          description: "Episode description",
+          points: ["Point 1", "Point 2", "Point 3", "Point 4"]
+        }
+      ]
+    });
+  }
 
-    // Get day class
-    function getDayClass(day) {
-      switch(day) {
-        case 'Monday': return 'monday';
-        case 'Tuesday': return 'tuesday';
-        case 'Wednesday': return 'wednesday';
-        case 'Thursday': return 'thursday';
-        case 'Friday': return 'friday';
-        default: return 'monday';
-      }
+  const handleWeekChange = (week) => {
+    setActiveWeek(week);
+  };
+
+  const handlePreviousWeek = () => {
+    if (activeWeek > 1) {
+      setActiveWeek(activeWeek - 1);
     }
+  };
 
-    // Get day emoji
-    function getDayEmoji(day) {
-      switch(day) {
-        case 'Monday': return '🔍';
-        case 'Tuesday': return '⚖️';
-        case 'Wednesday': return '🔬';
-        case 'Thursday': return '🌐';
-        case 'Friday': return '🚀';
-        default: return '📅';
-      }
+  const handleNextWeek = () => {
+    if (activeWeek < weeks.length) {
+      setActiveWeek(activeWeek + 1);
     }
+  };
 
-    // Render week content with animation
-    function renderWeekContent(weekNumber) {
-      const weekData = seriesData.find(week => week.week === weekNumber);
-      if (!weekData) return;
+  const openModal = (title, content) => {
+    setModalContent({ title, content });
+    setShowModal(true);
+  };
 
-      weekContentContainer.classList.add('fade-out');
-      
-      setTimeout(() => {
-        // Update header content
-        weekTitleDisplay.textContent = `Week ${weekData.week}: ${weekData.title}`;
-        weekSubtitleDisplay.textContent = weekData.subtitle;
-        currentDateDisplay.textContent = weekData.date;
-        
-        // Clear existing day cards
-        dayGridContainer.innerHTML = '';
-        
-        // Create day cards with staggered animation
-        weekData.episodes.forEach((episode, index) => {
-          const dayCard = document.createElement('div');
-          dayCard.className = 'day-card';
-          dayCard.style.animationDelay = `${index * 0.05}s`;
-          dayCard.classList.add('fade-in-up');
-          
-          dayCard.innerHTML = `
-            <div class="icon-circle ${getDayClass(episode.day)}">
-              ${getDayEmoji(episode.day)}
+  const closeModal = () => {
+    setShowModal(false);
+  };
+
+  // Display emoji for day of the week
+  const getDayEmoji = (day) => {
+    switch (day) {
+      case 'Monday': return '🔍';
+      case 'Tuesday': return '⚖️';
+      case 'Wednesday': return '🔬';
+      case 'Thursday': return '🌐';
+      case 'Friday': return '🚀';
+      default: return '📅';
+    }
+  };
+  
+  // Get appropriate background style for day of week
+  const getDayColorClass = (day) => {
+    switch (day) {
+      case 'Monday': return 'from-blue-500 to-blue-600';
+      case 'Tuesday': return 'from-amber-500 to-amber-600';
+      case 'Wednesday': return 'from-emerald-500 to-emerald-600';
+      case 'Thursday': return 'from-purple-500 to-purple-600';
+      case 'Friday': return 'from-red-500 to-red-600';
+      default: return 'from-gray-500 to-gray-600';
+    }
+  };
+
+  return (
+    <div className="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-200">
+      {/* Header with gradient background */}
+      <div className="bg-gradient-to-r from-blue-900 to-indigo-800 text-white p-3 relative">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center">
+            <div className="hidden sm:flex w-10 h-10 bg-white rounded-full items-center justify-center text-blue-800 font-bold mr-2 shadow-md">
+              NH
             </div>
-            <span class="day-name">${episode.day}</span>
-            <div class="day-title">${episode.title}</div>
-          `;
-          
-          dayCard.addEventListener('click', () => {
-            currentEpisodeInfo = {
-              day: episode.day,
-              title: episode.title,
-              weekDate: weekData.date
-            };
-            openEpisodeModal(episode, weekData.date);
-          });
-          
-          dayGridContainer.appendChild(dayCard);
-        });
-        
-        // Update active state of week buttons
-        weekButtons.forEach(button => {
-          button.classList.toggle('active', parseInt(button.dataset.week) === weekNumber);
-        });
-        
-        // Show content with animation
-        weekContentContainer.classList.remove('fade-out');
-      }, 150);
-    }
-
-    // Update navigation controls (enable/disable prev/next buttons)
-    function updateNavigationControls() {
-      prevWeekBtn.disabled = currentWeek <= 1;
-      nextWeekBtn.disabled = currentWeek >= seriesData.length;
-    }
-
-    // Open episode modal
-    function openEpisodeModal(episode, weekDate) {
-      const dayClass = getDayClass(episode.day);
-      
-      modalTitle.textContent = `${episode.day}: ${episode.title}`;
-      
-      modalBody.innerHTML = `
-        <div class="modal-day-badge ${dayClass}">
-          ${episode.day}, ${weekDate.split('-')[0]}
+            <h1 className="font-bold text-xl tracking-tight">Nuremberg Hearing Miniseries</h1>
+          </div>
+          <button 
+            onClick={() => setShowOverview(!showOverview)}
+            className="flex items-center space-x-1 text-xs bg-blue-800 hover:bg-blue-700 px-2 py-1 rounded transition-colors duration-200 shadow-sm"
+          >
+            <Info size={14} />
+            <span>{showOverview ? 'Hide' : 'Show'} Overview</span>
+          </button>
         </div>
-        <p class="modal-description">${episode.description}</p>
-        <h4 class="modal-points-title">Key Points:</h4>
-        <ul class="modal-points-list">
-          ${episode.points.map(point => `<li>${point}</li>`).join('')}
-        </ul>
-      `;
-      
-      modalBackdrop.classList.add('active');
-      
-      // Prevent body scrolling when modal is open
-      document.body.style.overflow = 'hidden';
-    }
+        <p className="text-xs text-blue-100 mt-1 italic">March 17 - June 6, 2025 • "The Greatest Medical Crime in History: How We Take Back Our Freedom"</p>
+      </div>
 
-    // Open resource modal
-    function openResourceModal(resourceKey) {
-      const resource = resourceDescriptions[resourceKey];
-      if (!resource) return;
-      
-      modalTitle.textContent = resource.title;
-      
-      modalBody.innerHTML = `
-        <p class="modal-description">${resource.content}</p>
-      `;
-      
-      modalBackdrop.classList.add('active');
-      
-      // Prevent body scrolling when modal is open
-      document.body.style.overflow = 'hidden';
-    }
+      {/* Collapsible Overview */}
+      {showOverview && (
+        <div className="bg-blue-50 p-3 text-sm border-b border-blue-100 animated fadeIn">
+          <h3 className="font-semibold text-blue-900 mb-2">Series Overview</h3>
+          <p className="text-xs text-gray-700">
+            A 12-week miniseries exposing medical crimes and providing legal strategies. 
+            Key focus areas include constitutional challenges, informed consent violations, 
+            regulatory capture, and international health regulation challenges.
+          </p>
+          
+          <h3 className="font-semibold text-blue-900 mt-3 mb-1">Highest Priority Filings</h3>
+          <ul className="text-xs text-gray-700 list-disc pl-5">
+            <li>Week 4: Minimal Risk Classification Challenge</li>
+            <li>Week 5: Emergency Use Authorization Challenge</li>
+            <li>Week 7: Congressional Informed Consent Inquiry</li>
+            <li>Week 10: International Health Regulations Legal Challenge</li>
+            <li>Week 11: WHO Pandemic Treaty Challenge</li>
+          </ul>
+        </div>
+      )}
 
-    // Close modal
-    function closeModal() {
-      modalBackdrop.classList.remove('active');
-      
-      // Re-enable body scrolling
-      document.body.style.overflow = 'auto';
-    }
+      {/* Week Navigation - Two rows */}
+      <div className="bg-gray-100 p-3 border-b border-gray-200">
+        <div className="flex items-center justify-between mb-2">
+          <button 
+            onClick={handlePreviousWeek}
+            disabled={activeWeek === 1}
+            className={`flex items-center p-1.5 rounded transition-all duration-200 ${
+              activeWeek === 1 
+                ? 'text-gray-400 cursor-not-allowed opacity-50' 
+                : 'text-blue-600 hover:bg-blue-100 hover:shadow-sm'
+            }`}
+          >
+            <ChevronLeft size={16} />
+            <span className="text-xs ml-1 font-medium">Previous</span>
+          </button>
+          
+          <div className="flex items-center text-sm bg-white px-3 py-1 rounded-full shadow-sm border border-gray-200">
+            <Calendar size={14} className="mr-2 text-blue-600" />
+            <span className="font-medium">{weeks[activeWeek - 1].date}</span>
+          </div>
+          
+          <button 
+            onClick={handleNextWeek}
+            disabled={activeWeek === weeks.length}
+            className={`flex items-center p-1.5 rounded transition-all duration-200 ${
+              activeWeek === weeks.length 
+                ? 'text-gray-400 cursor-not-allowed opacity-50' 
+                : 'text-blue-600 hover:bg-blue-100 hover:shadow-sm'
+            }`}
+          >
+            <span className="text-xs mr-1 font-medium">Next</span>
+            <ChevronRight size={16} />
+          </button>
+        </div>
+        
+        <div className="grid grid-cols-6 gap-1.5 mb-1">
+          {weeks.slice(0, 6).map((week) => (
+            <button
+              key={week.number}
+              onClick={() => handleWeekChange(week.number)}
+              className={`text-xs py-1.5 px-1 rounded transition-all duration-200 ${
+                activeWeek === week.number
+                  ? 'bg-blue-600 text-white shadow-md transform scale-105'
+                  : 'bg-white hover:bg-blue-50 border border-gray-300 hover:border-blue-300 hover:shadow'
+              }`}
+            >
+              Week {week.number}
+            </button>
+          ))}
+        </div>
+        
+        <div className="grid grid-cols-6 gap-1.5">
+          {weeks.slice(6, 12).map((week) => (
+            <button
+              key={week.number}
+              onClick={() => handleWeekChange(week.number)}
+              className={`text-xs py-1.5 px-1 rounded transition-all duration-200 ${
+                activeWeek === week.number
+                  ? 'bg-blue-600 text-white shadow-md transform scale-105'
+                  : 'bg-white hover:bg-blue-50 border border-gray-300 hover:border-blue-300 hover:shadow'
+              }`}
+            >
+              Week {week.number}
+            </button>
+          ))}
+        </div>
+      </div>
 
-    // Show toast notification
-    function showToast(message) {
-      toast.textContent = message;
-      toast.classList.add('active');
-      
-      setTimeout(() => {
-        toast.classList.remove('active');
-      }, 3000);
-    }
+      {/* Current Week Content */}
+      <div className="p-3">
+        <h2 className="font-bold text-lg text-gray-800 mb-1">
+          Week {activeWeek}: {weeks[activeWeek - 1].title}
+        </h2>
+        <p className="text-xs text-gray-600 mb-3">{weeks[activeWeek - 1].subtitle}</p>
 
-    // Set up event listeners
-    function setupEventListeners() {
-      // Overview toggle
-      toggleOverviewBtn.addEventListener('click', () => {
-        overviewPanel.classList.toggle('active');
-        toggleOverviewBtn.querySelector('span').textContent = 
-          overviewPanel.classList.contains('active') ? 'Hide Overview' : 'Show Overview';
-      });
-      
-      // Week navigation
-      prevWeekBtn.addEventListener('click', () => {
-        if (currentWeek > 1) {
-          currentWeek--;
-          renderWeekContent(currentWeek);
-          updateNavigationControls();
+        {/* Two-row button layout for episodes */}
+        <div className="grid grid-cols-5 gap-2 mb-3">
+          {weeks[activeWeek - 1].episodes.map((episode, idx) => (
+            <button
+              key={idx}
+              onClick={() => openModal(
+                `${episode.day}: ${episode.title}`, 
+                <div>
+                  <div className={`mb-3 p-2 bg-gradient-to-r ${getDayColorClass(episode.day)} rounded-md text-white text-xs`}>
+                    <p className="font-medium">{episode.day}, {weeks[activeWeek - 1].date.split('-')[0]}</p>
+                  </div>
+                  <p className="text-sm mb-3">{episode.description}</p>
+                  <h4 className="font-semibold text-sm mb-1 text-blue-700">Key Points:</h4>
+                  <ul className="list-disc pl-5 space-y-1 text-sm">
+                    {episode.points.map((point, i) => (
+                      <li key={i}>{point}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              className="bg-white border border-gray-200 rounded-lg p-2 hover:bg-blue-50 hover:border-blue-200 transition-all duration-200 flex flex-col items-center text-center shadow-sm hover:shadow transform hover:-translate-y-1"
+            >
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center mb-1 bg-gradient-to-r ${getDayColorClass(episode.day)} text-white`}>
+                {getDayEmoji(episode.day)}
+              </div>
+              <span className="text-xs text-gray-500">{episode.day}</span>
+              <span className="text-xs font-medium mt-1 line-clamp-2">{episode.title}</span>
+            </button>
+          ))}
+        </div>
+        
+        {/* Quick access buttons - two rows */}
+        <div className="mt-4">
+          <h3 className="text-xs font-semibold text-gray-700 mb-2">STRATEGIC RESOURCES</h3>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mb-2">
+            <button className="bg-blue-100 hover:bg-blue-200 text-blue-800 text-xs py-2 px-3 rounded-md flex items-center justify-center transition-colors duration-200" 
+              onClick={() => openModal("Legal Filing Templates", "Repository of ready-to-use legal templates for challenging health regulations in multiple jurisdictions.")}>
+              <span>📄 Legal Templates</span>
+            </button>
+            <button className="bg-green-100 hover:bg-green-200 text-green-800 text-xs py-2 px-3 rounded-md flex items-center justify-center transition-colors duration-200" 
+              onClick={() => openModal("Evidence Repository", "Centralized database of scientific evidence, whistleblower testimonies, and institutional documentation.")}>
+              <span>🔍 Evidence Repository</span>
+            </button>
+            <button className="bg-purple-100 hover:bg-purple-200 text-purple-800 text-xs py-2 px-3 rounded-md flex items-center justify-center transition-colors duration-200" 
+              onClick={() => openModal("Expert Network", "Connect with legal and medical experts who can provide guidance on specific challenges.")}>
+              <span>👥 Expert Network</span>
+            </button>
+            <button className="bg-red-100 hover:bg-red-200 text-red-800 text-xs py-2 px-3 rounded-md flex items-center justify-center transition-colors duration-200" 
+              onClick={() => openModal("Urgent Actions", "Time-sensitive legal and advocacy actions requiring immediate attention.")}>
+              <span>⚠️ Urgent Actions</span>
+            </button>
+            <button className="bg-amber-100 hover:bg-amber-200 text-amber-800 text-xs py-2 px-3 rounded-md flex items-center justify-center transition-colors duration-200" 
+              onClick={() => openModal("Training Materials", "Educational resources for understanding legal frameworks and preparing challenges.")}>
+              <span>📚 Training Materials</span>
+            </button>
+            <button className="bg-teal-100 hover:bg-teal-200 text-teal-800 text-xs py-2 px-3 rounded-md flex items-center justify-center transition-colors duration-200" 
+              onClick={() => openModal("Success Stories", "Case studies of successful legal challenges and their strategic implications.")}>
+              <span>🏆 Success Stories</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Enhanced Modal with animations */}
+      {showModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center z-50 animated fadeIn" onClick={closeModal}>
+          <div 
+            className="bg-white rounded-lg shadow-xl max-w-md w-full max-h-[80vh] overflow-y-auto animated popIn m-4" 
+            onClick={e => e.stopPropagation()}
+          >
+            <div className="p-4 border-b border-gray-200 flex justify-between items-center bg-gradient-to-r from-blue-900 to-indigo-800 text-white rounded-t-lg">
+              <h3 className="font-bold">{modalContent.title}</h3>
+              <button 
+                onClick={closeModal} 
+                className="text-white hover:text-blue-200 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-200 rounded-full"
+              >
+                <X size={20} />
+              </button>
+            </div>
+            <div className="p-4 bg-white">
+              <div className="text-gray-700">{modalContent.content}</div>
+            </div>
+            <div className="p-3 bg-gray-50 border-t border-gray-200 flex justify-between rounded-b-lg">
+              <button 
+                onClick={() => {
+                  // Placeholder for future "Add to Calendar" functionality
+                  alert("Calendar functionality would be implemented here");
+                }}
+                className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-3 py-1.5 rounded text-xs flex items-center transition-colors duration-200"
+              >
+                <Calendar size={12} className="mr-1" />
+                Add to Calendar
+              </button>
+              <button 
+                onClick={closeModal}
+                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 rounded text-xs transition-colors duration-200 shadow-sm"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* CSS for animations */}
+      <style jsx>{`
+        .animated {
+          animation-duration: 300ms;
+          animation-fill-mode: both;
         }
-      });
-      
-      nextWeekBtn.addEventListener('click', () => {
-        if (currentWeek < seriesData.length) {
-          currentWeek++;
-          renderWeekContent(currentWeek);
-          updateNavigationControls();
+        
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
         }
-      });
-      
-      // Week buttons
-      weekButtons.forEach(button => {
-        button.addEventListener('click', () => {
-          const weekNum = parseInt(button.dataset.week);
-          if (weekNum !== currentWeek) {
-            currentWeek = weekNum;
-            renderWeekContent(currentWeek);
-            updateNavigationControls();
+        
+        @keyframes popIn {
+          0% { transform: scale(0.9); opacity: 0; }
+          40% { transform: scale(1.03); opacity: 1; }
+          60% { transform: scale(0.98); }
+          80% { transform: scale(1.01); }
+          100% { transform: scale(1); }
+        }
+        
+        .fadeIn {
+          animation-name: fadeIn;
+        }
+        
+        .popIn {
+          animation-name: popIn;
+          animation-duration: 400ms;
+        }
+        
+        .line-clamp-2 {
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+        }
+        
+        /* Add responsive design improvements */
+        @media (max-width: 640px) {
+          .grid-cols-5 {
+            grid-template-columns: repeat(3, 1fr);
           }
-        });
-      });
-      
-      // Modal close buttons
-      modalClose.addEventListener('click', closeModal);
-      modalCloseBtn.addEventListener('click', closeModal);
-      modalBackdrop.addEventListener('click', (e) => {
-        if (e.target === modalBackdrop) {
-          closeModal();
+          
+          .grid-cols-6 {
+            grid-template-columns: repeat(3, 1fr);
+          }
         }
-      });
-      
-      // Add to calendar button
-      addToCalendarBtn.addEventListener('click', () => {
-        if (currentEpisodeInfo) {
-          const { day, title, weekDate } = currentEpisodeInfo;
-          showToast(`Added to calendar: ${day} - ${title}`);
-        } else {
-          showToast('Event added to calendar');
+        
+        @media (max-width: 480px) {
+          .grid-cols-5 {
+            grid-template-columns: repeat(2, 1fr);
+          }
+          
+          .grid-cols-6 {
+            grid-template-columns: repeat(2, 1fr);
+          }
         }
-      });
-      
-      // Resource buttons
-      resourceButtons.forEach(button => {
-        button.addEventListener('click', () => {
-          const resourceKey = button.dataset.resource;
-          openResourceModal(resourceKey);
-        });
-      });
-      
-      // Keyboard event to close modal with Escape key
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && modalBackdrop.classList.contains('active')) {
-          closeModal();
-        }
-      });
-    }
+      `}</style>
+    </div>
+  );
+};
 
-    // Initialize the application
-    init();
-  </script>
-</body>
-</html>
+export default NurembergInterface;

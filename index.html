@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>The Nuremberg Hearing Miniseries</title>
   <style>
-    /* Base reset & full viewport height */
+    /* Reset and full viewport setup */
     html, body {
       height: 100%;
       margin: 0;
@@ -22,13 +22,13 @@
       --text-color: #111827;
       --border-color: #e5e7eb;
     }
-    /* Main container: header, nav, content, footer */
+    /* Main container: divides page into header, nav, content, footer */
     .container {
       display: flex;
       flex-direction: column;
       height: 100vh;
     }
-    /* Header: full title, subtitle, start date */
+    /* Header with full title, tagline, and start date */
     header {
       flex: 0 0 60px;
       background: var(--primary-color);
@@ -56,7 +56,7 @@
       margin-top: 2px;
       display: inline-block;
     }
-    /* Navigation: Two rows of slim week buttons */
+    /* Navigation: two rows of week buttons */
     .nav {
       flex: 0 0 60px;
       background: var(--secondary-color);
@@ -86,7 +86,7 @@
     .nav-row button.active {
       background: var(--secondary-color);
     }
-    /* Content area: shows one week’s episodes */
+    /* Content area: displays one week’s episodes */
     .content {
       flex: 1;
       position: relative;
@@ -102,34 +102,40 @@
       padding: 4px;
       box-sizing: border-box;
       display: none;
+      flex-direction: column;
+      gap: 2px;
     }
     .week.active {
-      display: block;
+      display: flex;
     }
-    /* Episode Cards: slim design so all 5 fit */
+    /* Episode Cards: five per week, slim design */
     .episode-card {
       background: #fff;
       border: 1px solid var(--border-color);
       border-radius: 4px;
       padding: 4px 6px;
-      margin-bottom: 2px;
-      height: calc((100% - 12px) / 5);
+      flex: 1;
       display: flex;
       align-items: center;
       cursor: pointer;
       font-size: 0.75rem;
       overflow: hidden;
     }
-    .episode-card strong {
-      flex-shrink: 0;
-    }
-    .episode-card span {
+    .episode-card .info {
       margin-left: 4px;
+      flex: 1;
+      overflow: hidden;
+    }
+    .episode-card .info .day {
+      font-weight: bold;
+      margin-right: 4px;
+    }
+    .episode-card .info .title {
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
-    /* Footer: Includes two action buttons */
+    /* Footer with action buttons */
     .footer {
       flex: 0 0 50px;
       background: var(--primary-color);
@@ -138,19 +144,19 @@
       align-items: center;
       justify-content: center;
       font-size: 0.75rem;
+      gap: 12px;
     }
     .footer .action-button {
       background: var(--secondary-color);
       border: none;
       color: #fff;
       padding: 4px 8px;
-      margin: 0 6px;
       border-radius: 4px;
       cursor: pointer;
       font-size: 0.75rem;
       text-decoration: none;
     }
-    /* Modal: Full-screen pop-out with no scrolling */
+    /* Modal: Full-screen popout */
     .modal {
       position: fixed;
       top: 0;
@@ -166,14 +172,14 @@
     }
     .modal-content {
       background: #fff;
-      width: 85vw;
-      height: 85vh;
+      width: 80vw;
+      height: 80vh;
       border-radius: 8px;
       padding: 16px;
       box-sizing: border-box;
       overflow: hidden;
       text-align: center;
-      font-size: 1.1rem;
+      font-size: 1.2rem;
       line-height: 1.4;
     }
     .modal-content h2 {
@@ -181,9 +187,7 @@
       font-size: 1.4rem;
       font-weight: bold;
     }
-    .modal-content p, 
-    .modal-content h3, 
-    .modal-content ul {
+    .modal-content p, .modal-content h3, .modal-content ul {
       margin: 8px 0;
     }
     .modal-content ul {
@@ -195,7 +199,7 @@
       margin: 4px 0;
       font-weight: bold;
     }
-    /* Hashtags: Bold with accent background */
+    /* Hashtags styling in modal */
     .hashtags {
       margin-top: 8px;
     }
@@ -221,7 +225,7 @@
 </head>
 <body>
   <div class="container">
-    <!-- Header with full title, subtitle, and start date -->
+    <!-- Header with full title, tagline, and start date -->
     <header>
       <div>
         <h1>The Nuremberg Hearing Miniseries</h1>
@@ -229,7 +233,7 @@
         <div class="start-date">Starting March 17, 2025</div>
       </div>
     </header>
-    <!-- Navigation: Two rows for Weeks 1-6 and 7-12 -->
+    <!-- Navigation: Two rows for Weeks 1–6 and 7–12 -->
     <div class="nav">
       <div class="nav-row">
         <button id="btn-week1" onclick="showWeek('week1')" class="active">Week 1</button>
@@ -248,233 +252,83 @@
         <button id="btn-week12" onclick="showWeek('week12')">Week 12</button>
       </div>
     </div>
-    <!-- Content Area: Each week displays 5 episodes (with emojis and shorter titles) -->
+    <!-- Content Area: Each week shows five episodes -->
     <div class="content">
       <!-- Week 1 -->
       <div id="week1" class="week active">
-        <div class="episode-card" onclick="openModal('week1-monday')">
-          <strong data-emoji="🔥">🔥</strong><span>10-Day Loophole</span>
-        </div>
-        <div class="episode-card" onclick="openModal('week1-tuesday')">
-          <strong data-emoji="🚨">🚨</strong><span>Whispers to Roars</span>
-        </div>
-        <div class="episode-card" onclick="openModal('week1-wednesday')">
-          <strong data-emoji="🌍">🌍</strong><span>Admin Silence</span>
-        </div>
-        <div class="episode-card" onclick="openModal('week1-thursday')">
-          <strong data-emoji="🔍">🔍</strong><span>Diplomatic Dominoes</span>
-        </div>
-        <div class="episode-card" onclick="openModal('week1-friday')">
-          <strong data-emoji="💥">💥</strong><span>SueTheWHO.org</span>
-        </div>
-      </div>
-      <!-- Week 2 -->
-      <div id="week2" class="week">
-        <div class="episode-card" onclick="openModal('week2-monday')">
-          <strong data-emoji="🔥">🔥</strong><span>Ep 1 Title</span>
-        </div>
-        <div class="episode-card" onclick="openModal('week2-tuesday')">
-          <strong data-emoji="🚨">🚨</strong><span>Ep 2 Title</span>
-        </div>
-        <div class="episode-card" onclick="openModal('week2-wednesday')">
-          <strong data-emoji="🌍">🌍</strong><span>Ep 3 Title</span>
-        </div>
-        <div class="episode-card" onclick="openModal('week2-thursday')">
-          <strong data-emoji="🔍">🔍</strong><span>Ep 4 Title</span>
-        </div>
-        <div class="episode-card" onclick="openModal('week2-friday')">
-          <strong data-emoji="💥">💥</strong><span>Ep 5 Title</span>
-        </div>
-      </div>
-      <!-- Week 3 -->
-      <div id="week3" class="week">
-        <div class="episode-card" onclick="openModal('week3-monday')">
-          <strong data-emoji="🔥">🔥</strong><span>Ep 1 Title</span>
-        </div>
-        <div class="episode-card" onclick="openModal('week3-tuesday')">
-          <strong data-emoji="🚨">🚨</strong><span>Ep 2 Title</span>
-        </div>
-        <div class="episode-card" onclick="openModal('week3-wednesday')">
-          <strong data-emoji="🌍">🌍</strong><span>Ep 3 Title</span>
-        </div>
-        <div class="episode-card" onclick="openModal('week3-thursday')">
-          <strong data-emoji="🔍">🔍</strong><span>Ep 4 Title</span>
-        </div>
-        <div class="episode-card" onclick="openModal('week3-friday')">
-          <strong data-emoji="💥">💥</strong><span>Ep 5 Title</span>
+        <div class="episodes">
+          <div class="episode-card" onclick="openModal('week1-monday')">
+            <strong>MONDAY</strong>
+            <div class="info">
+              <div class="title">The 10-Day Loophole That Could Destroy the WHO</div>
+              <div class="date">March 17, 2025</div>
+            </div>
+          </div>
+          <div class="episode-card" onclick="openModal('week1-tuesday')">
+            <strong>TUESDAY</strong>
+            <div class="info">
+              <div class="title">Whispers to Roars: How One Nation Can Bring Down a Global Regime</div>
+              <div class="date">March 18, 2025</div>
+            </div>
+          </div>
+          <div class="episode-card" onclick="openModal('week1-wednesday')">
+            <strong>WEDNESDAY</strong>
+            <div class="info">
+              <div class="title">Administrative Silence: The Legal Weapon They Never Saw Coming</div>
+              <div class="date">March 19, 2025</div>
+            </div>
+          </div>
+          <div class="episode-card" onclick="openModal('week1-thursday')">
+            <strong>THURSDAY</strong>
+            <div class="info">
+              <div class="title">Diplomatic Dominoes: Building the Global Accountability Network</div>
+              <div class="date">March 20, 2025</div>
+            </div>
+          </div>
+          <div class="episode-card" onclick="openModal('week1-friday')">
+            <strong>FRIDAY</strong>
+            <div class="info">
+              <div class="title">SueTheWHO.org: Your Weapon Against Medical Tyranny</div>
+              <div class="date">March 21, 2025</div>
+            </div>
+          </div>
         </div>
       </div>
-      <!-- Week 4 -->
-      <div id="week4" class="week">
-        <div class="episode-card" onclick="openModal('week4-monday')">
-          <strong data-emoji="🔥">🔥</strong><span>Ep 1 Title</span>
-        </div>
-        <div class="episode-card" onclick="openModal('week4-tuesday')">
-          <strong data-emoji="🚨">🚨</strong><span>Ep 2 Title</span>
-        </div>
-        <div class="episode-card" onclick="openModal('week4-wednesday')">
-          <strong data-emoji="🌍">🌍</strong><span>Ep 3 Title</span>
-        </div>
-        <div class="episode-card" onclick="openModal('week4-thursday')">
-          <strong data-emoji="🔍">🔍</strong><span>Ep 4 Title</span>
-        </div>
-        <div class="episode-card" onclick="openModal('week4-friday')">
-          <strong data-emoji="💥">💥</strong><span>Ep 5 Title</span>
-        </div>
-      </div>
-      <!-- Week 5 -->
-      <div id="week5" class="week">
-        <div class="episode-card" onclick="openModal('week5-monday')">
-          <strong data-emoji="🔥">🔥</strong><span>Ep 1 Title</span>
-        </div>
-        <div class="episode-card" onclick="openModal('week5-tuesday')">
-          <strong data-emoji="🚨">🚨</strong><span>Ep 2 Title</span>
-        </div>
-        <div class="episode-card" onclick="openModal('week5-wednesday')">
-          <strong data-emoji="🌍">🌍</strong><span>Ep 3 Title</span>
-        </div>
-        <div class="episode-card" onclick="openModal('week5-thursday')">
-          <strong data-emoji="🔍">🔍</strong><span>Ep 4 Title</span>
-        </div>
-        <div class="episode-card" onclick="openModal('week5-friday')">
-          <strong data-emoji="💥">💥</strong><span>Ep 5 Title</span>
-        </div>
-      </div>
-      <!-- Week 6 -->
-      <div id="week6" class="week">
-        <div class="episode-card" onclick="openModal('week6-monday')">
-          <strong data-emoji="🔥">🔥</strong><span>Ep 1 Title</span>
-        </div>
-        <div class="episode-card" onclick="openModal('week6-tuesday')">
-          <strong data-emoji="🚨">🚨</strong><span>Ep 2 Title</span>
-        </div>
-        <div class="episode-card" onclick="openModal('week6-wednesday')">
-          <strong data-emoji="🌍">🌍</strong><span>Ep 3 Title</span>
-        </div>
-        <div class="episode-card" onclick="openModal('week6-thursday')">
-          <strong data-emoji="🔍">🔍</strong><span>Ep 4 Title</span>
-        </div>
-        <div class="episode-card" onclick="openModal('week6-friday')">
-          <strong data-emoji="💥">💥</strong><span>Ep 5 Title</span>
-        </div>
-      </div>
-      <!-- Week 7 -->
-      <div id="week7" class="week">
-        <div class="episode-card" onclick="openModal('week7-monday')">
-          <strong data-emoji="🔥">🔥</strong><span>Ep 1 Title</span>
-        </div>
-        <div class="episode-card" onclick="openModal('week7-tuesday')">
-          <strong data-emoji="🚨">🚨</strong><span>Ep 2 Title</span>
-        </div>
-        <div class="episode-card" onclick="openModal('week7-wednesday')">
-          <strong data-emoji="🌍">🌍</strong><span>Ep 3 Title</span>
-        </div>
-        <div class="episode-card" onclick="openModal('week7-thursday')">
-          <strong data-emoji="🔍">🔍</strong><span>Ep 4 Title</span>
-        </div>
-        <div class="episode-card" onclick="openModal('week7-friday')">
-          <strong data-emoji="💥">💥</strong><span>Ep 5 Title</span>
-        </div>
-      </div>
-      <!-- Week 8 -->
-      <div id="week8" class="week">
-        <div class="episode-card" onclick="openModal('week8-monday')">
-          <strong data-emoji="🔥">🔥</strong><span>Ep 1 Title</span>
-        </div>
-        <div class="episode-card" onclick="openModal('week8-tuesday')">
-          <strong data-emoji="🚨">🚨</strong><span>Ep 2 Title</span>
-        </div>
-        <div class="episode-card" onclick="openModal('week8-wednesday')">
-          <strong data-emoji="🌍">🌍</strong><span>Ep 3 Title</span>
-        </div>
-        <div class="episode-card" onclick="openModal('week8-thursday')">
-          <strong data-emoji="🔍">🔍</strong><span>Ep 4 Title</span>
-        </div>
-        <div class="episode-card" onclick="openModal('week8-friday')">
-          <strong data-emoji="💥">💥</strong><span>Ep 5 Title</span>
-        </div>
-      </div>
-      <!-- Week 9 -->
-      <div id="week9" class="week">
-        <div class="episode-card" onclick="openModal('week9-monday')">
-          <strong data-emoji="🔥">🔥</strong><span>Ep 1 Title</span>
-        </div>
-        <div class="episode-card" onclick="openModal('week9-tuesday')">
-          <strong data-emoji="🚨">🚨</strong><span>Ep 2 Title</span>
-        </div>
-        <div class="episode-card" onclick="openModal('week9-wednesday')">
-          <strong data-emoji="🌍">🌍</strong><span>Ep 3 Title</span>
-        </div>
-        <div class="episode-card" onclick="openModal('week9-thursday')">
-          <strong data-emoji="🔍">🔍</strong><span>Ep 4 Title</span>
-        </div>
-        <div class="episode-card" onclick="openModal('week9-friday')">
-          <strong data-emoji="💥">💥</strong><span>Ep 5 Title</span>
-        </div>
-      </div>
-      <!-- Week 10 -->
-      <div id="week10" class="week">
-        <div class="episode-card" onclick="openModal('week10-monday')">
-          <strong data-emoji="🔥">🔥</strong><span>Ep 1 Title</span>
-        </div>
-        <div class="episode-card" onclick="openModal('week10-tuesday')">
-          <strong data-emoji="🚨">🚨</strong><span>Ep 2 Title</span>
-        </div>
-        <div class="episode-card" onclick="openModal('week10-wednesday')">
-          <strong data-emoji="🌍">🌍</strong><span>Ep 3 Title</span>
-        </div>
-        <div class="episode-card" onclick="openModal('week10-thursday')">
-          <strong data-emoji="🔍">🔍</strong><span>Ep 4 Title</span>
-        </div>
-        <div class="episode-card" onclick="openModal('week10-friday')">
-          <strong data-emoji="💥">💥</strong><span>Ep 5 Title</span>
-        </div>
-      </div>
-      <!-- Week 11 -->
-      <div id="week11" class="week">
-        <div class="episode-card" onclick="openModal('week11-monday')">
-          <strong data-emoji="🔥">🔥</strong><span>Ep 1 Title</span>
-        </div>
-        <div class="episode-card" onclick="openModal('week11-tuesday')">
-          <strong data-emoji="🚨">🚨</strong><span>Ep 2 Title</span>
-        </div>
-        <div class="episode-card" onclick="openModal('week11-wednesday')">
-          <strong data-emoji="🌍">🌍</strong><span>Ep 3 Title</span>
-        </div>
-        <div class="episode-card" onclick="openModal('week11-thursday')">
-          <strong data-emoji="🔍">🔍</strong><span>Ep 4 Title</span>
-        </div>
-        <div class="episode-card" onclick="openModal('week11-friday')">
-          <strong data-emoji="💥">💥</strong><span>Ep 5 Title</span>
-        </div>
-      </div>
-      <!-- Week 12 -->
-      <div id="week12" class="week">
-        <div class="episode-card" onclick="openModal('week12-monday')">
-          <strong data-emoji="🔥">🔥</strong><span>Ep 1 Title</span>
-        </div>
-        <div class="episode-card" onclick="openModal('week12-tuesday')">
-          <strong data-emoji="🚨">🚨</strong><span>Ep 2 Title</span>
-        </div>
-        <div class="episode-card" onclick="openModal('week12-wednesday')">
-          <strong data-emoji="🌍">🌍</strong><span>Ep 3 Title</span>
-        </div>
-        <div class="episode-card" onclick="openModal('week12-thursday')">
-          <strong data-emoji="🔍">🔍</strong><span>Ep 4 Title</span>
-        </div>
-        <div class="episode-card" onclick="openModal('week12-friday')">
-          <strong data-emoji="💥">💥</strong><span>Ep 5 Title</span>
-        </div>
-      </div>
+      <!-- Week 2 to Week 12: Placeholder episodes with full info auto-generated (replace with your full data as needed) -->
+      <!-- For brevity, below are auto-generated placeholders for Weeks 2–12 -->
+      <!-- Repeat similar structure for each week -->
+      <script>
+        // Generate placeholder week content for Weeks 2-12
+        for (let w = 2; w <= 12; w++) {
+          let weekDiv = document.createElement('div');
+          weekDiv.id = 'week' + w;
+          weekDiv.className = 'week';
+          let episodesDiv = document.createElement('div');
+          episodesDiv.className = 'episodes';
+          ["MONDAY","TUESDAY","WEDNESDAY","THURSDAY","FRIDAY"].forEach(day => {
+            let card = document.createElement('div');
+            card.className = 'episode-card';
+            card.setAttribute('onclick', `openModal('week${w}-${day.toLowerCase()}')`);
+            card.innerHTML = `<strong>${day}</strong>
+              <div class="info">
+                <div class="title">Week ${w} ${day}: Episode Title</div>
+                <div class="date">${day}, Date for Week ${w}</div>
+              </div>`;
+            episodesDiv.appendChild(card);
+          });
+          weekDiv.appendChild(episodesDiv);
+          document.querySelector('.content').appendChild(weekDiv);
+        }
+      </script>
     </div>
-    <!-- Footer with Action Buttons -->
+    <!-- Footer with action buttons -->
     <div class="footer">
       <a href="https://stopcovidvaccinesnow.org/donate" class="action-button">Support Our Legal Actions</a>
       <a href="https://community.interestofjustice.org" class="action-button">Join the Community</a>
     </div>
   </div>
   
-  <!-- Modal (Popout) -->
+  <!-- Modal Pop-Out -->
   <div id="modal" class="modal" onclick="if(event.target===this) closeModal()">
     <div class="modal-content">
       <span class="close-modal" onclick="closeModal()">×</span>
@@ -483,7 +337,7 @@
   </div>
   
   <script>
-    // Function to switch active week and update nav active state
+    // Function to switch active week and update nav button state
     function showWeek(weekId) {
       document.querySelectorAll('.week').forEach(function(week) {
         week.classList.remove('active');
@@ -495,11 +349,11 @@
       document.getElementById('btn-' + weekId).classList.add('active');
     }
     
-    // Detailed modal data for Week 1 episodes; auto-generate placeholder data for Weeks 2–12 if not defined
+    // Modal data for Week 1 episodes (detailed from your original info)
     const modalData = {
       "week1-monday": {
         title: "The 10-Day Loophole That Could Destroy the WHO",
-        date: "Monday, Mar 17, 2025",
+        date: "Monday, March 17, 2025",
         description: "This episode reveals a forgotten constitutional tool in Costa Rican law that challenges WHO authority by exploiting a 10-day window of administrative inaction.",
         content: [
           "In-depth analysis of the Administrative Silence Doctrine",
@@ -511,7 +365,7 @@
       },
       "week1-tuesday": {
         title: "Whispers to Roars: How One Nation Can Bring Down a Global Regime",
-        date: "Tuesday, Mar 18, 2025",
+        date: "Tuesday, March 18, 2025",
         description: "An exploration of grassroots legal strategies that transform whispers into a global movement challenging established power structures.",
         content: [
           "Analysis of key international legal instruments",
@@ -523,7 +377,7 @@
       },
       "week1-wednesday": {
         title: "Administrative Silence: The Legal Weapon They Never Saw Coming",
-        date: "Wednesday, Mar 19, 2025",
+        date: "Wednesday, March 19, 2025",
         description: "A deep dive into the implications of government inaction under Costa Rican law and how it can be weaponized against institutional overreach.",
         content: [
           "Review of judicial precedents on administrative silence",
@@ -535,7 +389,7 @@
       },
       "week1-thursday": {
         title: "Diplomatic Dominoes: Building the Global Accountability Network",
-        date: "Thursday, Mar 20, 2025",
+        date: "Thursday, March 20, 2025",
         description: "Examining how strategic diplomatic moves can build a network of global accountability against corrupt international institutions.",
         content: [
           "Analysis of diplomatic channels and treaty obligations",
@@ -547,7 +401,7 @@
       },
       "week1-friday": {
         title: "SueTheWHO.org: Your Weapon Against Medical Tyranny",
-        date: "Friday, Mar 21, 2025",
+        date: "Friday, March 21, 2025",
         description: "Showcasing a digital legal resource platform designed to empower citizens to challenge medical tyranny and hold global institutions accountable.",
         content: [
           "Overview of the digital legal toolkit",
@@ -558,6 +412,8 @@
         hashtags: ["#SueTheWHO", "#LegalAction", "#GlobalJustice"]
       }
     };
+    
+    // Auto-generate placeholder modal data for Weeks 2–12 if not defined
     const days = ["monday", "tuesday", "wednesday", "thursday", "friday"];
     for (let w = 2; w <= 12; w++) {
       days.forEach(day => {
@@ -566,7 +422,7 @@
           modalData[key] = {
             title: `Week ${w} ${day.charAt(0).toUpperCase() + day.slice(1)}: Episode Title`,
             date: `${day.charAt(0).toUpperCase() + day.slice(1)}, Date for Week ${w}`,
-            description: `Description for Week ${w} ${day}.`,
+            description: `Detailed description for Week ${w} ${day}.`,
             content: [
               `Detail 1 for Week ${w} ${day}`,
               `Detail 2 for Week ${w} ${day}`,
@@ -578,6 +434,8 @@
         }
       });
     }
+    
+    // Open modal and populate with episode details
     function openModal(id) {
       const data = modalData[id];
       if (!data) return;
@@ -594,6 +452,7 @@
       document.getElementById("modal-content-data").innerHTML = html;
       document.getElementById("modal").style.display = "flex";
     }
+    
     function closeModal() {
       document.getElementById("modal").style.display = "none";
     }

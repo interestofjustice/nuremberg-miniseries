@@ -5,199 +5,141 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>The Nuremberg Hearing Miniseries</title>
   <style>
-    /* Set full height and disable page scrolling */
+    /* Ensure full viewport height and no outer scrolling */
     html, body {
       height: 100%;
       margin: 0;
+      padding: 0;
       overflow: hidden;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: Arial, sans-serif;
     }
-    :root {
-      --primary-color: #1a2f4b;
-      --secondary-color: #a93f55;
-      --accent-color: #d15a7c;
-      --light-color: #f3f4f6;
-      --dark-color: #111827;
-      --border-color: #e5e7eb;
-    }
-    /* Container with fixed sections */
+    /* Main container: header, nav, content, footer */
     .container {
       display: flex;
       flex-direction: column;
       height: 100vh;
     }
-    /* Smaller Header */
+    /* Compact header */
     header {
       flex: 0 0 50px;
-      background-color: var(--primary-color);
-      color: white;
-      text-align: center;
-      padding: 0.5rem;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      background: #1a2f4b;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
     }
-    header h1 {
-      font-size: 1.8rem;
-      margin: 0;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    .tagline {
-      font-size: 0.9rem;
-      font-style: italic;
-    }
-    .start-date {
-      background-color: var(--secondary-color);
-      padding: 0.3rem 0.7rem;
-      border-radius: 4px;
-      font-weight: bold;
-      display: inline-block;
-      font-size: 0.85rem;
-      margin-top: 0.2rem;
-    }
-    /* Compact Navigation (Tabs) */
+    /* Compact navigation (tabs) */
     .nav {
       flex: 0 0 40px;
-      background-color: var(--secondary-color);
+      background: #a93f55;
       display: flex;
-      flex-wrap: wrap;
       justify-content: center;
       align-items: center;
-      padding: 0.2rem;
     }
     .nav button {
-      background: var(--accent-color);
+      background: #d15a7c;
       border: none;
-      color: white;
-      padding: 0.3rem 0.6rem;
-      margin: 0.2rem;
+      color: #fff;
+      padding: 5px 8px;
+      margin: 0 4px;
       border-radius: 4px;
       cursor: pointer;
       font-size: 0.85rem;
-      transition: background-color 0.3s ease;
+      transition: background 0.3s ease;
     }
     .nav button.active {
-      background: var(--secondary-color);
+      background: #a93f55;
     }
-    /* Content area fills remaining space */
+    /* Content area: fills remaining space */
     .content {
       flex: 1;
+      background: #f3f4f6;
+      padding: 5px;
       position: relative;
-      overflow: hidden;
-      background: var(--light-color);
-      padding: 0.5rem;
     }
-    /* Each week container fills content area */
+    /* Each week tab – only one is visible at a time */
     .week {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      padding: 0.5rem;
       display: none;
+      height: 100%;
+      box-sizing: border-box;
+      padding: 5px;
     }
     .week.active {
       display: block;
     }
-    .week-header {
-      margin-bottom: 0.3rem;
-    }
-    .week-title {
-      font-size: 1rem;
-      font-weight: bold;
-      color: var(--primary-color);
-    }
-    .week-theme {
-      font-size: 0.9rem;
-      font-style: italic;
-      color: var(--secondary-color);
-    }
-    .dates {
-      font-size: 0.8rem;
-      color: #6b7280;
-    }
-    .episodes {
-      margin-top: 0.3rem;
-    }
-    .episodes button {
-      display: block;
-      width: 100%;
-      text-align: left;
-      padding: 0.4rem;
-      margin: 0.2rem 0;
-      background-color: white;
-      border: 1px solid var(--border-color);
+    /* Episode cards: five per week, fixed height */
+    .episode-card {
+      background: #fff;
+      border: 1px solid #e5e7eb;
       border-radius: 4px;
+      padding: 8px 10px;
+      margin-bottom: 5px;
+      height: calc((100% - 20px) / 5); /* 5 cards with minimal gap */
+      display: flex;
+      align-items: center;
       cursor: pointer;
-      position: relative;
-      font-size: 0.8rem;
+      font-size: 0.9rem;
+      overflow: hidden;
     }
-    .episodes button::before {
-      content: attr(data-emoji);
-      position: absolute;
-      left: 0.4rem;
-      top: 50%;
-      transform: translateY(-50%);
+    .episode-card span {
+      margin-left: 8px;
     }
-    /* Compact Footer */
+    /* Footer */
     .footer {
       flex: 0 0 30px;
-      background-color: var(--primary-color);
-      color: white;
-      text-align: center;
+      background: #1a2f4b;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       font-size: 0.8rem;
-      padding: 0.3rem;
     }
     .footer a {
-      color: white;
+      color: #fff;
       text-decoration: underline;
       font-weight: bold;
     }
-    /* Modal Styles */
+    /* Modal styles */
     .modal {
-      display: none;
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0,0,0,0.7);
-      justify-content: center;
+      background: rgba(0,0,0,0.8);
+      display: none;
       align-items: center;
-      padding: 0.5rem;
-      overflow: auto;
+      justify-content: center;
+      padding: 5px;
+      box-sizing: border-box;
     }
     .modal-content {
-      background: white;
-      padding: 0.8rem;
-      border-radius: 8px;
-      max-width: 95%;
-      max-height: 90vh;
-      overflow-y: auto;
-      font-size: 0.85rem;
+      background: #fff;
+      width: 90%;
+      height: 90%;
+      border-radius: 4px;
+      padding: 10px;
+      box-sizing: border-box;
+      font-size: 0.75rem;
+    }
+    .modal-content h2 {
+      margin-top: 0;
+      font-size: 1.1rem;
+    }
+    .modal-content p {
+      margin: 5px 0;
+    }
+    .modal-content ul {
+      padding-left: 20px;
+      margin: 5px 0;
     }
     .close-modal {
-      float: right;
+      position: absolute;
+      top: 10px;
+      right: 15px;
       cursor: pointer;
-      font-size: 1rem;
-      margin-top: -0.2rem;
-    }
-    .content-list {
-      list-style: none;
-      padding-left: 1rem;
-      font-size: 0.8rem;
-    }
-    .content-list li::before {
-      content: "•";
-      margin-right: 0.3rem;
-      color: var(--secondary-color);
-    }
-    .hashtags {
-      margin-top: 0.5rem;
-      font-size: 0.8rem;
-    }
-    .hashtags span {
-      margin-right: 0.3rem;
+      font-size: 1.2rem;
     }
   </style>
 </head>
@@ -205,68 +147,81 @@
   <div class="container">
     <!-- Header -->
     <header>
-      <h1>The Nuremberg Hearing</h1>
-      <p class="tagline">"The Greatest Medical Crime in History"</p>
-      <div class="start-date">Starts March 17, 2025</div>
+      The Nuremberg Hearing
     </header>
-    
-    <!-- Navigation (Tabs) -->
+    <!-- Navigation Tabs -->
     <div class="nav">
       <button id="btn-week1" onclick="showWeek('week1')" class="active">Week 1</button>
       <button id="btn-week2" onclick="showWeek('week2')">Week 2</button>
       <button id="btn-week3" onclick="showWeek('week3')">Week 3</button>
       <!-- Add more week buttons as needed -->
     </div>
-    
     <!-- Content Area -->
     <div class="content">
-      <!-- Week 1 Content -->
+      <!-- Week 1: 5 Episodes -->
       <div id="week1" class="week active">
-        <div class="week-header">
-          <div class="week-title">WEEK 1: BREAKING THE SILENCE</div>
-          <div class="week-theme">"Unmasking the 10-Day Loophole"</div>
-          <div class="dates">Mar 17-21, 2025</div>
+        <div class="episode-card" onclick="openModal('week1-monday')">
+          <strong>MONDAY:</strong><span> The 10-Day Loophole That Could Destroy the WHO</span>
         </div>
-        <div class="episodes">
-          <button data-emoji="🔥" onclick="openModal('week1-monday')">MONDAY: The 10-Day Loophole</button>
-          <!-- Additional episode buttons can be added here -->
+        <div class="episode-card" onclick="openModal('week1-tuesday')">
+          <strong>TUESDAY:</strong><span> Whispers to Roars: Bringing Down Global Regimes</span>
+        </div>
+        <div class="episode-card" onclick="openModal('week1-wednesday')">
+          <strong>WEDNESDAY:</strong><span> Administrative Silence: The Unseen Legal Weapon</span>
+        </div>
+        <div class="episode-card" onclick="openModal('week1-thursday')">
+          <strong>THURSDAY:</strong><span> Diplomatic Dominoes: Building Accountability</span>
+        </div>
+        <div class="episode-card" onclick="openModal('week1-friday')">
+          <strong>FRIDAY:</strong><span> SueTheWHO.org: Weaponizing Legal Action</span>
         </div>
       </div>
       
-      <!-- Week 2 Content -->
+      <!-- Week 2: Example placeholders (replace with your content) -->
       <div id="week2" class="week">
-        <div class="week-header">
-          <div class="week-title">WEEK 2: EXPOSING ADMINISTRATIVE TYRANNY</div>
-          <div class="week-theme">"The Secret Government Panel"</div>
-          <div class="dates">Mar 24-28, 2025</div>
+        <div class="episode-card" onclick="openModal('week2-monday')">
+          <strong>MONDAY:</strong><span> Week 2 Episode 1 Title</span>
         </div>
-        <div class="episodes">
-          <button data-emoji="🔥" onclick="openModal('week2-monday')">MONDAY: The Hidden Panel</button>
-          <!-- Additional episode buttons for Week 2 -->
+        <div class="episode-card" onclick="openModal('week2-tuesday')">
+          <strong>TUESDAY:</strong><span> Week 2 Episode 2 Title</span>
+        </div>
+        <div class="episode-card" onclick="openModal('week2-wednesday')">
+          <strong>WEDNESDAY:</strong><span> Week 2 Episode 3 Title</span>
+        </div>
+        <div class="episode-card" onclick="openModal('week2-thursday')">
+          <strong>THURSDAY:</strong><span> Week 2 Episode 4 Title</span>
+        </div>
+        <div class="episode-card" onclick="openModal('week2-friday')">
+          <strong>FRIDAY:</strong><span> Week 2 Episode 5 Title</span>
         </div>
       </div>
       
-      <!-- Week 3 Content -->
+      <!-- Week 3: Example placeholders -->
       <div id="week3" class="week">
-        <div class="week-header">
-          <div class="week-title">WEEK 3: INSTITUTIONAL NETWORKS</div>
-          <div class="week-theme">"Mapping Invisible Communications"</div>
-          <div class="dates">Mar 31-Apr 4, 2025</div>
+        <div class="episode-card" onclick="openModal('week3-monday')">
+          <strong>MONDAY:</strong><span> Week 3 Episode 1 Title</span>
         </div>
-        <div class="episodes">
-          <button data-emoji="🔥" onclick="openModal('week3-monday')">MONDAY: Mapping the Infrastructure</button>
-          <!-- Additional episode buttons for Week 3 -->
+        <div class="episode-card" onclick="openModal('week3-tuesday')">
+          <strong>TUESDAY:</strong><span> Week 3 Episode 2 Title</span>
+        </div>
+        <div class="episode-card" onclick="openModal('week3-wednesday')">
+          <strong>WEDNESDAY:</strong><span> Week 3 Episode 3 Title</span>
+        </div>
+        <div class="episode-card" onclick="openModal('week3-thursday')">
+          <strong>THURSDAY:</strong><span> Week 3 Episode 4 Title</span>
+        </div>
+        <div class="episode-card" onclick="openModal('week3-friday')">
+          <strong>FRIDAY:</strong><span> Week 3 Episode 5 Title</span>
         </div>
       </div>
     </div>
-    
     <!-- Footer -->
     <div class="footer">
-      <p>Global Science Integrity Task Force | <a href="http://www.NurembergHearing.org">NurembergHearing.org</a></p>
+      Global Science Integrity Task Force | <a href="http://www.NurembergHearing.org" target="_blank">NurembergHearing.org</a>
     </div>
   </div>
   
-  <!-- Modal -->
+  <!-- Modal (Full-Screen Pop-Out) -->
   <div id="modal" class="modal" onclick="if(event.target===this) closeModal()">
     <div class="modal-content">
       <span class="close-modal" onclick="closeModal()">×</span>
@@ -275,47 +230,94 @@
   </div>
   
   <script>
-    // Function to switch visible week and update active nav button
+    // Switch visible week and update nav button active state
     function showWeek(weekId) {
       document.querySelectorAll('.week').forEach(function(week) {
         week.classList.remove('active');
       });
       document.getElementById(weekId).classList.add('active');
-      
       document.querySelectorAll('.nav button').forEach(function(btn) {
         btn.classList.remove('active');
       });
       document.getElementById('btn-' + weekId).classList.add('active');
     }
     
-    // Sample modal data – extend with additional episode details as needed
+    // Modal data for each episode (sample for Week 1; add more as needed)
     const modalData = {
       'week1-monday': {
         title: "The 10-Day Loophole That Could Destroy the WHO",
         date: "Monday, Mar 17, 2025",
         description: "This episode reveals a forgotten constitutional tool in Costa Rican law that challenges WHO authority.",
         content: [
-          "Analysis of Administrative Silence",
-          "Examination of Articles 27 & 50",
-          "Insights into the 10-day window",
-          "Strategic legal challenge framework"
+          "In-depth analysis of Administrative Silence Doctrine",
+          "Examination of Constitutional Articles 27 & 50",
+          "Insights into the 10-day administrative window",
+          "Strategic legal framework for accountability"
         ],
         hashtags: ["#WHOTakedown", "#MedicalFreedom", "#CostaRicaRises"]
+      },
+      'week1-tuesday': {
+        title: "Whispers to Roars: How One Nation Can Bring Down a Global Regime",
+        date: "Tuesday, Mar 18, 2025",
+        description: "An exploration of grassroots legal strategies to challenge global power structures.",
+        content: [
+          "Analysis of key legal mechanisms",
+          "Examination of international health regulations",
+          "Strategies for public dissent",
+          "Multi-jurisdictional legal challenges"
+        ],
+        hashtags: ["#IHRDispute", "#GlobalResistance", "#LegalStrategy"]
+      },
+      'week1-wednesday': {
+        title: "Administrative Silence: The Legal Weapon They Never Saw Coming",
+        date: "Wednesday, Mar 19, 2025",
+        description: "A deep dive into the implications of administrative inaction under Costa Rican law.",
+        content: [
+          "Review of legal precedents",
+          "Discussion on constitutional silence",
+          "Implications for health governance",
+          "Case study analysis"
+        ],
+        hashtags: ["#AdminSilence", "#LegalWeapon", "#CaseStudy"]
+      },
+      'week1-thursday': {
+        title: "Diplomatic Dominoes: Building the Global Accountability Network",
+        date: "Thursday, Mar 20, 2025",
+        description: "Examining how diplomatic strategies can hold international institutions accountable.",
+        content: [
+          "Analysis of diplomatic channels",
+          "Framework for international accountability",
+          "Strategies for global coalition building",
+          "Treaty implications review"
+        ],
+        hashtags: ["#DiplomaticStrategy", "#GlobalCoalition", "#Accountability"]
+      },
+      'week1-friday': {
+        title: "SueTheWHO.org: Your Weapon Against Medical Tyranny",
+        date: "Friday, Mar 21, 2025",
+        description: "Showcasing a digital legal platform designed to empower citizens against medical tyranny.",
+        content: [
+          "Introduction to the digital legal resource",
+          "Step-by-step guide to legal action",
+          "Analysis of global health governance failures",
+          "Call to citizen engagement"
+        ],
+        hashtags: ["#SueTheWHO", "#LegalAction", "#GlobalJustice"]
       }
-      // Add additional modal objects for other episodes as needed
+      // Add modal data for week2 and week3 episodes as needed.
     };
     
     function openModal(id) {
       const data = modalData[id];
       if (!data) return;
-      let hashtagsHTML = data.hashtags.map(tag => `<span>${tag}</span>`).join(" ");
-      let contentHTML = data.content.map(item => `<li>${item}</li>`).join("");
+      const hashtagsHTML = data.hashtags.map(tag => `<span>${tag}</span>`).join(" ");
+      const contentHTML = data.content.map(item => `<li>${item}</li>`).join("");
       const html = `
         <h2>${data.title}</h2>
         <p><strong>${data.date}</strong></p>
         <p>${data.description}</p>
         <h3>Content Overview:</h3>
-        <ul class="content-list">${contentHTML}</ul>
+        <ul>${contentHTML}</ul>
         <div class="hashtags">${hashtagsHTML}</div>
       `;
       document.getElementById("modal-content-data").innerHTML = html;
@@ -328,7 +330,7 @@
   </script>
   
   <!--
-    To embed on Kajabi:
+    To embed this page in Kajabi, use:
     <iframe src="https://yourgithubusername.github.io/yourrepository/index.html" frameborder="0" style="width:100%; height:100vh;"></iframe>
   -->
 </body>

@@ -1,156 +1,208 @@
-// Enhanced Modal Management System
-class EpisodeModalManager {
-  constructor() {
-    this.modal = null;
-    this.modalData = null;
-    this.initializeDOM();
-    this.bindEvents();
-  }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Nuremberg Hearing Miniseries</title>
+  <style>
+    :root {
+      --primary-color: #1a2f4b;
+      --secondary-color: #a93f55;
+      --accent-color: #d15a7c;
+      --light-color: #f3f4f6;
+      --dark-color: #111827;
+      --border-color: #e5e7eb;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+    body {
+      background-color: var(--light-color);
+      color: var(--dark-color);
+      overflow: hidden;
+      width: 800px;
+      height: 600px;
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      text-align: center;
+      padding: 10px;
+    }
+    header {
+      background: var(--primary-color);
+      color: white;
+      padding: 10px;
+      border-radius: 6px;
+    }
+    .subtitle {
+      font-size: 0.9rem;
+      font-style: italic;
+    }
+    .nav {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 5px;
+      background: var(--secondary-color);
+      padding: 10px;
+      margin-top: 5px;
+    }
+    .nav button {
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 5px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+    .nav button.active {
+      background: var(--accent-color);
+    }
+    .week {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+    }
+    .week.active {
+      display: flex;
+    }
+    .episode-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      width: 95%;
+      margin-top: 10px;
+    }
+    .episode-card {
+      background: white;
+      border: 1px solid var(--border-color);
+      padding: 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      text-align: left;
+    }
+    .episode-card:hover {
+      background: var(--primary-color);
+      color: white;
+    }
+    .modal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      width: 80%;
+      height: 80%;
+      border-radius: 10px;
+      padding: 15px;
+      display: none;
+      text-align: center;
+      color: black;
+      overflow-y: auto;
+    }
+    .close-modal {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      cursor: pointer;
+      font-size: 1.2rem;
+    }
+    .footer {
+      background: var(--primary-color);
+      color: white;
+      padding: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-radius: 6px;
+      margin-top: 10px;
+    }
+    .footer img {
+      height: 40px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>The Nuremberg Hearing Miniseries</h1>
+      <p class="subtitle">"The Greatest Medical Crime in History: How We Take Back Our Freedom"</p>
+    </header>
 
-  initializeDOM() {
-    // Create modal if not existing
-    if (!document.getElementById('episode-modal')) {
-      const modalHTML = `
-        <div id="episode-modal" class="modal">
-          <div class="modal-content">
-            <span class="close-button">&times;</span>
-            <div id="modal-data"></div>
-          </div>
-        </div>
-      `;
-      document.body.insertAdjacentHTML('beforeend', modalHTML);
+    <!-- Week Navigation -->
+    <div class="nav">
+      <button id="week-btn-1" onclick="showWeek(1)" class="active">Week 1</button>
+      <button id="week-btn-2" onclick="showWeek(2)">Week 2</button>
+      <button id="week-btn-3" onclick="showWeek(3)">Week 3</button>
+    </div>
+
+    <!-- Episodes -->
+    <div class="episodes-container">
+      <script>
+        let weekData = {
+          1: [
+            ["📅 The 10-Day Loophole That Could Destroy the WHO", "March 17, 2025", ["Legal loophole that can stop WHO", "Costa Rican law explained", "How it can be used globally"]],
+            ["🔥 Whispers to Roars: One Nation vs. Global Regime", "March 18, 2025", ["How small nations create impact", "Legal strategies", "Grassroots movements"]],
+          ],
+          2: [
+            ["🚨 Exposing Secret Government Health Panels", "March 24, 2025", ["Hidden committees controlling policy", "Who is funding them?", "Steps to challenge their power"]],
+          ],
+          3: [
+            ["⚖️ Cracking the WHO-Gates Foundation Network", "March 31, 2025", ["Secret meetings", "Leaked documents", "Their real agenda"]],
+          ]
+        };
+
+        for (let week = 1; week <= 3; week++) {
+          document.write(`<div id="week${week}" class="week ${week === 1 ? 'active' : ''}"><div class="episode-grid">`);
+          for (let i = 0; i < weekData[week].length; i++) {
+            let [title, date, points] = weekData[week][i];
+            document.write(`<div class="episode-card" onclick="openModal('${date}', '${title}', ${JSON.stringify(points)})">${date}<br>${title}</div>`);
+          }
+          document.write(`</div></div>`);
+        }
+      </script>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div id="modal" class="modal">
+    <span class="close-modal" onclick="closeModal()">×</span>
+    <h2 id="modal-title"></h2>
+    <p id="modal-date"></p>
+    <ul id="modal-content"></ul>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <a href="https://stopcovidvaccinesnow.org/donate">Support Legal Actions</a>
+    <img src="/mnt/data/Interest-Of-Justice-Logo-layers-2048x565.png" alt="IOJ Logo">
+    <a href="https://community.interestofjustice.org">Join IOJ Community</a>
+  </div>
+
+  <script>
+    function showWeek(week) {
+      document.querySelectorAll('.week').forEach(w => w.classList.remove('active'));
+      document.getElementById('week' + week).classList.add('active');
+      document.querySelectorAll('.nav button').forEach(btn => btn.classList.remove('active'));
+      document.getElementById('week-btn-' + week).classList.add('active');
     }
 
-    this.modal = document.getElementById('episode-modal');
-    this.modalData = document.getElementById('modal-data');
-  }
-
-  bindEvents() {
-    // Delegate event handling for efficiency
-    document.addEventListener('click', (event) => {
-      const episodeButton = event.target.closest('.episode-button');
-      const closeButton = event.target.closest('.close-button');
-      
-      if (episodeButton) {
-        const episodeId = episodeButton.getAttribute('data-episode');
-        this.showEpisodeModal(episodeId);
-      }
-      
-      if (closeButton || event.target === this.modal) {
-        this.closeModal();
-      }
-    });
-
-    // Add keyboard support for closing modal
-    document.addEventListener('keydown', (event) => {
-      if (event.key === 'Escape' && this.modal.style.display === 'block') {
-        this.closeModal();
-      }
-    });
-  }
-
-  showEpisodeModal(episodeId) {
-    const data = this.getEpisodeData(episodeId);
-    
-    if (!data) {
-      console.error('No modal data found for episode:', episodeId);
-      return;
+    function openModal(date, title, points) {
+      document.getElementById('modal-title').textContent = title;
+      document.getElementById('modal-date').textContent = date;
+      document.getElementById('modal-content').innerHTML = points.map(p => `<li>${p}</li>`).join("");
+      document.getElementById('modal').style.display = 'block';
     }
 
-    const modalContent = this.generateModalContent(data);
-    
-    this.modalData.innerHTML = modalContent;
-    this.modal.style.display = 'block';
-    
-    // Accessibility and focus management
-    this.modal.setAttribute('aria-hidden', 'false');
-    const closeButton = this.modal.querySelector('.close-button');
-    closeButton?.focus();
-  }
-
-  getEpisodeData(episodeId) {
-    // Use the existing modalData object from the previous implementation
-    return window.modalData?.[episodeId];
-  }
-
-  generateModalContent(data) {
-    const hashtagsHTML = data.hashtags?.map(tag => 
-      `<span class="hashtag">${tag}</span>`
-    ).join('') || '';
-
-    const contentListHTML = data.content?.map(item => 
-      `<li>${item}</li>`
-    ).join('') || '';
-
-    return `
-      <h2 class="modal-title">${data.title}</h2>
-      <p class="modal-date">${data.date}</p>
-      <p class="modal-description">${data.description}</p>
-      ${contentListHTML ? `
-        <div class="content-list-header">Content Overview:</div>
-        <ul class="content-list">
-          ${contentListHTML}
-        </ul>
-      ` : ''}
-      <div class="hashtags">
-        ${hashtagsHTML}
-      </div>
-      <div class="community-action">
-        <a href="https://community.interestofjustice.org" class="community-button">Join the Community</a>
-      </div>
-    `;
-  }
-
-  closeModal() {
-    this.modal.style.display = 'none';
-    this.modal.setAttribute('aria-hidden', 'true');
-    
-    // Return focus to the triggering element if possible
-    const lastTriggeredButton = document.querySelector('.episode-button:focus');
-    lastTriggeredButton?.focus();
-  }
-}
-
-// Initialize the modal manager when the DOM is ready
-document.addEventListener('DOMContentLoaded', () => {
-  // Attach modalData to window to ensure it's accessible
-  window.modalData = {
-    // Copy the entire modalData object from the original script
-    ...modalData
-  };
-
-  // Create the modal manager instance
-  window.episodeModalManager = new EpisodeModalManager();
-
-  // Additional optimizations and enhancements
-  const optimizeHeights = () => {
-    const container = document.querySelector('.container');
-    const episodesContainer = document.querySelector('.episodes-container');
-    
-    if (!container || !episodesContainer) return;
-
-    const calculateAvailableHeight = () => {
-      const windowHeight = window.innerHeight;
-      const headerHeight = document.querySelector('header')?.offsetHeight || 0;
-      const weekSelectorHeight = document.querySelector('.week-selector')?.offsetHeight || 0;
-      const padding = 40; // Additional padding
-
-      return windowHeight - headerHeight - weekSelectorHeight - padding;
-    };
-
-    episodesContainer.style.maxHeight = `${calculateAvailableHeight()}px`;
-    episodesContainer.style.overflowY = 'auto';
-  };
-
-  // Run on initial load and window resize
-  optimizeHeights();
-  window.addEventListener('resize', optimizeHeights);
-});
-
-// Performance and accessibility enhancements
-document.addEventListener('visibilitychange', () => {
-  if (document.visibilityState === 'hidden') {
-    // Cleanup when page is not visible
-    window.episodeModalManager?.closeModal();
-  }
-});
+    function closeModal() {
+      document.getElementById('modal').style.display = 'none';
+    }
+  </script>
+</body>
+</html>

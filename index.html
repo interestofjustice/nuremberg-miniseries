@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>The Nuremberg Hearing Miniseries</title>
   <style>
-    /* Layout Fixes for Kajabi iframe */
+    /* Full Layout for Kajabi iFrame */
     html, body {
       width: 800px;
       height: 600px;
@@ -13,55 +13,59 @@
       padding: 0;
       overflow: hidden;
       font-family: Arial, sans-serif;
-      background-color: #f3f4f6;
+      background-color: #121212;
+      color: #fff;
     }
     :root {
-      --primary-color: #1a2f4b;
-      --secondary-color: #a93f55;
-      --accent-color: #d15a7c;
-      --light-color: #f3f4f6;
-      --text-color: #111827;
-      --border-color: #e5e7eb;
+      --primary-color: #ffcc00;
+      --secondary-color: #d50000;
+      --accent-color: #2196f3;
+      --dark-color: #1a1a1a;
+      --light-color: #fff;
+      --border-color: #444;
     }
-    /* Main layout */
     .container {
       display: flex;
       flex-direction: column;
       width: 100%;
       height: 100%;
+      text-align: center;
     }
     /* Header */
     header {
-      height: 60px;
+      height: 70px;
       background: var(--primary-color);
-      color: white;
-      text-align: center;
-      padding: 5px;
-      font-size: 1.2rem;
+      color: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      font-weight: bold;
     }
     /* Week Navigation */
     .nav {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      background: var(--secondary-color);
       padding: 5px;
+      background: var(--secondary-color);
     }
     .nav button {
       background: var(--accent-color);
       border: none;
       color: white;
-      padding: 5px 10px;
+      padding: 5px 12px;
       margin: 2px;
-      border-radius: 4px;
+      border-radius: 6px;
       cursor: pointer;
       font-size: 0.9rem;
       transition: background 0.3s ease;
     }
     .nav button.active {
       background: var(--primary-color);
+      color: #000;
     }
-    /* Episode List (Each Week) */
+    /* Episodes Layout */
     .episodes-container {
       flex: 1;
       display: flex;
@@ -72,30 +76,35 @@
     }
     .week {
       display: none;
-      width: 100%;
+      width: 95%;
       flex-direction: column;
       align-items: center;
-      gap: 5px;
     }
     .week.active {
       display: flex;
     }
-    /* Episode Cards */
+    /* Grid-based Episode Cards */
+    .episodes-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      width: 100%;
+    }
     .episode-card {
-      background: white;
+      background: var(--dark-color);
       border: 1px solid var(--border-color);
-      border-radius: 4px;
-      padding: 8px;
-      width: 90%;
+      border-radius: 6px;
+      padding: 10px;
       cursor: pointer;
       text-align: center;
       font-size: 0.9rem;
       transition: background 0.3s ease;
     }
     .episode-card:hover {
-      background: var(--light-color);
+      background: var(--primary-color);
+      color: #000;
     }
-    /* Modal Pop-up */
+    /* Modal Pop-out */
     .modal {
       position: fixed;
       top: 50%;
@@ -106,12 +115,13 @@
       background: white;
       box-shadow: 0 0 10px rgba(0,0,0,0.3);
       border-radius: 8px;
-      padding: 10px;
+      padding: 16px;
       display: none;
       text-align: center;
+      color: black;
     }
     .modal h2 {
-      font-size: 1.2rem;
+      font-size: 1.3rem;
       margin-bottom: 10px;
     }
     .modal p {
@@ -120,19 +130,37 @@
     }
     .close-modal {
       position: absolute;
-      top: 5px;
-      right: 10px;
+      top: 10px;
+      right: 15px;
       cursor: pointer;
       font-size: 1.5rem;
+    }
+    /* Footer with IOJ Logo */
+    .footer {
+      height: 70px;
+      background: var(--primary-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 5px 15px;
+    }
+    .footer img {
+      height: 50px;
+    }
+    .footer a {
+      color: black;
+      font-weight: bold;
+      text-decoration: none;
     }
   </style>
 </head>
 <body>
   <div class="container">
     <header>
-      <h1>The Nuremberg Hearing Miniseries</h1>
+      The Nuremberg Hearing Miniseries
     </header>
-    <!-- Navigation -->
+    
+    <!-- Week Navigation -->
     <div class="nav">
       <button onclick="showWeek(1)" class="active">Week 1</button>
       <button onclick="showWeek(2)">Week 2</button>
@@ -141,14 +169,17 @@
       <button onclick="showWeek(5)">Week 5</button>
       <button onclick="showWeek(6)">Week 6</button>
     </div>
+
     <!-- Episodes Container -->
     <div class="episodes-container">
       <div id="week1" class="week active">
-        <div class="episode-card" onclick="openModal('The 10-Day Loophole')">MONDAY - The 10-Day Loophole</div>
-        <div class="episode-card" onclick="openModal('Whispers to Roars')">TUESDAY - Whispers to Roars</div>
-        <div class="episode-card" onclick="openModal('Admin Silence')">WEDNESDAY - Admin Silence</div>
-        <div class="episode-card" onclick="openModal('Diplomatic Dominoes')">THURSDAY - Diplomatic Dominoes</div>
-        <div class="episode-card" onclick="openModal('SueTheWHO')">FRIDAY - SueTheWHO</div>
+        <div class="episodes-grid">
+          <div class="episode-card" onclick="openModal('March 17', 'The 10-Day Loophole')">MONDAY - March 17</div>
+          <div class="episode-card" onclick="openModal('March 18', 'Whispers to Roars')">TUESDAY - March 18</div>
+          <div class="episode-card" onclick="openModal('March 19', 'Admin Silence')">WEDNESDAY - March 19</div>
+          <div class="episode-card" onclick="openModal('March 20', 'Diplomatic Dominoes')">THURSDAY - March 20</div>
+          <div class="episode-card" onclick="openModal('March 21', 'SueTheWHO')">FRIDAY - March 21</div>
+        </div>
       </div>
     </div>
   </div>
@@ -157,7 +188,15 @@
   <div id="modal" class="modal">
     <span class="close-modal" onclick="closeModal()">×</span>
     <h2 id="modal-title"></h2>
+    <p id="modal-date"></p>
     <p id="modal-content"></p>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <a href="https://stopcovidvaccinesnow.org/donate">Support Legal Actions</a>
+    <img src="/mnt/data/Interest-Of-Justice-Logo-layers-2048x565.png" alt="IOJ Logo">
+    <a href="https://community.interestofjustice.org">Join IOJ Community</a>
   </div>
 
   <script>
@@ -167,11 +206,14 @@
       document.querySelectorAll('.nav button').forEach(btn => btn.classList.remove('active'));
       event.target.classList.add('active');
     }
-    function openModal(title) {
+
+    function openModal(date, title) {
       document.getElementById('modal-title').textContent = title;
-      document.getElementById('modal-content').textContent = "Episode Details for " + title;
+      document.getElementById('modal-date').textContent = date;
+      document.getElementById('modal-content').textContent = "Full details about " + title;
       document.getElementById('modal').style.display = 'block';
     }
+
     function closeModal() {
       document.getElementById('modal').style.display = 'none';
     }

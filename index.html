@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>The Nuremberg Hearing Miniseries</title>
   <style>
-    /* Basic Reset & Full-Height Setup */
+    /* Base reset & full viewport height */
     html, body {
       height: 100%;
       margin: 0;
@@ -22,24 +22,41 @@
       --text-color: #111827;
       --border-color: #e5e7eb;
     }
-    /* Container divides page into header, nav, content, and footer */
+    /* Main container: header, nav, content, footer */
     .container {
       display: flex;
       flex-direction: column;
       height: 100vh;
     }
-    /* Header: Slim, centered title */
+    /* Header: full title, subtitle, start date */
     header {
-      flex: 0 0 50px;
+      flex: 0 0 60px;
       background: var(--primary-color);
       color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.4rem;
-      padding: 0 8px;
+      text-align: center;
+      padding: 4px 8px;
     }
-    /* Navigation: Two rows for Weeks 1–6 and 7–12 */
+    header h1 {
+      margin: 0;
+      font-size: 1.5rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    header p.tagline {
+      margin: 0;
+      font-size: 0.9rem;
+      font-style: italic;
+    }
+    header .start-date {
+      background: var(--secondary-color);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: bold;
+      font-size: 0.8rem;
+      margin-top: 2px;
+      display: inline-block;
+    }
+    /* Navigation: Two rows of slim week buttons */
     .nav {
       flex: 0 0 60px;
       background: var(--secondary-color);
@@ -58,7 +75,7 @@
       background: var(--accent-color);
       border: none;
       color: #fff;
-      padding: 4px 6px;
+      padding: 3px 5px;
       margin: 2px;
       border-radius: 4px;
       cursor: pointer;
@@ -69,12 +86,12 @@
     .nav-row button.active {
       background: var(--secondary-color);
     }
-    /* Content Area: Fills remaining space */
+    /* Content area: shows one week’s episodes */
     .content {
       flex: 1;
       position: relative;
-      overflow: hidden;
       padding: 4px;
+      overflow: hidden;
     }
     .week {
       position: absolute;
@@ -89,14 +106,14 @@
     .week.active {
       display: block;
     }
-    /* Episode Cards: Slimmer layout so all five fit */
+    /* Episode Cards: slim design so all 5 fit */
     .episode-card {
       background: #fff;
       border: 1px solid var(--border-color);
       border-radius: 4px;
       padding: 4px 6px;
       margin-bottom: 2px;
-      height: calc((100% - 12px) / 5); /* Five cards with minimal gap */
+      height: calc((100% - 12px) / 5);
       display: flex;
       align-items: center;
       cursor: pointer;
@@ -112,9 +129,9 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
-    /* Footer: Includes action buttons */
+    /* Footer: Includes two action buttons */
     .footer {
-      flex: 0 0 40px;
+      flex: 0 0 50px;
       background: var(--primary-color);
       color: #fff;
       display: flex;
@@ -133,7 +150,7 @@
       font-size: 0.75rem;
       text-decoration: none;
     }
-    /* Modal: Full-Screen Popout */
+    /* Modal: Full-screen pop-out with no scrolling */
     .modal {
       position: fixed;
       top: 0;
@@ -149,22 +166,24 @@
     }
     .modal-content {
       background: #fff;
-      width: 90vw;
-      height: 90vh;
+      width: 85vw;
+      height: 85vh;
       border-radius: 8px;
       padding: 16px;
       box-sizing: border-box;
-      overflow: hidden; /* No scrolling */
+      overflow: hidden;
       text-align: center;
-      font-size: 1rem;
+      font-size: 1.1rem;
       line-height: 1.4;
     }
     .modal-content h2 {
+      margin-top: 0;
       font-size: 1.4rem;
       font-weight: bold;
-      margin-top: 0;
     }
-    .modal-content p, .modal-content h3, .modal-content ul {
+    .modal-content p, 
+    .modal-content h3, 
+    .modal-content ul {
       margin: 8px 0;
     }
     .modal-content ul {
@@ -176,7 +195,7 @@
       margin: 4px 0;
       font-weight: bold;
     }
-    /* Hashtags: Accent style */
+    /* Hashtags: Bold with accent background */
     .hashtags {
       margin-top: 8px;
     }
@@ -202,11 +221,15 @@
 </head>
 <body>
   <div class="container">
-    <!-- Header -->
+    <!-- Header with full title, subtitle, and start date -->
     <header>
-      The Nuremberg Hearing
+      <div>
+        <h1>The Nuremberg Hearing Miniseries</h1>
+        <p class="tagline">"The Greatest Medical Crime in History: How We Take Back Our Freedom"</p>
+        <div class="start-date">Starting March 17, 2025</div>
+      </div>
     </header>
-    <!-- Navigation: Two rows for Weeks 1–6 and 7–12 -->
+    <!-- Navigation: Two rows for Weeks 1-6 and 7-12 -->
     <div class="nav">
       <div class="nav-row">
         <button id="btn-week1" onclick="showWeek('week1')" class="active">Week 1</button>
@@ -225,222 +248,222 @@
         <button id="btn-week12" onclick="showWeek('week12')">Week 12</button>
       </div>
     </div>
-    <!-- Content Area: Each week displays 5 episodes -->
+    <!-- Content Area: Each week displays 5 episodes (with emojis and shorter titles) -->
     <div class="content">
       <!-- Week 1 -->
       <div id="week1" class="week active">
         <div class="episode-card" onclick="openModal('week1-monday')">
-          <strong>MONDAY:</strong><span>The 10-Day Loophole That Could Destroy the WHO</span>
+          <strong data-emoji="🔥">🔥</strong><span>10-Day Loophole</span>
         </div>
         <div class="episode-card" onclick="openModal('week1-tuesday')">
-          <strong>TUESDAY:</strong><span>Whispers to Roars: Bringing Down a Global Regime</span>
+          <strong data-emoji="🚨">🚨</strong><span>Whispers to Roars</span>
         </div>
         <div class="episode-card" onclick="openModal('week1-wednesday')">
-          <strong>WEDNESDAY:</strong><span>Administrative Silence: The Unseen Legal Weapon</span>
+          <strong data-emoji="🌍">🌍</strong><span>Admin Silence</span>
         </div>
         <div class="episode-card" onclick="openModal('week1-thursday')">
-          <strong>THURSDAY:</strong><span>Diplomatic Dominoes: Building Global Accountability</span>
+          <strong data-emoji="🔍">🔍</strong><span>Diplomatic Dominoes</span>
         </div>
         <div class="episode-card" onclick="openModal('week1-friday')">
-          <strong>FRIDAY:</strong><span>SueTheWHO.org: Your Weapon Against Medical Tyranny</span>
+          <strong data-emoji="💥">💥</strong><span>SueTheWHO.org</span>
         </div>
       </div>
       <!-- Week 2 -->
       <div id="week2" class="week">
         <div class="episode-card" onclick="openModal('week2-monday')">
-          <strong>MONDAY:</strong><span>Week 2 Monday: Episode Title</span>
+          <strong data-emoji="🔥">🔥</strong><span>Ep 1 Title</span>
         </div>
         <div class="episode-card" onclick="openModal('week2-tuesday')">
-          <strong>TUESDAY:</strong><span>Week 2 Tuesday: Episode Title</span>
+          <strong data-emoji="🚨">🚨</strong><span>Ep 2 Title</span>
         </div>
         <div class="episode-card" onclick="openModal('week2-wednesday')">
-          <strong>WEDNESDAY:</strong><span>Week 2 Wednesday: Episode Title</span>
+          <strong data-emoji="🌍">🌍</strong><span>Ep 3 Title</span>
         </div>
         <div class="episode-card" onclick="openModal('week2-thursday')">
-          <strong>THURSDAY:</strong><span>Week 2 Thursday: Episode Title</span>
+          <strong data-emoji="🔍">🔍</strong><span>Ep 4 Title</span>
         </div>
         <div class="episode-card" onclick="openModal('week2-friday')">
-          <strong>FRIDAY:</strong><span>Week 2 Friday: Episode Title</span>
+          <strong data-emoji="💥">💥</strong><span>Ep 5 Title</span>
         </div>
       </div>
       <!-- Week 3 -->
       <div id="week3" class="week">
         <div class="episode-card" onclick="openModal('week3-monday')">
-          <strong>MONDAY:</strong><span>Week 3 Monday: Episode Title</span>
+          <strong data-emoji="🔥">🔥</strong><span>Ep 1 Title</span>
         </div>
         <div class="episode-card" onclick="openModal('week3-tuesday')">
-          <strong>TUESDAY:</strong><span>Week 3 Tuesday: Episode Title</span>
+          <strong data-emoji="🚨">🚨</strong><span>Ep 2 Title</span>
         </div>
         <div class="episode-card" onclick="openModal('week3-wednesday')">
-          <strong>WEDNESDAY:</strong><span>Week 3 Wednesday: Episode Title</span>
+          <strong data-emoji="🌍">🌍</strong><span>Ep 3 Title</span>
         </div>
         <div class="episode-card" onclick="openModal('week3-thursday')">
-          <strong>THURSDAY:</strong><span>Week 3 Thursday: Episode Title</span>
+          <strong data-emoji="🔍">🔍</strong><span>Ep 4 Title</span>
         </div>
         <div class="episode-card" onclick="openModal('week3-friday')">
-          <strong>FRIDAY:</strong><span>Week 3 Friday: Episode Title</span>
+          <strong data-emoji="💥">💥</strong><span>Ep 5 Title</span>
         </div>
       </div>
       <!-- Week 4 -->
       <div id="week4" class="week">
         <div class="episode-card" onclick="openModal('week4-monday')">
-          <strong>MONDAY:</strong><span>Week 4 Monday: Episode Title</span>
+          <strong data-emoji="🔥">🔥</strong><span>Ep 1 Title</span>
         </div>
         <div class="episode-card" onclick="openModal('week4-tuesday')">
-          <strong>TUESDAY:</strong><span>Week 4 Tuesday: Episode Title</span>
+          <strong data-emoji="🚨">🚨</strong><span>Ep 2 Title</span>
         </div>
         <div class="episode-card" onclick="openModal('week4-wednesday')">
-          <strong>WEDNESDAY:</strong><span>Week 4 Wednesday: Episode Title</span>
+          <strong data-emoji="🌍">🌍</strong><span>Ep 3 Title</span>
         </div>
         <div class="episode-card" onclick="openModal('week4-thursday')">
-          <strong>THURSDAY:</strong><span>Week 4 Thursday: Episode Title</span>
+          <strong data-emoji="🔍">🔍</strong><span>Ep 4 Title</span>
         </div>
         <div class="episode-card" onclick="openModal('week4-friday')">
-          <strong>FRIDAY:</strong><span>Week 4 Friday: Episode Title</span>
+          <strong data-emoji="💥">💥</strong><span>Ep 5 Title</span>
         </div>
       </div>
       <!-- Week 5 -->
       <div id="week5" class="week">
         <div class="episode-card" onclick="openModal('week5-monday')">
-          <strong>MONDAY:</strong><span>Week 5 Monday: Episode Title</span>
+          <strong data-emoji="🔥">🔥</strong><span>Ep 1 Title</span>
         </div>
         <div class="episode-card" onclick="openModal('week5-tuesday')">
-          <strong>TUESDAY:</strong><span>Week 5 Tuesday: Episode Title</span>
+          <strong data-emoji="🚨">🚨</strong><span>Ep 2 Title</span>
         </div>
         <div class="episode-card" onclick="openModal('week5-wednesday')">
-          <strong>WEDNESDAY:</strong><span>Week 5 Wednesday: Episode Title</span>
+          <strong data-emoji="🌍">🌍</strong><span>Ep 3 Title</span>
         </div>
         <div class="episode-card" onclick="openModal('week5-thursday')">
-          <strong>THURSDAY:</strong><span>Week 5 Thursday: Episode Title</span>
+          <strong data-emoji="🔍">🔍</strong><span>Ep 4 Title</span>
         </div>
         <div class="episode-card" onclick="openModal('week5-friday')">
-          <strong>FRIDAY:</strong><span>Week 5 Friday: Episode Title</span>
+          <strong data-emoji="💥">💥</strong><span>Ep 5 Title</span>
         </div>
       </div>
       <!-- Week 6 -->
       <div id="week6" class="week">
         <div class="episode-card" onclick="openModal('week6-monday')">
-          <strong>MONDAY:</strong><span>Week 6 Monday: Episode Title</span>
+          <strong data-emoji="🔥">🔥</strong><span>Ep 1 Title</span>
         </div>
         <div class="episode-card" onclick="openModal('week6-tuesday')">
-          <strong>TUESDAY:</strong><span>Week 6 Tuesday: Episode Title</span>
+          <strong data-emoji="🚨">🚨</strong><span>Ep 2 Title</span>
         </div>
         <div class="episode-card" onclick="openModal('week6-wednesday')">
-          <strong>WEDNESDAY:</strong><span>Week 6 Wednesday: Episode Title</span>
+          <strong data-emoji="🌍">🌍</strong><span>Ep 3 Title</span>
         </div>
         <div class="episode-card" onclick="openModal('week6-thursday')">
-          <strong>THURSDAY:</strong><span>Week 6 Thursday: Episode Title</span>
+          <strong data-emoji="🔍">🔍</strong><span>Ep 4 Title</span>
         </div>
         <div class="episode-card" onclick="openModal('week6-friday')">
-          <strong>FRIDAY:</strong><span>Week 6 Friday: Episode Title</span>
+          <strong data-emoji="💥">💥</strong><span>Ep 5 Title</span>
         </div>
       </div>
       <!-- Week 7 -->
       <div id="week7" class="week">
         <div class="episode-card" onclick="openModal('week7-monday')">
-          <strong>MONDAY:</strong><span>Week 7 Monday: Episode Title</span>
+          <strong data-emoji="🔥">🔥</strong><span>Ep 1 Title</span>
         </div>
         <div class="episode-card" onclick="openModal('week7-tuesday')">
-          <strong>TUESDAY:</strong><span>Week 7 Tuesday: Episode Title</span>
+          <strong data-emoji="🚨">🚨</strong><span>Ep 2 Title</span>
         </div>
         <div class="episode-card" onclick="openModal('week7-wednesday')">
-          <strong>WEDNESDAY:</strong><span>Week 7 Wednesday: Episode Title</span>
+          <strong data-emoji="🌍">🌍</strong><span>Ep 3 Title</span>
         </div>
         <div class="episode-card" onclick="openModal('week7-thursday')">
-          <strong>THURSDAY:</strong><span>Week 7 Thursday: Episode Title</span>
+          <strong data-emoji="🔍">🔍</strong><span>Ep 4 Title</span>
         </div>
         <div class="episode-card" onclick="openModal('week7-friday')">
-          <strong>FRIDAY:</strong><span>Week 7 Friday: Episode Title</span>
+          <strong data-emoji="💥">💥</strong><span>Ep 5 Title</span>
         </div>
       </div>
       <!-- Week 8 -->
       <div id="week8" class="week">
         <div class="episode-card" onclick="openModal('week8-monday')">
-          <strong>MONDAY:</strong><span>Week 8 Monday: Episode Title</span>
+          <strong data-emoji="🔥">🔥</strong><span>Ep 1 Title</span>
         </div>
         <div class="episode-card" onclick="openModal('week8-tuesday')">
-          <strong>TUESDAY:</strong><span>Week 8 Tuesday: Episode Title</span>
+          <strong data-emoji="🚨">🚨</strong><span>Ep 2 Title</span>
         </div>
         <div class="episode-card" onclick="openModal('week8-wednesday')">
-          <strong>WEDNESDAY:</strong><span>Week 8 Wednesday: Episode Title</span>
+          <strong data-emoji="🌍">🌍</strong><span>Ep 3 Title</span>
         </div>
         <div class="episode-card" onclick="openModal('week8-thursday')">
-          <strong>THURSDAY:</strong><span>Week 8 Thursday: Episode Title</span>
+          <strong data-emoji="🔍">🔍</strong><span>Ep 4 Title</span>
         </div>
         <div class="episode-card" onclick="openModal('week8-friday')">
-          <strong>FRIDAY:</strong><span>Week 8 Friday: Episode Title</span>
+          <strong data-emoji="💥">💥</strong><span>Ep 5 Title</span>
         </div>
       </div>
       <!-- Week 9 -->
       <div id="week9" class="week">
         <div class="episode-card" onclick="openModal('week9-monday')">
-          <strong>MONDAY:</strong><span>Week 9 Monday: Episode Title</span>
+          <strong data-emoji="🔥">🔥</strong><span>Ep 1 Title</span>
         </div>
         <div class="episode-card" onclick="openModal('week9-tuesday')">
-          <strong>TUESDAY:</strong><span>Week 9 Tuesday: Episode Title</span>
+          <strong data-emoji="🚨">🚨</strong><span>Ep 2 Title</span>
         </div>
         <div class="episode-card" onclick="openModal('week9-wednesday')">
-          <strong>WEDNESDAY:</strong><span>Week 9 Wednesday: Episode Title</span>
+          <strong data-emoji="🌍">🌍</strong><span>Ep 3 Title</span>
         </div>
         <div class="episode-card" onclick="openModal('week9-thursday')">
-          <strong>THURSDAY:</strong><span>Week 9 Thursday: Episode Title</span>
+          <strong data-emoji="🔍">🔍</strong><span>Ep 4 Title</span>
         </div>
         <div class="episode-card" onclick="openModal('week9-friday')">
-          <strong>FRIDAY:</strong><span>Week 9 Friday: Episode Title</span>
+          <strong data-emoji="💥">💥</strong><span>Ep 5 Title</span>
         </div>
       </div>
       <!-- Week 10 -->
       <div id="week10" class="week">
         <div class="episode-card" onclick="openModal('week10-monday')">
-          <strong>MONDAY:</strong><span>Week 10 Monday: Episode Title</span>
+          <strong data-emoji="🔥">🔥</strong><span>Ep 1 Title</span>
         </div>
         <div class="episode-card" onclick="openModal('week10-tuesday')">
-          <strong>TUESDAY:</strong><span>Week 10 Tuesday: Episode Title</span>
+          <strong data-emoji="🚨">🚨</strong><span>Ep 2 Title</span>
         </div>
         <div class="episode-card" onclick="openModal('week10-wednesday')">
-          <strong>WEDNESDAY:</strong><span>Week 10 Wednesday: Episode Title</span>
+          <strong data-emoji="🌍">🌍</strong><span>Ep 3 Title</span>
         </div>
         <div class="episode-card" onclick="openModal('week10-thursday')">
-          <strong>THURSDAY:</strong><span>Week 10 Thursday: Episode Title</span>
+          <strong data-emoji="🔍">🔍</strong><span>Ep 4 Title</span>
         </div>
         <div class="episode-card" onclick="openModal('week10-friday')">
-          <strong>FRIDAY:</strong><span>Week 10 Friday: Episode Title</span>
+          <strong data-emoji="💥">💥</strong><span>Ep 5 Title</span>
         </div>
       </div>
       <!-- Week 11 -->
       <div id="week11" class="week">
         <div class="episode-card" onclick="openModal('week11-monday')">
-          <strong>MONDAY:</strong><span>Week 11 Monday: Episode Title</span>
+          <strong data-emoji="🔥">🔥</strong><span>Ep 1 Title</span>
         </div>
         <div class="episode-card" onclick="openModal('week11-tuesday')">
-          <strong>TUESDAY:</strong><span>Week 11 Tuesday: Episode Title</span>
+          <strong data-emoji="🚨">🚨</strong><span>Ep 2 Title</span>
         </div>
         <div class="episode-card" onclick="openModal('week11-wednesday')">
-          <strong>WEDNESDAY:</strong><span>Week 11 Wednesday: Episode Title</span>
+          <strong data-emoji="🌍">🌍</strong><span>Ep 3 Title</span>
         </div>
         <div class="episode-card" onclick="openModal('week11-thursday')">
-          <strong>THURSDAY:</strong><span>Week 11 Thursday: Episode Title</span>
+          <strong data-emoji="🔍">🔍</strong><span>Ep 4 Title</span>
         </div>
         <div class="episode-card" onclick="openModal('week11-friday')">
-          <strong>FRIDAY:</strong><span>Week 11 Friday: Episode Title</span>
+          <strong data-emoji="💥">💥</strong><span>Ep 5 Title</span>
         </div>
       </div>
       <!-- Week 12 -->
       <div id="week12" class="week">
         <div class="episode-card" onclick="openModal('week12-monday')">
-          <strong>MONDAY:</strong><span>Week 12 Monday: Episode Title</span>
+          <strong data-emoji="🔥">🔥</strong><span>Ep 1 Title</span>
         </div>
         <div class="episode-card" onclick="openModal('week12-tuesday')">
-          <strong>TUESDAY:</strong><span>Week 12 Tuesday: Episode Title</span>
+          <strong data-emoji="🚨">🚨</strong><span>Ep 2 Title</span>
         </div>
         <div class="episode-card" onclick="openModal('week12-wednesday')">
-          <strong>WEDNESDAY:</strong><span>Week 12 Wednesday: Episode Title</span>
+          <strong data-emoji="🌍">🌍</strong><span>Ep 3 Title</span>
         </div>
         <div class="episode-card" onclick="openModal('week12-thursday')">
-          <strong>THURSDAY:</strong><span>Week 12 Thursday: Episode Title</span>
+          <strong data-emoji="🔍">🔍</strong><span>Ep 4 Title</span>
         </div>
         <div class="episode-card" onclick="openModal('week12-friday')">
-          <strong>FRIDAY:</strong><span>Week 12 Friday: Episode Title</span>
+          <strong data-emoji="💥">💥</strong><span>Ep 5 Title</span>
         </div>
       </div>
     </div>
@@ -460,20 +483,19 @@
   </div>
   
   <script>
-    // Switch active week and update nav active state
+    // Function to switch active week and update nav active state
     function showWeek(weekId) {
       document.querySelectorAll('.week').forEach(function(week) {
         week.classList.remove('active');
       });
       document.getElementById(weekId).classList.add('active');
-      
       document.querySelectorAll('.nav button').forEach(function(btn) {
         btn.classList.remove('active');
       });
       document.getElementById('btn-' + weekId).classList.add('active');
     }
     
-    // Detailed modal data for Week 1; auto-generate placeholder data for Weeks 2–12
+    // Detailed modal data for Week 1 episodes; auto-generate placeholder data for Weeks 2–12 if not defined
     const modalData = {
       "week1-monday": {
         title: "The 10-Day Loophole That Could Destroy the WHO",
@@ -536,8 +558,6 @@
         hashtags: ["#SueTheWHO", "#LegalAction", "#GlobalJustice"]
       }
     };
-    
-    // Auto-generate placeholder modal data for Weeks 2–12 if not already defined
     const days = ["monday", "tuesday", "wednesday", "thursday", "friday"];
     for (let w = 2; w <= 12; w++) {
       days.forEach(day => {
@@ -558,8 +578,6 @@
         }
       });
     }
-    
-    // Open modal and populate with episode details
     function openModal(id) {
       const data = modalData[id];
       if (!data) return;
@@ -576,14 +594,13 @@
       document.getElementById("modal-content-data").innerHTML = html;
       document.getElementById("modal").style.display = "flex";
     }
-    
     function closeModal() {
       document.getElementById("modal").style.display = "none";
     }
   </script>
   
   <!--
-    To embed on Kajabi, use:
+    To embed this page in Kajabi, use:
     <iframe src="https://yourgithubusername.github.io/yourrepository/index.html" frameborder="0" style="width:100%; height:100vh;"></iframe>
   -->
 </body>

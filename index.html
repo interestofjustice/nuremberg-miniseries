@@ -61,13 +61,13 @@
       background: var(--accent-color);
       border: none;
       color: white;
-      padding: 5px 10px;
+      padding: 4px 8px;
       margin: 2px;
-      border-radius: 6px;
+      border-radius: 4px;
       cursor: pointer;
-      font-size: 0.9rem;
+      font-size: 0.8rem;
       transition: background 0.3s ease;
-      width: 120px;
+      width: 100px;
     }
     .nav button.active {
       background: var(--primary-color);
@@ -175,7 +175,7 @@
     <div class="nav">
       <script>
         for (let i = 1; i <= 12; i++) {
-          document.write(`<button onclick="showWeek(${i})">Week ${i}</button>`);
+          document.write(`<button id="week-btn-${i}" onclick="showWeek(${i})">Week ${i}</button>`);
           if (i === 6) document.write('<br>'); // Creates the second row after Week 6
         }
       </script>
@@ -208,14 +208,6 @@
     </div>
   </div>
 
-  <!-- Modal -->
-  <div id="modal" class="modal">
-    <span class="close-modal" onclick="closeModal()">×</span>
-    <h2 id="modal-title"></h2>
-    <p id="modal-date"></p>
-    <ul id="modal-content"></ul>
-  </div>
-
   <!-- Footer -->
   <div class="footer">
     <a href="https://stopcovidvaccinesnow.org/donate">Support Legal Actions</a>
@@ -227,6 +219,8 @@
     function showWeek(week) {
       document.querySelectorAll('.week').forEach(w => w.classList.remove('active'));
       document.getElementById('week' + week).classList.add('active');
+      document.querySelectorAll('.nav button').forEach(btn => btn.classList.remove('active'));
+      document.getElementById('week-btn-' + week).classList.add('active');
     }
 
     function openModal(date, title, points) {

@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
-import { ChevronLeft, ChevronRight, Info, Calendar, X } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { ChevronLeft, ChevronRight, Info, Calendar, ChevronDown, ChevronUp, X } from 'lucide-react';
 
 const NurembergInterface = () => {
   const [activeWeek, setActiveWeek] = useState(1);
   const [showOverview, setShowOverview] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [modalContent, setModalContent] = useState({ title: '', content: '' });
+  const [expandedDay, setExpandedDay] = useState(null);
   
-  // Week data - simplified for demo
+  // Week data from the document
   const weeks = [
     {
       number: 1,
@@ -18,10 +19,10 @@ const NurembergInterface = () => {
         {
           day: "Monday",
           title: "The 10-Day Loophole That Could Destroy the WHO",
-          description: "This opening episode exposes a forgotten constitutional weapon in Costa Rican law that provides a powerful legal mechanism to challenge WHO authority.",
+          description: "This opening episode exposes a forgotten constitutional weapon in Costa Rican law that provides a powerful legal mechanism to challenge WHO authority through the invocation of Costa Rican Constitutional Articles 27 and 50.",
           points: [
             "Comprehensive analysis of Costa Rican Administrative Silence Doctrine.",
-            "Detailed examination of Constitutional Article 27 and Article 50.",
+            "Detailed examination of Constitutional Article 27 (right to petition) and Article 50 (right to a healthy environment).",
             "Exploration of the 10-day window that creates administrative acquiescence.",
             "Strategic framework for international challenge to WHO governance."
           ]
@@ -29,7 +30,7 @@ const NurembergInterface = () => {
         {
           day: "Tuesday",
           title: "Whispers to Roars: How One Nation Can Bring Down a Global Regime",
-          description: "This episode provides an in-depth analysis of International Health Regulations nullification through Article 55(2) Dispute Resolution Mechanism.",
+          description: "This episode provides an in-depth analysis of International Health Regulations nullification through Article 55(2) Dispute Resolution Mechanism, demonstrating how grassroots resistance can effectively challenge institutional power.",
           points: [
             "Strategic application of IHR Article 55(2) dispute mechanisms.",
             "Analysis of WHO Constitution Article 75 referral pathways.",
@@ -40,7 +41,7 @@ const NurembergInterface = () => {
         {
           day: "Wednesday",
           title: "Administrative Silence: The Legal Weapon They Never Saw Coming",
-          description: "This episode exposes the powerful legal doctrine of Positive Administrative Silence as codified in Law No. 6227.",
+          description: "This episode exposes the powerful legal doctrine of Positive Administrative Silence as codified in Law No. 6227, General Law of Public Administration, which creates administrative acquiescence through inaction.",
           points: [
             "Comprehensive analysis of Positive Silence Doctrine under Costa Rican law.",
             "Constitutional Chamber Decision No. 5694-2008 application.",
@@ -51,7 +52,7 @@ const NurembergInterface = () => {
         {
           day: "Thursday",
           title: "Diplomatic Dominoes: Building the Global Accountability Network",
-          description: "This episode outlines coalition formation strategies utilizing diplomatic channels under Vienna Convention on Diplomatic Relations.",
+          description: "This episode outlines coalition formation strategies utilizing diplomatic channels under Vienna Convention on Diplomatic Relations, Article 3(1)(c) to establish a global network of sovereign resistance.",
           points: [
             "Strategic implementation of Vienna Convention on Diplomatic Relations.",
             "UN Charter Article 33 peaceful dispute settlement mechanisms.",
@@ -62,7 +63,7 @@ const NurembergInterface = () => {
         {
           day: "Friday",
           title: "SueTheWHO.org: Your Weapon Against Medical Tyranny",
-          description: "This episode unveils our comprehensive documentation repository and international legal resource platform.",
+          description: "This episode unveils our comprehensive documentation repository and international legal resource platform, providing citizens and governments the tools needed to challenge global health governance overreach.",
           points: [
             "Platform launch with comprehensive juridical analysis tools.",
             "Document repository for international legal challenges.",
@@ -72,6 +73,7 @@ const NurembergInterface = () => {
         }
       ]
     },
+    // Additional weeks would be added here in the same format
     {
       number: 2,
       title: "EXPOSING THE ADMINISTRATIVE DEATH MACHINE",
@@ -81,7 +83,7 @@ const NurembergInterface = () => {
         {
           day: "Monday",
           title: "EXPOSED: The Secret Government Panel That Sold Your Health",
-          description: "This explosive episode provides a comprehensive breakdown of the Federal Advisory Committee Act (FACA).",
+          description: "This explosive episode provides a comprehensive breakdown of the Federal Advisory Committee Act (FACA) and reveals how institutional failures enabled regulatory capture and compromised public health decision-making.",
           points: [
             "Comprehensive analysis of 5 U.S.C. App. 2 §§1-16 requirements.",
             "Detailed examination of \"fairly balanced\" committee membership violations.",
@@ -92,37 +94,26 @@ const NurembergInterface = () => {
         {
           day: "Tuesday",
           title: "The APA Weapon: Your Legal Nuclear Option Against Corrupt Agencies",
-          description: "Strategic episode outline",
-          points: ["Point 1", "Point 2", "Point 3", "Point 4"]
+          description: "This strategic episode outlines citizen petition mechanisms under the Administrative Procedure Act, providing a powerful framework for challenging agency actions that are \"arbitrary, capricious, or not in accordance with law.\"",
+          points: [
+            "Strategic implementation of 5 U.S.C. §553 rulemaking procedures.",
+            "Administrative challenge framework under 5 U.S.C. §706(2)(A).",
+            "Comprehensive APA petition strategy for emergency authorizations.",
+            "Judicial review pathways for administrative challenges."
+          ]
         },
-        {
-          day: "Wednesday",
-          title: "PREP Act Immunity: The License to Kill Hidden in Plain Sight",
-          description: "Strategic episode outline",
-          points: ["Point 1", "Point 2", "Point 3", "Point 4"]
-        },
-        {
-          day: "Thursday",
-          title: "Congressional Whistleblowers: The Last Line of Defense",
-          description: "Strategic episode outline",
-          points: ["Point 1", "Point 2", "Point 3", "Point 4"]
-        },
-        {
-          day: "Friday",
-          title: "Rebuilding Scientific Integrity: How We Reclaim Public Health",
-          description: "Strategic episode outline",
-          points: ["Point 1", "Point 2", "Point 3", "Point 4"]
-        }
+        // The rest of week 2 episodes would be added here
       ]
-    }
+    },
+    // Weeks 3-12 would be added similarly
   ];
-  
-  // Add placeholder weeks for demo
+
+  // Add more weeks as needed from the document - this is a simplified version
   for (let i = 3; i <= 12; i++) {
     weeks.push({
       number: i,
-      title: `WEEK ${i} TITLE`,
-      subtitle: `Week ${i} Subtitle`,
+      title: `WEEK ${i}`,
+      subtitle: `Week ${i} Content`,
       date: `May-June 2025`,
       episodes: [
         {
@@ -161,17 +152,20 @@ const NurembergInterface = () => {
 
   const handleWeekChange = (week) => {
     setActiveWeek(week);
+    setExpandedDay(null);
   };
 
   const handlePreviousWeek = () => {
     if (activeWeek > 1) {
       setActiveWeek(activeWeek - 1);
+      setExpandedDay(null);
     }
   };
 
   const handleNextWeek = () => {
     if (activeWeek < weeks.length) {
       setActiveWeek(activeWeek + 1);
+      setExpandedDay(null);
     }
   };
 
@@ -184,6 +178,15 @@ const NurembergInterface = () => {
     setShowModal(false);
   };
 
+  const toggleDayExpansion = (day) => {
+    if (expandedDay === day) {
+      setExpandedDay(null);
+    } else {
+      setExpandedDay(day);
+    }
+  };
+
+  // Display emoji for day of the week
   const getDayEmoji = (day) => {
     switch (day) {
       case 'Monday': return '🔍';
@@ -195,6 +198,7 @@ const NurembergInterface = () => {
     }
   };
   
+  // Get appropriate background style for day of week
   const getDayColorClass = (day) => {
     switch (day) {
       case 'Monday': return 'from-blue-500 to-blue-600';
@@ -207,26 +211,23 @@ const NurembergInterface = () => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-200">
-      <div className="bg-gradient-to-r from-blue-900 to-indigo-800 text-white p-3 relative">
+    <div className="bg-white rounded-lg shadow-md overflow-hidden">
+      {/* Header */}
+      <div className="bg-blue-900 text-white p-3 relative">
         <div className="flex items-center justify-between">
-          <div className="flex items-center">
-            <div className="hidden sm:flex w-10 h-10 bg-white rounded-full items-center justify-center text-blue-800 font-bold mr-2 shadow-md">
-              NH
-            </div>
-            <h1 className="font-bold text-xl tracking-tight">Nuremberg Hearing Miniseries</h1>
-          </div>
+          <h1 className="font-bold text-xl">Nuremberg Hearing Miniseries</h1>
           <button 
             onClick={() => setShowOverview(!showOverview)}
-            className="flex items-center space-x-1 text-xs bg-blue-800 hover:bg-blue-700 px-2 py-1 rounded transition-colors duration-200 shadow-sm"
+            className="flex items-center space-x-1 text-xs bg-blue-800 hover:bg-blue-700 px-2 py-1 rounded"
           >
             <Info size={14} />
             <span>{showOverview ? 'Hide' : 'Show'} Overview</span>
           </button>
         </div>
-        <p className="text-xs text-blue-100 mt-1 italic">March 17 - June 6, 2025 • "The Greatest Medical Crime in History: How We Take Back Our Freedom"</p>
+        <p className="text-xs text-blue-200 mt-1">March 17 - June 6, 2025 • "The Greatest Medical Crime in History: How We Take Back Our Freedom"</p>
       </div>
 
+      {/* Collapsible Overview */}
       {showOverview && (
         <div className="bg-blue-50 p-3 text-sm border-b border-blue-100 animated fadeIn">
           <h3 className="font-semibold text-blue-900 mb-2">Series Overview</h3>
@@ -247,6 +248,7 @@ const NurembergInterface = () => {
         </div>
       )}
 
+      {/* Week Navigation */}
       <div className="bg-gray-100 p-3 border-b border-gray-200">
         <div className="flex items-center justify-between mb-2">
           <button 
@@ -314,12 +316,14 @@ const NurembergInterface = () => {
         </div>
       </div>
 
+      {/* Current Week Content */}
       <div className="p-3">
         <h2 className="font-bold text-lg text-gray-800 mb-1">
           Week {activeWeek}: {weeks[activeWeek - 1].title}
         </h2>
         <p className="text-xs text-gray-600 mb-3">{weeks[activeWeek - 1].subtitle}</p>
 
+        {/* Two-row button layout for episodes */}
         <div className="grid grid-cols-5 gap-2 mb-3">
           {weeks[activeWeek - 1].episodes.map((episode, idx) => (
             <button
@@ -350,37 +354,33 @@ const NurembergInterface = () => {
           ))}
         </div>
         
+        {/* Quick access buttons - two rows */}
         <div className="mt-4">
           <h3 className="text-xs font-semibold text-gray-700 mb-2">STRATEGIC RESOURCES</h3>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mb-2">
-            <button className="bg-blue-100 hover:bg-blue-200 text-blue-800 text-xs py-2 px-3 rounded-md flex items-center justify-center transition-colors duration-200" 
-              onClick={() => openModal("Legal Filing Templates", "Repository of ready-to-use legal templates for challenging health regulations in multiple jurisdictions.")}>
+            <button className="bg-blue-100 hover:bg-blue-200 text-blue-800 text-xs py-2 px-3 rounded-md flex items-center justify-center" onClick={() => openModal("Legal Filing Templates", "Repository of ready-to-use legal templates for challenging health regulations in multiple jurisdictions.")}>
               <span>📄 Legal Templates</span>
             </button>
-            <button className="bg-green-100 hover:bg-green-200 text-green-800 text-xs py-2 px-3 rounded-md flex items-center justify-center transition-colors duration-200" 
-              onClick={() => openModal("Evidence Repository", "Centralized database of scientific evidence, whistleblower testimonies, and institutional documentation.")}>
+            <button className="bg-green-100 hover:bg-green-200 text-green-800 text-xs py-2 px-3 rounded-md flex items-center justify-center" onClick={() => openModal("Evidence Repository", "Centralized database of scientific evidence, whistleblower testimonies, and institutional documentation.")}>
               <span>🔍 Evidence Repository</span>
             </button>
-            <button className="bg-purple-100 hover:bg-purple-200 text-purple-800 text-xs py-2 px-3 rounded-md flex items-center justify-center transition-colors duration-200" 
-              onClick={() => openModal("Expert Network", "Connect with legal and medical experts who can provide guidance on specific challenges.")}>
+            <button className="bg-purple-100 hover:bg-purple-200 text-purple-800 text-xs py-2 px-3 rounded-md flex items-center justify-center" onClick={() => openModal("Expert Network", "Connect with legal and medical experts who can provide guidance on specific challenges.")}>
               <span>👥 Expert Network</span>
             </button>
-            <button className="bg-red-100 hover:bg-red-200 text-red-800 text-xs py-2 px-3 rounded-md flex items-center justify-center transition-colors duration-200" 
-              onClick={() => openModal("Urgent Actions", "Time-sensitive legal and advocacy actions requiring immediate attention.")}>
+            <button className="bg-red-100 hover:bg-red-200 text-red-800 text-xs py-2 px-3 rounded-md flex items-center justify-center" onClick={() => openModal("Urgent Actions", "Time-sensitive legal and advocacy actions requiring immediate attention.")}>
               <span>⚠️ Urgent Actions</span>
             </button>
-            <button className="bg-amber-100 hover:bg-amber-200 text-amber-800 text-xs py-2 px-3 rounded-md flex items-center justify-center transition-colors duration-200" 
-              onClick={() => openModal("Training Materials", "Educational resources for understanding legal frameworks and preparing challenges.")}>
+            <button className="bg-amber-100 hover:bg-amber-200 text-amber-800 text-xs py-2 px-3 rounded-md flex items-center justify-center" onClick={() => openModal("Training Materials", "Educational resources for understanding legal frameworks and preparing challenges.")}>
               <span>📚 Training Materials</span>
             </button>
-            <button className="bg-teal-100 hover:bg-teal-200 text-teal-800 text-xs py-2 px-3 rounded-md flex items-center justify-center transition-colors duration-200" 
-              onClick={() => openModal("Success Stories", "Case studies of successful legal challenges and their strategic implications.")}>
+            <button className="bg-teal-100 hover:bg-teal-200 text-teal-800 text-xs py-2 px-3 rounded-md flex items-center justify-center" onClick={() => openModal("Success Stories", "Case studies of successful legal challenges and their strategic implications.")}>
               <span>🏆 Success Stories</span>
             </button>
           </div>
         </div>
       </div>
 
+      {/* Enhanced Modal with animations */}
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center z-50 animated fadeIn" onClick={closeModal}>
           <div 
@@ -402,6 +402,7 @@ const NurembergInterface = () => {
             <div className="p-3 bg-gray-50 border-t border-gray-200 flex justify-between rounded-b-lg">
               <button 
                 onClick={() => {
+                  // Placeholder for future "Add to Calendar" functionality
                   alert("Calendar functionality would be implemented here");
                 }}
                 className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-3 py-1.5 rounded text-xs flex items-center transition-colors duration-200"
@@ -420,6 +421,7 @@ const NurembergInterface = () => {
         </div>
       )}
 
+      {/* CSS for animations */}
       <style jsx>{`
         .animated {
           animation-duration: 300ms;
@@ -431,48 +433,17 @@ const NurembergInterface = () => {
           to { opacity: 1; }
         }
         
-        @keyframes popIn {
-          0% { transform: scale(0.9); opacity: 0; }
-          40% { transform: scale(1.03); opacity: 1; }
-          60% { transform: scale(0.98); }
-          80% { transform: scale(1.01); }
-          100% { transform: scale(1); }
+        @keyframes slideIn {
+          from { transform: translateY(20px); opacity: 0; }
+          to { transform: translateY(0); opacity: 1; }
         }
         
         .fadeIn {
           animation-name: fadeIn;
         }
         
-        .popIn {
-          animation-name: popIn;
-          animation-duration: 400ms;
-        }
-        
-        .line-clamp-2 {
-          display: -webkit-box;
-          -webkit-line-clamp: 2;
-          -webkit-box-orient: vertical;
-          overflow: hidden;
-        }
-        
-        @media (max-width: 640px) {
-          .grid-cols-5 {
-            grid-template-columns: repeat(3, 1fr);
-          }
-          
-          .grid-cols-6 {
-            grid-template-columns: repeat(3, 1fr);
-          }
-        }
-        
-        @media (max-width: 480px) {
-          .grid-cols-5 {
-            grid-template-columns: repeat(2, 1fr);
-          }
-          
-          .grid-cols-6 {
-            grid-template-columns: repeat(2, 1fr);
-          }
+        .slideIn {
+          animation-name: slideIn;
         }
       `}</style>
     </div>
